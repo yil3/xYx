@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "framework/xyx-core",
+    "framework/xyx-common",
+    "framework/xyx-domain",
+    "xyx-authorization",
+    "xyx-userresources",
+]
+
+[profile.release]
+debug = true

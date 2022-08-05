@@ -1,0 +1,11 @@
+# Set to true to use lowercase keywords instead of uppercase.
+lowercaseKeywords: true
+connections:
+  - driver: postgresql
+    dataSourceName: postgres://postgres:aa332211@172.17.0.2/postgres
+    # user: postgres
+    # passwd: aa332211
+    # proto: tcp
+    # host: 172.17.0.2
+    # port: 5432
+    # dbName: postgres
