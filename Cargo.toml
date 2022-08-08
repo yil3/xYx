@@ -1,10 +1,10 @@
 [workspace]
 members = [
-    "framework/xyx-core",
-    "framework/xyx-common",
-    "framework/xyx-domain",
-    "xyx-authorization",
-    "xyx-userresources",
+    "x-framework/x-core",
+    "x-framework/x-common",
+    "x-framework/x-domain",
+    "authorization",
+    "user-resources",
 ]
 
 [profile.release]
