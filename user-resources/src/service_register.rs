@@ -6,6 +6,7 @@ use x_core::service::defualt_sucurity_service::DefualtSecurityService;
 use crate::{service::user_service::UserService, repository::user_repository::PostgresUsersRepository};
 
 
+#[derive(Clone)]
 pub struct ServiceRegister {
     pub user_service: DynUsersService,
     pub security_utils: DynSecurity,
@@ -16,7 +17,7 @@ impl ServiceRegister {
         info!("initializing utility services...");
         let security_utils =  Arc::new(DefualtSecurityService::new(config));
 
-        info!("utility services initialized, building feature services...");
+        info!("utility user_services initialized, building feature services...");
         let user_repository = Arc::new(PostgresUsersRepository::new(pool));
         let user_service = Arc::new(UserService::new(user_repository, security_utils.clone()));
         Self {

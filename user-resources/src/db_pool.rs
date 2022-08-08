@@ -4,10 +4,10 @@ use sqlx::postgres::PgPoolOptions;
 use x_core::connection_pool::{IConnectionManager, PgConnPool};
 
 
-pub struct PgPool;
+pub struct ConnectionPool;
 
 #[async_trait]
-impl IConnectionManager<PgConnPool> for PgPool {
+impl IConnectionManager<PgConnPool> for ConnectionPool {
     async fn new_pool(connection_string: &str) -> anyhow::Result<PgConnPool> {
         let pool = PgPoolOptions::new()
             .max_connections(5)
