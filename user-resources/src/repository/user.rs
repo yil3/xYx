@@ -1,23 +1,10 @@
 use async_trait::async_trait;
-use sqlx::query_as;
-use x_core::{
-    connection_pool::PgConnPool,
-    traits::users::repository::{IUserRepository, UserEntity},
-};
+use x_core::{traits::users::repository::IUserRepository, entity::user::UserEntity};
 
-#[derive(Clone)]
-pub struct PostgresUsersRepository {
-    pool: PgConnPool,
-}
-
-impl PostgresUsersRepository {
-    pub fn new(pool: PgConnPool) -> Self {
-        Self { pool }
-    }
-}
+pub struct Dao;
 
 #[async_trait]
-impl IUserRepository for PostgresUsersRepository {
+impl IUserRepository for Dao {
     async fn find_user_by_email_or_username(&self, email: &str, username: &str) -> anyhow::Result<Option<UserEntity>> {
         todo!()
     }
@@ -34,13 +21,13 @@ impl IUserRepository for PostgresUsersRepository {
         todo!()
     }
 
-    async fn get_user_by_id(&self, id: i64) -> anyhow::Result<UserEntity> {
+    async fn get_user_by_id(&self, id: &str) -> anyhow::Result<UserEntity> {
         todo!()
     }
 
     async fn update_user(
         &self,
-        id: i64,
+        id: String,
         email: String,
         username: String,
         password: String,

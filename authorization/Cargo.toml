@@ -20,3 +20,7 @@ tracing = "0.1"
 
 http = "0.2"
 http-body = "0.4.3"
+
+# tower crates for HTTP middleware
+tower = { version = "0.4", features = ["timeout"] }
+tower-http = { version = "0.3", features = ["trace", "cors"] }

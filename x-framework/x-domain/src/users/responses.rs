@@ -9,12 +9,13 @@ pub struct UserAuthenicationResponse {
 
 impl UserAuthenicationResponse {
     pub fn new(
-        id: i64,
+        id: String,
         username: String,
         email: String,
         // unfortunately, while our implementation returns thes optional fields as empty strings,
         // the realworld demo API enables nullable serializing by default, so we have to wrap these
         // strings as `Option` option values for now
+        mobile: String,
         bio: Option<String>,
         image: Option<String>,
         token: String,
@@ -24,6 +25,7 @@ impl UserAuthenicationResponse {
                 id,
                 username,
                 email,
+                mobile,
                 bio,
                 image,
                 token,

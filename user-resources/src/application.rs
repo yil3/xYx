@@ -1,4 +1,6 @@
+use std::env;
 use std::future::ready;
+use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use anyhow::Context;
@@ -9,25 +11,36 @@ use axum::middleware::Next;
 use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{middleware, BoxError, Json, Router};
-use lazy_static::lazy_static;
+use clap::Parser;
 use http::{HeaderValue, Method, Request};
+use lazy_static::lazy_static;
 use metrics_exporter_prometheus::{Matcher, PrometheusBuilder};
 use serde_json::json;
 use tower::ServiceBuilder;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
+use tracing::info;
+use x_core::config::AppConfig;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
 
-use crate::controller::user_controller::UserController;
-use crate::service_register::ServiceRegister;
+use crate::controller::user;
 
 lazy_static! {
-    static ref HTTP_TIMEOUT: u64 = 30;
     static ref EXPONENTIAL_SECONDS: &'static [f64] = &[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0,];
 }
 
 pub struct Application;
 
 impl Application {
-    pub async fn serve(port: u32, cors_origin: &str, service_register: ServiceRegister) -> anyhow::Result<()> {
+    pub async fn run() -> anyhow::Result<()> {
+        dotenv::dotenv().ok();
+        let config = Arc::new(AppConfig::parse());
+
+        tracing_subscriber::registry()
+            .with(tracing_subscriber::EnvFilter::new(&config.rust_log))
+            .with(tracing_subscriber::fmt::layer())
+            .init();
+
         let recorder_handle = PrometheusBuilder::new()
             .set_buckets_for_metric(
                 Matcher::Full(String::from("http_requests_duration_seconds")),
@@ -38,22 +51,23 @@ impl Application {
             .context("could not install metrics recorder")?;
 
         let router = Router::new()
-            .nest("/", UserController::new_router(service_register.clone()))
+            .nest("/user", user::Controller::new_router())
             .route("/metrics", get(move || ready(recorder_handle.render())))
             .layer(
                 ServiceBuilder::new()
                     .layer(TraceLayer::new_for_http())
                     .layer(HandleErrorLayer::new(Self::handle_timeout_error))
-                    .timeout(Duration::from_secs(*HTTP_TIMEOUT)),
+                    .timeout(Duration::from_secs(config.http_timeout)),
             )
             .layer(
                 CorsLayer::new()
-                    .allow_origin(cors_origin.parse::<HeaderValue>().unwrap())
+                    .allow_origin(config.cors_origin.parse::<HeaderValue>().unwrap())
                     .allow_methods([Method::GET]),
             )
             .route_layer(middleware::from_fn(Self::track_metrics));
 
-        axum::Server::bind(&format!("0.0.0.0:{}", port).parse().unwrap())
+        info!("starting server on port {}", config.user_resources_port);
+        axum::Server::bind(&format!("0.0.0.0:{}", config.user_resources_port).parse().unwrap())
             .serve(router.into_make_service())
             .await
             .context("error while starting API server")?;
@@ -70,7 +84,7 @@ impl Application {
                     "error":
                         format!(
                             "request took longer than the configured {} second timeout",
-                            *HTTP_TIMEOUT
+                            env::var("HTTP_TIMEOUT").unwrap()
                         )
                 })),
             )

@@ -5,7 +5,7 @@ use http::header::AUTHORIZATION;
 use tracing::error;
 
 use crate::errors::XError;
-use crate::traits::oauth2::token::DynToken;
+use crate::traits::authen::token::DynToken;
 
 
 /// Extracts the JWT from the Authorization token header.
