@@ -19,9 +19,10 @@ use serde_json::json;
 use tower::ServiceBuilder;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
 use tracing::info;
-use x_core::config::AppConfig;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
+use x_common::models::ping::PingResponse;
+use x_core::config::AppConfig;
 
 use crate::controller::user;
 
@@ -53,6 +54,7 @@ impl Application {
         let router = Router::new()
             .nest("/user", user::Controller::new_router())
             .route("/metrics", get(move || ready(recorder_handle.render())))
+            .route("/api/ping", get(Self::ping))
             .layer(
                 ServiceBuilder::new()
                     .layer(TraceLayer::new_for_http())
@@ -117,8 +119,8 @@ impl Application {
         response
     }
 
-    // async fn ping() -> Json<PingResponse> {
-    //     info!("received ping request");
-    //     Json(PingResponse::default())
-    // }
+    async fn ping() -> Json<PingResponse> {
+        info!("received ping request");
+        Json(PingResponse::default())
+    }
 }

@@ -25,8 +25,8 @@ dotenv = "0.15.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
-metrics = "0.18"
-metrics-exporter-prometheus = "0.8"
+metrics = "^0"
+metrics-exporter-prometheus = "^0"
 clap = { version = "^3", features = ["derive"] }
 
 http = "0.2"
