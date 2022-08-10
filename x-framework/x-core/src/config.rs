@@ -9,9 +9,7 @@ pub struct AppConfig {
     #[clap(long, env)]
     pub token_secret: String,
     #[clap(long, env)]
-    pub user_resources_port: u32,
-    #[clap(long, env)]
-    pub authorization_port: u32,
+    pub port: u32,
     #[clap(long, env)]
     pub run_migrations: bool,
     #[clap(long, env)]
