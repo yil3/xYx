@@ -20,8 +20,6 @@ pub struct UpdateUserRequest {
 
 #[derive(Clone, Serialize, Deserialize, Debug, Validate, Default)]
 pub struct RegisterUserDto {
-    #[validate(required, length(min = 1))]
-    pub username: Option<String>,
     #[validate(required, length(min = 1), email(message = "email is invalid"))]
     pub email: Option<String>,
     #[validate(required, length(min = 1))]
@@ -38,6 +36,7 @@ pub struct LoginUserDto {
 
 #[derive(Deserialize, Serialize, Debug, Default)]
 pub struct UpdateUserDto {
+    pub id: String,
     pub email: Option<String>,
     pub username: Option<String>,
     pub password: Option<String>,
@@ -48,7 +47,6 @@ pub struct UpdateUserDto {
 impl RegisterUserDto {
     pub fn new_stub() -> Self {
         Self {
-            username: Some(String::from("stub username")),
             email: Some(String::from("stub email")),
             password: Some(String::from("stub password")),
         }

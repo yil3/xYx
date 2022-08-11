@@ -5,8 +5,8 @@ pub mod responses;
 
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
 pub struct ProfileDto {
-    pub username: String,
-    pub bio: String,
-    pub image: String,
+    pub account: String,
+    pub bio: Option<String>,
+    pub image: Option<String>,
     pub following: bool,
 }

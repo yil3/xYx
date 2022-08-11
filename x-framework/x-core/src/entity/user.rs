@@ -8,14 +8,14 @@ use x_domain::{users::UserDto, profiles::ProfileDto};
 #[derive(FromRow)]
 pub struct UserEntity {
     pub id: String,
-    pub created_at: OffsetDateTime,
-    pub updated_at: OffsetDateTime,
-    pub username: String,
+    pub account: String,
     pub email: String,
     pub mobile: String,
     pub password: String,
     pub bio: String,
     pub image: String,
+    pub created_at: OffsetDateTime,
+    pub updated_at: OffsetDateTime,
 }
 
 impl UserEntity {
@@ -24,7 +24,7 @@ impl UserEntity {
             id: self.id,
             email: self.email,
             mobile: self.mobile,
-            username: self.username,
+            account: self.account,
             bio: Some(self.bio),
             image: Some(self.image),
             token,
@@ -33,9 +33,9 @@ impl UserEntity {
 
     pub fn into_profile(self, following: bool) -> ProfileDto {
         ProfileDto {
-            username: self.username,
-            bio: self.bio,
-            image: self.image,
+            account: self.account,
+            bio: Some(self.bio),
+            image: Some(self.image),
             following,
         }
     }
@@ -45,14 +45,15 @@ impl Default for UserEntity {
     fn default() -> Self {
         UserEntity {
             id: code::unique_id(),
+            account: String::default(),
+            email: String::default(),
+            mobile: String::default(),
+            password: String::from("hashed password"),
+            image: String::from("sub"),
             bio: String::from("stub bio"),
             created_at: OffsetDateTime::from(SystemTime::now()),
             updated_at: OffsetDateTime::from(SystemTime::now()),
-            username: String::from("stub username"),
-            email: String::from("stub email"),
-            mobile: String::default(),
-            password: String::from("hashed password"),
-            image: String::from("stub image"),
         }
     }
 }
+

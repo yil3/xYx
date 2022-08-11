@@ -1,10 +1,9 @@
-
 use std::sync::Arc;
 
 use async_trait::async_trait;
 use mockall::automock;
 
-use x_domain::users::requests::{RegisterUserDto, UpdateUserDto};
+use x_domain::users::requests::UpdateUserDto;
 use x_domain::users::UserDto;
 
 use crate::errors::XResult;
@@ -16,9 +15,7 @@ pub type DynUsersService = Arc<dyn IUserService + Send + Sync>;
 #[automock]
 #[async_trait]
 pub trait IUserService {
-    async fn register_user(&self, param: RegisterUserDto) -> XResult<UserDto>;
+    async fn get_current_user(&self, user_id: String) -> XResult<UserDto>;
 
-    async fn get_current_user(&self, user_id: i64) -> XResult<UserDto>;
-
-    async fn updated_user(&self, user_id: i64, param: UpdateUserDto) -> XResult<UserDto>;
+    async fn updated_user(&self, param: UpdateUserDto) -> XResult<UserDto>;
 }

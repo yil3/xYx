@@ -2,7 +2,7 @@
 lowercaseKeywords: true
 connections:
   - driver: postgresql
-    dataSourceName: postgres://postgres:aa332211@172.17.0.2/postgres
+    dataSourceName: postgres://postgres:aa332211@localhost/postgres
     # user: postgres
     # passwd: aa332211
     # proto: tcp

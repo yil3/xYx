@@ -1,8 +1,10 @@
 use async_trait::async_trait;
 
-use crate::{errors::XResult, entity::user::UserEntity};
+use crate::{entity::user::UserEntity, errors::XResult};
 
 #[async_trait]
 pub trait IAuthenRepository {
-    fn find_user_by_mobile(&self, mobile: &str) -> XResult<Option<UserEntity>>;
+    async fn create_user(&self, email: &str, account: &str, hashed_password: &str) -> anyhow::Result<UserEntity>;
+
+    async fn find_user_by_mobile_or_email_or_account(&self, arg: &str) -> XResult<Option<UserEntity>>;
 }

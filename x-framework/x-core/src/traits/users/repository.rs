@@ -13,8 +13,6 @@ pub trait IUserRepository {
     async fn find_user_by_email_or_username(&self, email: &str, username: &str)
         -> anyhow::Result<Option<UserEntity>>;
 
-    async fn create_user(&self, email: &str, username: &str, hashed_password: &str) -> anyhow::Result<UserEntity>;
-
     async fn get_user_by_email(&self, email: &str) -> anyhow::Result<Option<UserEntity>>;
 
     async fn get_user_by_username(&self, username: &str) -> anyhow::Result<Option<UserEntity>>;

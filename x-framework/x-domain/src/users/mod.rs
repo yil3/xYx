@@ -6,7 +6,7 @@ pub mod responses;
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct UserDto {
     pub id: String,
-    pub username: String,
+    pub account: String,
     pub email: String,
     pub mobile: String,
     pub bio: Option<String>,

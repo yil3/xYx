@@ -48,14 +48,16 @@ impl Application {
     fn init_env(&self) {
         let current_bin = env::current_exe().unwrap();
         let current_dir = env::current_dir().unwrap();
-        let bin_dir_vec: Vec<&str> = current_bin.to_str().unwrap().split("/").collect();
-        let mut path_vec: Vec<&str> = current_dir.to_str().unwrap().split("/").collect();
-        if path_vec.last() != bin_dir_vec.last() {
-            path_vec.push(bin_dir_vec.last().unwrap());
+        let bin_name = current_bin.to_str().unwrap().split("/").last().unwrap();
+        let last_dir = current_dir.to_str().unwrap().split("/").last().unwrap();
+        let mut path = String::from(current_dir.to_str().unwrap());
+        if bin_name != last_dir {
+            path.push_str("/");
+            path.push_str(bin_name);
         }
-        path_vec.push("application.properties");
-        let path = path_vec.join("/").to_string();
-        dotenv::from_path(Path::new(&path)).ok();
+        path.push_str("/application.env");
+        let path = Path::new(&path);
+        dotenv::from_path(Path::new(path)).ok();
         dotenv::dotenv().ok();
     }
 
