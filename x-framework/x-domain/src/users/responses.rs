@@ -16,6 +16,8 @@ impl UserAuthenicationResponse {
         // the realworld demo API enables nullable serializing by default, so we have to wrap these
         // strings as `Option` option values for now
         mobile: String,
+        bio: Option<String>,
+        image: Option<String>,
         token: String,
     ) -> Self {
         UserAuthenicationResponse {
@@ -24,6 +26,8 @@ impl UserAuthenicationResponse {
                 account,
                 email,
                 mobile,
+                bio,
+                image,
                 token,
             },
         }
