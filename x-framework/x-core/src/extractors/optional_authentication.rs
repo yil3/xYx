@@ -3,9 +3,9 @@ use axum::extract::{FromRequest, RequestParts};
 use axum::Extension;
 use http::header::AUTHORIZATION;
 use tracing::warn;
+use x_common::errors::XError;
+use x_common::traits::authen::token::DynToken;
 
-use crate::errors::XError;
-use crate::traits::authen::token::DynToken;
 
 
 /// Extracts the JWT from the Authorization token header, optional and will not return errors if none is found.

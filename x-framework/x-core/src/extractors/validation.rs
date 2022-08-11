@@ -4,8 +4,8 @@ use axum::extract::{FromRequest, RequestParts};
 use axum::{BoxError, Json};
 use serde::de::DeserializeOwned;
 use validator::Validate;
+use x_common::errors::XError;
 
-use crate::errors::XError;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct ValidationExtractor<T>(pub T);

@@ -1,15 +1,13 @@
 use async_trait::async_trait;
-use x_core::{traits::users::repository::IUserRepository, entity::user::UserEntity};
+use x_common::entities::user::UserEntity;
 
-pub struct Dao;
+use crate::traits::user_traits::IUserRepository;
+
+pub struct UserRepository;
 
 #[async_trait]
-impl IUserRepository for Dao {
+impl IUserRepository for UserRepository {
     async fn find_user_by_email_or_username(&self, email: &str, username: &str) -> anyhow::Result<Option<UserEntity>> {
-        todo!()
-    }
-
-    async fn create_user(&self, email: &str, username: &str, hashed_password: &str) -> anyhow::Result<UserEntity> {
         todo!()
     }
 

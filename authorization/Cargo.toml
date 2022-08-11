@@ -19,5 +19,3 @@ serde = { version = "^1", features = ["derive"] }
 anyhow = "1"
 async-trait = "0.1"
 
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }

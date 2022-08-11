@@ -2,7 +2,7 @@ use std::time::SystemTime;
 
 use sqlx::FromRow;
 use time::OffsetDateTime;
-use x_common::utils::code;
+use crate::utils::code;
 use x_domain::{users::UserDto, profiles::ProfileDto};
 
 #[derive(FromRow)]
