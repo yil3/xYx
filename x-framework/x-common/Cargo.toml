@@ -6,8 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-x-domain = { path = "../x-domain/" }
-
 axum = "^0"
 sqlx = { version = "^0", features = ["runtime-tokio-rustls", "postgres", "time"] }
 

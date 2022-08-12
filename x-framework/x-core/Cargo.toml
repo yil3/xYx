@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 x-common = { path = "../x-common/" }
-x-domain = { path = "../x-domain/" }
 
 # axum HTTP dependencies
 # tokio = { version = "^1", features = ["full"] }

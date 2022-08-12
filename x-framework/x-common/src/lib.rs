@@ -1,5 +1,6 @@
 pub mod errors;
 pub mod utils;
-pub mod models;
+pub mod model;
 pub mod traits;
-pub mod entities;
+// pub mod entity;
+// pub mod dto;

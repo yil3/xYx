@@ -2,8 +2,9 @@ use std::time::SystemTime;
 
 use sqlx::FromRow;
 use time::OffsetDateTime;
-use crate::utils::code;
-use x_domain::{users::UserDto, profiles::ProfileDto};
+use x_common::utils::code;
+
+use crate::dto::response::user_responses::UserDto;
 
 #[derive(FromRow)]
 pub struct UserEntity {
@@ -12,8 +13,6 @@ pub struct UserEntity {
     pub email: String,
     pub mobile: String,
     pub password: String,
-    pub bio: String,
-    pub image: String,
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
 }
@@ -25,18 +24,7 @@ impl UserEntity {
             email: self.email,
             mobile: self.mobile,
             account: self.account,
-            bio: Some(self.bio),
-            image: Some(self.image),
             token,
-        }
-    }
-
-    pub fn into_profile(self, following: bool) -> ProfileDto {
-        ProfileDto {
-            account: self.account,
-            bio: Some(self.bio),
-            image: Some(self.image),
-            following,
         }
     }
 }
@@ -49,11 +37,8 @@ impl Default for UserEntity {
             email: String::default(),
             mobile: String::default(),
             password: String::from("hashed password"),
-            image: String::from("sub"),
-            bio: String::from("stub bio"),
             created_at: OffsetDateTime::from(SystemTime::now()),
             updated_at: OffsetDateTime::from(SystemTime::now()),
         }
     }
 }
-

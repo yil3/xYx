@@ -2,7 +2,6 @@
 members = [
     "x-framework/x-core",
     "x-framework/x-common",
-    "x-framework/x-domain",
     "authorization",
     "user-resources",
 ]

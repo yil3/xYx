@@ -1,7 +1,8 @@
 use async_trait::async_trait;
+use x_common::errors::XResult;
 
-use x_common::{errors::XResult, entities::user::UserEntity};
-use x_domain::users::{requests::LoginUserDto, UserDto};
+use crate::{dto::{response::user_responses::UserDto, request::user_requests::LoginUserRequest}, entity::user::UserEntity};
+
 
 #[async_trait]
 pub trait IAuthenRepository {
@@ -10,7 +11,7 @@ pub trait IAuthenRepository {
 
 #[async_trait]
 pub trait IAuthenService {
-    async fn login(&self, param: LoginUserDto) -> XResult<UserDto>;
+    async fn login(&self, param: LoginUserRequest) -> XResult<UserDto>;
 
     async fn logout(&self) -> XResult<()>;
 }
