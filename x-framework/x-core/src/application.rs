@@ -5,14 +5,16 @@ use std::sync::Arc;
 
 use crate::handlers::http_time_out::handle_timeout_error;
 use crate::middleware::functions::metrics::track_metrics;
-use anyhow::Ok;
 use axum::error_handling::HandleErrorLayer;
 use axum::middleware;
 use axum::Router;
 use clap::Parser;
+use http::StatusCode;
 use http::{HeaderValue, Method};
+use hyper::{Body, Request, Response};
 use std::time::Duration;
 use tower::ServiceBuilder;
+use tower_http::auth::AsyncRequireAuthorizationLayer;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use tracing::info;
@@ -84,6 +86,11 @@ impl Application {
                     .allow_origin(self.config.cors_origin.parse::<HeaderValue>().unwrap())
                     .allow_methods([Method::GET]),
             )
+            .layer(ServiceBuilder::new().layer(AsyncRequireAuthorizationLayer::new(
+                |request: Request<Body>| async move { 
+                    Ok(request)
+                },
+            )))
             .route_layer(middleware::from_fn(track_metrics));
     }
 }

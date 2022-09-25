@@ -16,3 +16,7 @@ pub async fn authorize(req: Query<AuthorizeRequest>) -> impl IntoResponse {
     }
     Redirect::to(&req.redirect_uri);
 }
+
+pub async fn token() {
+    todo!()
+}
