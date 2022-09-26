@@ -1,12 +1,12 @@
 use argon2::Config;
 use std::env;
 
-use crate::{errors::XError, traits::authen::security::ISecurityUtils};
+use crate::errors::XError;
 
-pub struct DefualtSecurityUtils;
+pub struct SucurityUtils;
 
-impl ISecurityUtils for DefualtSecurityUtils {
-    fn hash_password(&self, raw_password: &str) -> crate::errors::XResult<String> {
+impl SucurityUtils {
+    pub fn hash_password(raw_password: &str) -> crate::errors::XResult<String> {
         let password_bytes = raw_password.as_bytes();
         let hashed_password = argon2::hash_encoded(
             password_bytes,
@@ -17,7 +17,7 @@ impl ISecurityUtils for DefualtSecurityUtils {
         Ok(hashed_password)
     }
 
-    fn verify_password(&self, stored_password: &str, attempted_password: String) -> crate::errors::XResult<bool> {
+    pub fn verify_password(stored_password: &str, attempted_password: String) -> crate::errors::XResult<bool> {
         let hashes_match = argon2::verify_encoded(stored_password, attempted_password.as_bytes())
             .map_err(|err| XError::InternalServerErrorWithContext(err.to_string()))?;
         Ok(hashes_match)

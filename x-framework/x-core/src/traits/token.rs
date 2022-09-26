@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-// use mockall::automock;
+use x_common::errors::XResult;
 
-use crate::errors::XResult;
+// use mockall::automock;
 
 /// A security service for handling JWT authentication.
 pub type DynToken = Arc<dyn ITokenUtils + Send + Sync>;

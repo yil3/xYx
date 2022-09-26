@@ -3,31 +3,16 @@ use std::time::{Duration, SystemTime};
 use std::env;
 
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
-use serde::{Deserialize, Serialize};
 use sqlx::types::time::OffsetDateTime;
 
 use crate::errors::{XResult, XError};
-use crate::traits::authen::token::ITokenUtils;
+use crate::model::authorize::Claims;
 
 
-/// Our claims struct, it needs to derive `Serialize` and/or `Deserialize`
-#[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    sub: String,
-    user_id: i64,
-    exp: usize,
-}
+pub struct TokenUtils;
 
-pub struct JwtTokenUtils;
-
-impl JwtTokenUtils {
-    pub fn new() -> Self {
-        Self {}
-    }
-}
-
-impl ITokenUtils for JwtTokenUtils {
-    fn new_token(&self, user_id: i64, email: &str) -> XResult<String> {
+impl TokenUtils {
+    pub fn generate_jwt_token(user_id: String, email: &str) -> XResult<String> {
         let from_now = Duration::from_secs(3600);
         let expired_future_time = SystemTime::now().add(from_now);
         let exp = OffsetDateTime::from(expired_future_time);
@@ -48,7 +33,7 @@ impl ITokenUtils for JwtTokenUtils {
         Ok(token)
     }
 
-    fn get_user_id_from_token(&self, token: String) -> XResult<i64> {
+    pub fn fetch_current_user_id_from_jwt_token(token: String) -> XResult<String>{
         let decoded_token = decode::<Claims>(
             token.as_str(),
             // &DecodingKey::from_secret(self.config.token_secret.as_bytes()),

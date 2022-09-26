@@ -4,13 +4,11 @@ use axum::extract::{FromRequest, RequestParts};
 use http::header::AUTHORIZATION;
 use tracing::error;
 use x_common::errors::XError;
-// use x_common::traits::authen::token::DynToken;
-use x_common::traits::authen::token::ITokenUtils;
-use x_common::utils::defualt_token_utils::JwtTokenUtils;
+use x_common::utils::token::TokenUtils;
 
 
 /// Extracts the JWT from the Authorization token header.
-pub struct RequiredAuthentication(pub i64);
+pub struct RequiredAuthentication(pub String);
 
 #[async_trait]
 impl<B> FromRequest<B> for RequiredAuthentication
@@ -23,7 +21,6 @@ where
         // let Extension(token_service): Extension<DynToken> = Extension::from_request(request)
         //     .await
         //     .map_err(|err| XError::InternalServerErrorWithContext(err.to_string()))?;
-        let token_utils = JwtTokenUtils::new();
 
         if let Some(authorization_header) = request.headers().get(AUTHORIZATION) {
             let header_value = authorization_header.to_str().map_err(|_| XError::Unauthorized)?;
@@ -41,8 +38,7 @@ where
             }
 
             let token_value = tokenized_value.into_iter().nth(1).unwrap();
-            let user_id = token_utils
-                .get_user_id_from_token(String::from(token_value))
+            let user_id = TokenUtils::fetch_current_user_id_from_jwt_token(String::from(token_value))
                 .map_err(|err| {
                     error!("could not validate user ID from token: {:?}", err);
                     XError::Unauthorized
