@@ -18,9 +18,15 @@ struct Claims {
     exp: usize,
 }
 
-pub struct DefaultTokenUtils;
+pub struct JwtTokenUtils;
 
-impl ITokenUtils for DefaultTokenUtils {
+impl JwtTokenUtils {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
+impl ITokenUtils for JwtTokenUtils {
     fn new_token(&self, user_id: i64, email: &str) -> XResult<String> {
         let from_now = Duration::from_secs(3600);
         let expired_future_time = SystemTime::now().add(from_now);

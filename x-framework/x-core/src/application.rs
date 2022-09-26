@@ -9,12 +9,11 @@ use axum::error_handling::HandleErrorLayer;
 use axum::middleware;
 use axum::Router;
 use clap::Parser;
-use http::StatusCode;
 use http::{HeaderValue, Method};
-use hyper::{Body, Request, Response};
+// use tower_http::auth::AsyncRequireAuthorizationLayer;
+// use axum::response::Redirect;
 use std::time::Duration;
 use tower::ServiceBuilder;
-use tower_http::auth::AsyncRequireAuthorizationLayer;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use tracing::info;
@@ -86,11 +85,20 @@ impl Application {
                     .allow_origin(self.config.cors_origin.parse::<HeaderValue>().unwrap())
                     .allow_methods([Method::GET]),
             )
-            .layer(ServiceBuilder::new().layer(AsyncRequireAuthorizationLayer::new(
-                |request: Request<Body>| async move { 
-                    Ok(request)
-                },
-            )))
+            // .layer(
+            //     AsyncRequireAuthorizationLayer::new(
+            //         |request: http::Request<hyper::Body>| async move {
+            //             if request.uri().path() == "/authorize" && request.method() == Method::GET {
+            //                 return Ok(request);
+            //             }
+            //             if request.headers().get("Authorization").is_some() {
+            //                 return Ok(request);
+            //             }
+            //             Redirect::to("login");
+            //             Ok(request)
+            //         }
+            //     )
+            // )
             .route_layer(middleware::from_fn(track_metrics));
     }
 }
