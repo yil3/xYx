@@ -10,7 +10,7 @@ x-common = { path = "../x-common/" }
 
 # axum HTTP dependencies
 # tokio = { version = "^1", features = ["full"] }
-axum = "^0"
+axum = { version = "^0", features = ["headers"] }
 sqlx = { version = "^0", features = ["runtime-tokio-rustls", "postgres", "time"] }
 
 # utilty crates
@@ -40,6 +40,7 @@ lazy_static = "1.4"
 http = "^0.2"
 http-body = "^0.4"
 hyper = "^0"
+headers = "^0.3"
 
 # tower crates for HTTP middleware
 tower = { version = "^0.4", features = ["timeout"] }

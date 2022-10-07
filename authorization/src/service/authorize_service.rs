@@ -27,12 +27,15 @@ impl AuthorizeService {
         url
     }
     pub fn generate_token(&self) -> String {
-        // TODO: 生成token， 插入数据库
+        // TODO: 生成token，写入数据库
         utils::code::uuid()
     }
     pub fn generate_code(&self) -> String {
         // TODO: 生成code，缓存数据设置过期时间
         utils::code::uuid()
+    }
+    pub fn verify_client(&self, _client_id: &str) {
+        // TODO: 验证client_id
     }
 
     pub fn token(&self, request: Json<TokenRequest>) -> TokenResponses {

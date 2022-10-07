@@ -4,12 +4,14 @@ use std::path::Path;
 use std::sync::Arc;
 
 use crate::handlers::http_time_out::handle_timeout_error;
+use crate::middleware::authorize::XAuthorize;
 use crate::middleware::functions::metrics::track_metrics;
 use axum::error_handling::HandleErrorLayer;
 use axum::middleware;
 use axum::Router;
 use clap::Parser;
 use http::{HeaderValue, Method};
+use tower_http::auth::AsyncRequireAuthorizationLayer;
 // use tower_http::auth::AsyncRequireAuthorizationLayer;
 // use axum::response::Redirect;
 use std::time::Duration;
@@ -85,20 +87,7 @@ impl Application {
                     .allow_origin(self.config.cors_origin.parse::<HeaderValue>().unwrap())
                     .allow_methods([Method::GET]),
             )
-            // .layer(
-            //     AsyncRequireAuthorizationLayer::new(
-            //         |request: http::Request<hyper::Body>| async move {
-            //             if request.uri().path() == "/authorize" && request.method() == Method::GET {
-            //                 return Ok(request);
-            //             }
-            //             if request.headers().get("Authorization").is_some() {
-            //                 return Ok(request);
-            //             }
-            //             Redirect::to("login");
-            //             Ok(request)
-            //         }
-            //     )
-            // )
+            .layer(AsyncRequireAuthorizationLayer::new(XAuthorize))
             .route_layer(middleware::from_fn(track_metrics));
     }
 }
