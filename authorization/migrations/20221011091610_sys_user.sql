@@ -4,7 +4,6 @@ drop table if exists sys_user;
 
 create table sys_user(
   id varchar(32) not null primary key,
-  account varchar not null,
   email varchar not null,
   mobile varchar not null,
   password varchar not null,
@@ -20,3 +19,8 @@ comment on column sys_user.mobile is '用户手机号';
 comment on column sys_user.password is '用户密码';
 comment on column sys_user.created_at is '创建时间';
 comment on column sys_user.updated_at is '更新时间';
+
+drop index if exists sys_user_email_idx;
+create unique index sys_user_account_idx on sys_user(email);
+drop index if exists sys_user_mobile_idx;
+create unique index sys_user_mobile_idx on sys_user(mobile);
