@@ -19,4 +19,5 @@ serde = { version = "^1", features = ["derive"] }
 time = { version = "^0" }
 anyhow = "^1"
 async-trait = "^0.1"
+serde_with = { version = "^2", features = ["time_0_3"] }
 

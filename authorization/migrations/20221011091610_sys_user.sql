@@ -13,7 +13,6 @@ create table sys_user(
 
 comment on table sys_user is '系统用户表';
 comment on column sys_user.id is '用户 id';
-comment on column sys_user.account is '用户账号';
 comment on column sys_user.email is '用户邮箱';
 comment on column sys_user.mobile is '用户手机号';
 comment on column sys_user.password is '用户密码';
@@ -24,3 +23,4 @@ drop index if exists sys_user_email_idx;
 create unique index sys_user_account_idx on sys_user(email);
 drop index if exists sys_user_mobile_idx;
 create unique index sys_user_mobile_idx on sys_user(mobile);
+

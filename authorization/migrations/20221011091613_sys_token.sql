@@ -1,6 +1,5 @@
 -- Add migration script here
 
-delete from _sqlx_migrations where description like '%client';
 
 drop table if exists sys_token;
 
