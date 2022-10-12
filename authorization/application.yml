@@ -1,0 +1,19 @@
+server:
+  port: 5000
+  host: 0.0.0.0
+  cors_origin: http://localhost:3000
+  http_timeout: 60
+
+database:
+  category: postgres
+  username: x
+  password: aa332211
+  host: localhost
+  port: 5432
+  db_name: postgres
+  run_migrations: false
+log:
+  level: debug
+auth:
+  argon_salt: ""
+  token_secret: ""
