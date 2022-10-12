@@ -10,3 +10,4 @@ where a.attnum>0 and a.attrelid=c.oid and a.atttypid=t.oid and d.objoid=a.attrel
 and c.relname like '%user';
 
 delete from _sqlx_migrations where description like '%client';
+

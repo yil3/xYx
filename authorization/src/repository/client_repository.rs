@@ -1,12 +1,22 @@
+use std::sync::Arc;
+
 use crate::entity::client::ClientEntity;
 use anyhow::Result;
-use sqlx::postgres::PgQueryResult;
-use x_core::constant::POOL;
+use sqlx::{postgres::PgQueryResult, Pool, Postgres};
+// use x_core::constant::POOL;
 
-pub struct ClientRepository;
+pub struct ClientRepository {
+    pub pool: Pool<Postgres>
+}
 
 impl ClientRepository {
-    pub async fn insert(record: ClientEntity) -> Result<PgQueryResult> {
+    pub fn new(pool: Pool<Postgres>) -> Arc<Self> {
+        Arc::new(Self { pool })
+    }
+}
+
+impl ClientRepository {
+    pub async fn insert(&self, record: ClientEntity) -> Result<PgQueryResult> {
         sqlx::query!(
             r#"
             INSERT INTO sys_client (id, name, secret, redirect_uri, scope, owner)
@@ -19,12 +29,12 @@ impl ClientRepository {
             record.scope,
             record.owner,
         )
-        .execute(&*POOL)
+        .execute(&self.pool)
         .await
         .map_err(|e| anyhow::anyhow!(e))
     }
 
-    pub async fn update(record: ClientEntity) -> Result<PgQueryResult> {
+    pub async fn update(&self, record: ClientEntity) -> Result<PgQueryResult> {
         sqlx::query!(
             r#"
             UPDATE sys_client
@@ -42,12 +52,8 @@ impl ClientRepository {
             record.owner,
             record.id,
         )
-        .execute(&*POOL)
+        .execute(&self.pool)
         .await
         .map_err(|e| anyhow::anyhow!(e))
     }
-
-    pub fn delete_by_id(_id: String) {}
-
-    pub fn fetch_page() {}
 }
