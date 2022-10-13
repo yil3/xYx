@@ -21,7 +21,7 @@
 // }
 
 use serde::Deserialize;
-use std::{env, fs::read_to_string};
+use std::fs::read_to_string;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct AppConfig {
@@ -63,16 +63,23 @@ pub struct AuthConfig {
 
 impl AppConfig {
     pub fn parse() -> Self {
-        let path = env::current_exe()
+        // let path = std::env::current_exe()
+        //     .unwrap()
+        //     .to_str()
+        //     .unwrap()
+        //     .split("/")
+        //     .last()
+        //     .unwrap()
+        //     .to_owned()
+        //     + "/application.yml";
+        let filename = std::fs::read_dir("./")
             .unwrap()
-            .to_str()
-            .unwrap()
-            .split("/")
-            .last()
-            .unwrap()
-            .to_owned()
-            + "/application.yml";
-        let yml_str = read_to_string(path)
+            .filter_map(|entry| entry.ok())
+            .filter(|entry| entry.file_name().to_str().unwrap().contains("application"))
+            .map(|entry| entry.file_name().to_str().unwrap().to_owned())
+            .collect::<Vec<String>>()[0]
+            .clone();
+        let yml_str = read_to_string(filename)
             .map_err(|e| anyhow::anyhow!("Failed to read application.yml: {e}"))
             .unwrap();
         serde_yaml::from_str(&yml_str).unwrap()

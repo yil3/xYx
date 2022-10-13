@@ -1,19 +1,9 @@
-use std::sync::Arc;
-
 use crate::entity::client::ClientEntity;
 use anyhow::Result;
-use sqlx::{postgres::PgQueryResult, Pool, Postgres};
-// use x_core::constant::POOL;
+use sqlx::postgres::PgQueryResult;
+use x_core::application::POOL;
 
-pub struct ClientRepository {
-    pub pool: Pool<Postgres>
-}
-
-impl ClientRepository {
-    pub fn new(pool: Pool<Postgres>) -> Arc<Self> {
-        Arc::new(Self { pool })
-    }
-}
+pub struct ClientRepository;
 
 impl ClientRepository {
     pub async fn insert(&self, record: ClientEntity) -> Result<PgQueryResult> {
@@ -29,7 +19,7 @@ impl ClientRepository {
             record.scope,
             record.owner,
         )
-        .execute(&self.pool)
+        .execute(&*POOL)
         .await
         .map_err(|e| anyhow::anyhow!(e))
     }
@@ -52,8 +42,38 @@ impl ClientRepository {
             record.owner,
             record.id,
         )
-        .execute(&self.pool)
+        .execute(&*POOL)
         .await
         .map_err(|e| anyhow::anyhow!(e))
+    }
+
+    pub async fn test(&self) {
+        let res = sqlx::query_as!(ClientEntity ,"select * from sys_client")
+            .fetch_all(&*POOL)
+            .await
+            .map_err(|e| {
+                println!("{:?}", e);
+            })
+            .unwrap();
+        println!("{:#?}", res);
+    }
+
+    pub async fn test_inser(&self, record: ClientEntity) {
+        let a = sqlx::query_as!(ClientEntity,
+            r#"
+            INSERT INTO sys_client (id, name, secret, redirect_uri, scope, owner)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id, name, secret, redirect_uri, scope, owner, created_at, updated_at
+            "#,
+            record.id,
+            record.name,
+            record.secret,
+            record.redirect_uri,
+            record.scope,
+            record.owner,
+        )
+        .fetch_one(&*POOL)
+        .await;
+        println!("{a:#?}");
     }
 }

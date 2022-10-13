@@ -1492,6 +1492,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "signal-hook-registry"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e51e73328dc4ac0c7ccbda3a494dfa03df1de2f46018127f60c693f2648455b0"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "simple_asn1"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1783,9 +1792,23 @@ dependencies = [
  "memchr",
  "mio",
  "num_cpus",
+ "parking_lot 0.12.1",
  "pin-project-lite",
+ "signal-hook-registry",
  "socket2",
+ "tokio-macros",
  "winapi",
+]
+
+[[package]]
+name = "tokio-macros"
+version = "1.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9724f9a975fb987ef7a3cd9be0350edcbe130698af5b8f7a631e23d42d052484"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -1801,9 +1824,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-stream"
-version = "0.1.10"
+version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f6edf2d6bc038a43d31353570e27270603f4648d18f5ed10c0e179abe43255af"
+checksum = "d660770404473ccd7bc9f8b28494a811bc18542b915c0855c51e8f419d5223ce"
 dependencies = [
  "futures-core",
  "pin-project-lite",
@@ -1849,9 +1872,9 @@ dependencies = [
 
 [[package]]
 name = "tower-layer"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "343bc9466d3fe6b0f960ef45960509f84480bf4fd96f92901afe7ff3df9d3a62"
+checksum = "c20c8dbed6283a09604c3e69b4b7eeb54e298b8a600d4d5ecb5ad39de609f1d0"
 
 [[package]]
 name = "tower-service"
@@ -1994,6 +2017,22 @@ dependencies = [
  "form_urlencoded",
  "idna 0.3.0",
  "percent-encoding",
+]
+
+[[package]]
+name = "user-resources"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "axum",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "time 0.3.15",
+ "tokio",
+ "x-common",
+ "x-core",
 ]
 
 [[package]]

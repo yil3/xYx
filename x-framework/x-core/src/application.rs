@@ -26,6 +26,7 @@ use crate::config::AppConfig;
 
 lazy_static! {
     static ref APP_CONFIG: Arc<AppConfig> = Arc::new(AppConfig::parse());
+    pub static ref POOL: Pool<Postgres> = Application::create_pool();
 }
 
 pub struct Application {
@@ -60,20 +61,6 @@ impl Application {
 
     fn init_env(&self) {
         info!("init env");
-        // let current_bin = env::current_exe().unwrap();
-        // let current_dir = env::current_dir().unwrap();
-        // let bin_name = current_bin.to_str().unwrap().split("/").last().unwrap();
-        // let last_dir = current_dir.to_str().unwrap().split("/").last().unwrap();
-        // let mut path = String::from(current_dir.to_str().unwrap());
-        // if bin_name != last_dir {
-        //     path.push_str("/");
-        //     path.push_str(bin_name);
-        // }
-        // path.push_str("/application.env");
-        // let path = Path::new(&path);
-        // dotenv::from_path(Path::new(path)).ok();
-        // dotenv::dotenv().ok();
-        // env::set_var("DATABASE_URL", uri);
         if let Some(uri) = Application::generate_db_uri() {
             env::set_var("DATABASE_URL", uri.get(1).unwrap());
         } else {
@@ -106,16 +93,6 @@ impl Application {
                     config.database.db_name
                 )
             },
-            "mysql" => {
-                format!(
-                    "mysql://{}:{}@{}:{}/{}",
-                    config.database.username,
-                    config.database.password,
-                    config.database.host,
-                    config.database.port,
-                    config.database.db_name
-                )
-            },
             _ => {
                 return None;
             },
@@ -123,18 +100,19 @@ impl Application {
         Some(vec![config.database.category.clone(), uri])
     }
 
-    pub fn create_pool() -> anyhow::Result<Pool<Postgres>> {
+    fn create_pool() -> Pool<Postgres> {
         if let Some(uri) = Application::generate_db_uri() {
-            match uri.get(0).unwrap().as_str() {
+            let key = uri.get(0).unwrap().clone();
+            match key.as_str() {
                 "postgres" => {
                     let pool = PgPoolOptions::new()
                         .max_connections(5)
                         .connect_lazy(&uri.get(1).unwrap())
                         .expect("could not initialize the database connection pool");
-                    Ok(pool)
+                    pool
                 },
                 _ => {
-                    return Err(anyhow::anyhow!("not support database"));
+                    panic!("Database type not supported");
                 },
             }
         } else {
@@ -142,9 +120,12 @@ impl Application {
         }
     }
 
+    pub fn pgpool() -> Pool<Postgres> {
+        POOL.to_owned()
+    }
+
     pub fn init_router(&mut self) {
         info!("init router");
-        // let pool = Application::get_dbpool();
         self.router = self
             .router
             .to_owned()
@@ -159,8 +140,8 @@ impl Application {
                     .allow_origin(self.config.server.cors_origin.parse::<HeaderValue>().unwrap())
                     .allow_methods([Method::GET]),
             )
-            .layer(Extension(self.config.clone()))
-            // .layer(Extension(pool))
+            .layer(Extension(self.config.as_ref().clone()))
+            .layer(Extension(Application::pgpool()))
             .layer(AsyncRequireAuthorizationLayer::new(XAuthorize))
             .route_layer(middleware::from_fn(track_metrics));
     }
