@@ -6,11 +6,13 @@ use x_core::application::POOL;
 pub struct ClientRepository;
 
 impl ClientRepository {
-    pub async fn insert(&self, record: ClientEntity) -> Result<PgQueryResult> {
-        sqlx::query!(
+    pub async fn insert(&self, record: ClientEntity) -> Result<ClientEntity> {
+        sqlx::query_as!(
+            ClientEntity,
             r#"
             INSERT INTO sys_client (id, name, secret, redirect_uri, scope, owner)
             VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id, name, secret, redirect_uri, scope, owner, created_at, updated_at
             "#,
             record.id,
             record.name,
@@ -19,7 +21,7 @@ impl ClientRepository {
             record.scope,
             record.owner,
         )
-        .execute(&*POOL)
+        .fetch_one(&*POOL)
         .await
         .map_err(|e| anyhow::anyhow!(e))
     }
