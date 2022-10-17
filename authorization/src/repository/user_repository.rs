@@ -23,9 +23,8 @@ impl UserRepository {
 
     pub async fn update(&self, record: &UpdateUserRequest) -> Result<PgQueryResult, sqlx::Error> {
         query!(
-            "UPDATE sys_user SET password = $1, email = $2 WHERE id = $3",
+            "UPDATE sys_user SET password = $1 WHERE id = $2",
             record.password,
-            record.email,
             record.id,
         )
         .execute(&*POOL)
