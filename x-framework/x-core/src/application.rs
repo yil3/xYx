@@ -3,20 +3,20 @@ use std::env;
 use std::sync::Arc;
 
 use crate::handlers::http_time_out::handle_timeout_error;
-use crate::middleware::authorize::XAuthorize;
 use crate::middleware::functions::metrics::track_metrics;
 use axum::error_handling::HandleErrorLayer;
 use axum::extract::Extension;
 use axum::middleware;
 use axum::Router;
-use http::{HeaderValue, Method};
+// use http::{HeaderValue, Method};
 use lazy_static::lazy_static;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 use std::time::Duration;
 use tower::ServiceBuilder;
-use tower_http::auth::AsyncRequireAuthorizationLayer;
-use tower_http::cors::CorsLayer;
+// use tower_http::auth::AsyncRequireAuthorizationLayer;
+// use crate::middleware::authorize::XAuthorize;
+// use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use tracing::info;
 use tracing_subscriber::layer::SubscriberExt;
@@ -135,14 +135,14 @@ impl Application {
                     .layer(HandleErrorLayer::new(handle_timeout_error))
                     .timeout(Duration::from_secs(self.config.server.http_timeout)),
             )
-            .layer(
-                CorsLayer::new()
-                    .allow_origin(self.config.server.cors_origin.parse::<HeaderValue>().unwrap())
-                    .allow_methods([Method::GET]),
-            )
+            // .layer(
+            //     CorsLayer::new()
+            //         .allow_origin(self.config.server.cors_origin.parse::<HeaderValue>().unwrap())
+            //         .allow_methods([Method::GET]),
+            // )
             .layer(Extension(self.config.as_ref().clone()))
             .layer(Extension(Application::pgpool()))
-            .layer(AsyncRequireAuthorizationLayer::new(XAuthorize))
+            // .layer(AsyncRequireAuthorizationLayer::new(XAuthorize))
             .route_layer(middleware::from_fn(track_metrics));
     }
 }

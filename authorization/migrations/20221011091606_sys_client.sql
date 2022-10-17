@@ -10,7 +10,7 @@ create table sys_client(
   scope varchar not null,
   owner varchar,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz
 );
 
 comment on table sys_client is '系统客户端表';

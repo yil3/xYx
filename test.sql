@@ -11,9 +11,5 @@ and c.relname like '%client';
 
 delete from _sqlx_migrations where description like '%client';
 
-insert into sys_client 
-(id, name, secret, redirect_uri, scope, owner, created_at, updated_at ) 
-values 
-(1, 'test', 'test', 'http://localhost:8080', 'openid profile email', 'admin', '2019-01-01 00:00:00', '2019-01-01 00:00:00');
+select now();
 
-select * from sys_client;

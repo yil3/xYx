@@ -12,7 +12,7 @@ create table sys_token(
   expires_in int not null,
   scope varchar not null,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz
 );
 
 comment on table sys_token is '系统令牌表';
