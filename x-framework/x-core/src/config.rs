@@ -44,11 +44,18 @@ pub struct DatabaseConfig {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct ServerConfig {
-    pub port: u32,
+    pub port: u16,
     pub host: String,
-    pub cors_origin: String,
+    pub cors: CorsConfig,
     pub http_timeout: u64,
 }
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct CorsConfig {
+    pub origins: Vec<String>,
+    pub status: bool,
+}
+
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct LogConfig {
@@ -59,6 +66,7 @@ pub struct LogConfig {
 pub struct AuthConfig {
     pub argon_salt: String,
     pub token_secret: String,
+    pub status: bool,
 }
 
 impl AppConfig {

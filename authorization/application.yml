@@ -1,9 +1,11 @@
 server:
   port: 5000
   host: 0.0.0.0
-  cors_origin: http://localhost:3000
+  cors: 
+    status: false
+    origins: 
+      - http://localhost:3000
   http_timeout: 60
-
 database:
   category: postgres
   username: x
@@ -15,5 +17,6 @@ database:
 log:
   level: debug
 auth:
+  status: false
   argon_salt: ""
   token_secret: ""

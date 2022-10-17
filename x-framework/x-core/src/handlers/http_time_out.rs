@@ -2,7 +2,6 @@ use axum::{BoxError, Json};
 use http::StatusCode;
 use serde_json::json;
 
-
 pub async fn handle_timeout_error(err: BoxError) -> (StatusCode, Json<serde_json::Value>) {
     if err.is::<tower::timeout::error::Elapsed>() {
         (

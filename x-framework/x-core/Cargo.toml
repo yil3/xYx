@@ -26,7 +26,7 @@ tracing = "^0"
 tracing-subscriber = { version = "^0", features = ["env-filter"] }
 
 anyhow = "^1"
-validator = { version = "0.15", features = ["derive"] }
+validator = { version = "^0", features = ["derive"] }
 async-trait = "0.1"
 # thiserror = "1"
 # rust-argon2 = "1.0"
