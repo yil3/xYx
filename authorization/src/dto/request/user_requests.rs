@@ -7,6 +7,8 @@ pub struct RegisterUserRequest {
     pub email: Option<String>,
     #[validate(required, length(min = 1))]
     pub password: Option<String>,
+    pub account: Option<String>,
+    pub origin: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Validate)]
@@ -20,7 +22,5 @@ pub struct LoginUserRequest {
 #[derive(Deserialize, Serialize, Debug, Default)]
 pub struct UpdateUserRequest {
     pub id: String,
-    pub email: Option<String>,
-    pub username: Option<String>,
     pub password: Option<String>,
 }

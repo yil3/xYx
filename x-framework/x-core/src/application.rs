@@ -69,6 +69,7 @@ impl Application {
             panic!("Please check the database configuration");
         }
         env::set_var("ARGON_SALT", self.config.auth.argon_salt.as_str());
+        env::set_var("TOKEN_SECRET", self.config.auth.token_secret.as_str());
     }
 
     pub fn config() -> Arc<AppConfig> {

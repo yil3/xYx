@@ -7,7 +7,7 @@ where relkind = 'r' and relname not like 'pg_%' and relname not like 'sql_%' and
 select a.attnum, a.attname, concat_ws('',t.typname,SUBSTRING(format_type(a.atttypid,a.atttypmod) from '\(.*\)')) as type, d.description 
 from pg_class c, pg_attribute a, pg_type t, pg_description d
 where a.attnum>0 and a.attrelid=c.oid and a.atttypid=t.oid and d.objoid=a.attrelid and d.objsubid=a.attnum 
-and c.relname like '%client';
+and c.relname like '%user_info';
 
 delete from _sqlx_migrations where description like '%client';
 
