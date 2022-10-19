@@ -1,12 +1,18 @@
+use anyhow::anyhow;
 use anyhow::Result;
 use axum::extract::Query;
-use x_common::utils;
+use x_common::{
+    errors::{XError, XResult},
+    utils,
+};
 
 use crate::dto::{
     request::{authorize_requests::AuthorizeRequest, token_requests::TokenRequest},
     response::token_responses::TokenResponses,
 };
+use crate::entity::token::TokenEntity;
 
+use super::token_service::TokenService;
 use super::user_service::UserService;
 
 pub struct AuthorizeService;
@@ -43,7 +49,7 @@ impl AuthorizeService {
         // TODO: 验证client_id
     }
 
-    pub async fn token(&self, request: &TokenRequest) -> Result<TokenResponses> {
+    pub async fn token(&self, request: &TokenRequest) -> XResult<TokenResponses> {
         let mut token = TokenResponses::default();
         if request.grant_type == "authorization_code" {
             let code = request.code.as_ref().unwrap();
@@ -56,8 +62,14 @@ impl AuthorizeService {
             let account = request.username.as_ref().unwrap();
             let password = request.password.as_ref().unwrap();
             match UserService.validate_user(account, password).await {
-                Ok(_c) => {},
-                Err(_) => {},
+                Ok(_) => {
+                    let entity = TokenService
+                        .generate_token(&request.client_id, &account, &request.scope)
+                        .await
+                        .map_err(|_| XError::AnyhowError(anyhow!("insert token error")))?;
+                    return Ok(entity.into_dto());
+                },
+                Err(_) => return Err(XError::AnyhowError(anyhow!("用户名或密码错误"))),
             }
         }
         if request.grant_type == "client_credentials" {
