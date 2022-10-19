@@ -7,7 +7,8 @@ pub struct RegisterUserRequest {
     pub email: Option<String>,
     #[validate(required, length(min = 1))]
     pub password: Option<String>,
-    pub account: Option<String>,
+    pub account: String,
+    pub nickname: Option<String>,
     pub origin: Option<String>,
 }
 

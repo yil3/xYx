@@ -14,6 +14,7 @@ use http::{HeaderValue, Method};
 use lazy_static::lazy_static;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
+use tower_cookies::CookieManagerLayer;
 use std::time::Duration;
 use tower::ServiceBuilder;
 use tower_http::auth::AsyncRequireAuthorizationLayer;
@@ -140,7 +141,8 @@ impl Application {
                     .timeout(Duration::from_secs(self.config.server.http_timeout)),
             )
             .layer(Extension(self.config.as_ref().clone()))
-            .layer(Extension(Application::pgpool()));
+            .layer(Extension(Application::pgpool()))
+            .layer(CookieManagerLayer::new());
         if self.config.auth.status {
             self.router = self
                 .router

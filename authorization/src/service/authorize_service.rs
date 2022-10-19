@@ -1,12 +1,17 @@
-use axum::{extract::Query, Json};
+use anyhow::Result;
+use axum::extract::Query;
 use x_common::utils;
 
-use crate::dto::{request::{authorize_requests::AuthorizeRequest, token_requests::TokenRequest}, response::token_responses::TokenResponses};
+use crate::dto::{
+    request::{authorize_requests::AuthorizeRequest, token_requests::TokenRequest},
+    response::token_responses::TokenResponses,
+};
+
+use super::user_service::UserService;
 
 pub struct AuthorizeService;
 
 impl AuthorizeService {
-
     pub fn authorize(&self, request: Query<AuthorizeRequest>) -> String {
         let mut url = request.redirect_uri.clone();
         if request.client_id.is_empty() {
@@ -38,7 +43,7 @@ impl AuthorizeService {
         // TODO: 验证client_id
     }
 
-    pub fn token(&self, request: Json<TokenRequest>) -> TokenResponses {
+    pub async fn token(&self, request: &TokenRequest) -> Result<TokenResponses> {
         let mut token = TokenResponses::default();
         if request.grant_type == "authorization_code" {
             let code = request.code.as_ref().unwrap();
@@ -48,23 +53,24 @@ impl AuthorizeService {
         }
         if request.grant_type == "password" {
             // TODO: 验证用户名密码
+            let account = request.username.as_ref().unwrap();
+            let password = request.password.as_ref().unwrap();
+            match UserService.validate_user(account, password).await {
+                Ok(_c) => {},
+                Err(_) => {},
+            }
         }
         if request.grant_type == "client_credentials" {
             // TODO: 客户端模式
         }
-        token
+        Ok(token)
     }
 
-    pub fn refresh_token(&self) {
+    pub fn refresh_token(&self) {}
 
-    }
-
-    pub fn validate_token(&self) {
-
-    }
+    pub fn validate_token(&self) {}
 
     pub fn validate_code(&self, _code: &str) -> bool {
         true
     }
 }
-

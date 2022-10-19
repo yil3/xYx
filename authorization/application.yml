@@ -18,5 +18,5 @@ log:
   level: debug
 auth:
   status: false
-  argon_salt: ""
-  token_secret: ""
+  argon_salt: "randomsalt-x"
+  token_secret: "randomsecret-x"

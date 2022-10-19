@@ -1,14 +1,22 @@
-use axum::{response::{Redirect, IntoResponse}, extract::Query, Json};
+use crate::{
+    dto::request::{authorize_requests::AuthorizeRequest, token_requests::TokenRequest},
+    service::authorize_service::AuthorizeService,
+};
+use axum::{
+    extract::Query,
+    response::{IntoResponse, Redirect},
+    Json,
+};
 use x_common::model::response::R;
-use crate::{dto::request::{authorize_requests::AuthorizeRequest, token_requests::TokenRequest}, service::authorize_service::AuthorizeService};
-
 
 pub async fn authorize(request: Query<AuthorizeRequest>) {
     let url = AuthorizeService.authorize(request);
     Redirect::to(&url);
 }
 
-pub async fn token(request: Json<TokenRequest>) -> impl IntoResponse{
-    let token = AuthorizeService.token(request);
-    Json(R::success(token))
+pub async fn token(request: Json<TokenRequest>) -> impl IntoResponse {
+    match AuthorizeService.token(&request).await {
+        Ok(token) => Json(R::success(token)),
+        Err(e) => Json(R::fail(&e.to_string())),
+    }
 }
