@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize)]
 pub struct R<T> {
     pub msg: Option<String>,
     pub success: bool,
@@ -13,7 +13,7 @@ where
 {
     pub fn success(data: T) -> Self {
         Self {
-            msg: Some(String::from("操作成功")),
+            msg: Default::default(),
             success: true,
             data: Some(data),
         }
@@ -27,17 +27,25 @@ where
         }
     }
 
-    pub fn fail(msg: &str) -> Self {
+    pub fn ok_msg(data: T, msg: &str) -> Self {
         Self {
             msg: Some(String::from(msg)),
+            success: true,
+            data: Some(data),
+        }
+    }
+
+    pub fn fail() -> Self {
+        Self {
+            msg: Default::default(),
             success: false,
             data: None,
         }
     }
 
-    pub fn err() -> Self {
+    pub fn error(msg: &str) -> Self {
         Self {
-            msg: Some(String::from("操作失败")),
+            msg: Some(String::from(msg)),
             success: false,
             data: None,
         }

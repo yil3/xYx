@@ -2,11 +2,11 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use sqlx::FromRow;
 use time::OffsetDateTime;
-use x_common::utils::{self, code::uuid_v4};
+use x_common::utils::code::{uuid_v4, unique_id};
 
 use crate::dto::response::token_responses::TokenResponses;
 
-#[derive(FromRow, Serialize, Deserialize)]
+#[derive(FromRow, Serialize, Deserialize, Debug)]
 #[serde_as]
 #[serde(rename_all = "camelCase")]
 pub struct TokenEntity {
@@ -18,6 +18,7 @@ pub struct TokenEntity {
     pub refresh_token: String,
     pub token_type: String,
     pub expires_in: i32,
+    pub jwt_token: String,
     #[serde_as(as = "Rfc3339")]
     pub created_at: OffsetDateTime,
     #[serde_as(as = "Rfc3339")]
@@ -26,7 +27,7 @@ pub struct TokenEntity {
 impl Default for TokenEntity {
     fn default() -> Self {
         TokenEntity {
-            id: utils::code::unique_id(),
+            id: unique_id(),
             client_id: Default::default(),
             owner: Default::default(),
             scope: Default::default(),
@@ -34,6 +35,7 @@ impl Default for TokenEntity {
             refresh_token: uuid_v4(),
             token_type: "Bearer".to_string(),
             expires_in: 60 * 60 * 24 * 30,
+            jwt_token: Default::default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),
         }

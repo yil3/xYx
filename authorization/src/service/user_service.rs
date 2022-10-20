@@ -1,7 +1,7 @@
 use anyhow::Result;
-use x_common::{utils::sucurity::SucurityUtils, errors::XResult};
+use x_common::{utils::sucurity::SucurityUtils, errors::{XResult, XError}};
 
-use crate::{dto::request::user_requests::RegisterUserRequest, repository::user_repository::UserRepository};
+use crate::{dto::request::user_requests::RegisterUserRequest, repository::user_repository::UserRepository, entity::user::UserEntity};
 
 pub struct UserService;
 impl UserService {
@@ -12,8 +12,12 @@ impl UserService {
         UserRepository.insert(&input).await
     }
 
-    pub async fn validate_user(&self, account: &str, password: &str) -> XResult<bool> {
+    pub async fn validate_user(&self, account: &str, password: &str) -> XResult<UserEntity> {
         let user = UserRepository.fetch_user_by_account(account).await?;
-        SucurityUtils::verify_password(&user.password, password.to_string())
+        if SucurityUtils::verify_password(&user.password, password.to_string())? {
+            Ok(user)
+        } else {
+            Err(XError::InvalidLoginAttmpt)
+        }
     }
 }

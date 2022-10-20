@@ -17,6 +17,6 @@ database:
 log:
   level: debug
 auth:
-  status: false
+  status: true
   argon_salt: "randomsalt-x"
   token_secret: "randomsecret-x"

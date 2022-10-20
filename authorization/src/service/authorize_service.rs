@@ -1,5 +1,4 @@
 use anyhow::anyhow;
-use anyhow::Result;
 use axum::extract::Query;
 use x_common::{
     errors::{XError, XResult},
@@ -10,7 +9,6 @@ use crate::dto::{
     request::{authorize_requests::AuthorizeRequest, token_requests::TokenRequest},
     response::token_responses::TokenResponses,
 };
-use crate::entity::token::TokenEntity;
 
 use super::token_service::TokenService;
 use super::user_service::UserService;
@@ -62,14 +60,14 @@ impl AuthorizeService {
             let account = request.username.as_ref().unwrap();
             let password = request.password.as_ref().unwrap();
             match UserService.validate_user(account, password).await {
-                Ok(_) => {
+                Ok(user) => {
                     let entity = TokenService
-                        .generate_token(&request.client_id, &account, &request.scope)
+                        .generate_token(&request.client_id, &user.id, &request.scope)
                         .await
-                        .map_err(|_| XError::AnyhowError(anyhow!("insert token error")))?;
+                        .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
                     return Ok(entity.into_dto());
                 },
-                Err(_) => return Err(XError::AnyhowError(anyhow!("用户名或密码错误"))),
+                Err(_) => return Err(XError::InvalidLoginAttmpt),
             }
         }
         if request.grant_type == "client_credentials" {

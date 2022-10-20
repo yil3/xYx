@@ -7,13 +7,14 @@ pub struct TokenRepository;
 
 impl TokenRepository {
     pub async fn insert(&self, record: TokenEntity) -> Result<TokenEntity> {
+        println!("insert token: {:?}", record);
         Ok(query_as!(
             TokenEntity,
             r#"
             insert into sys_token 
-            (id, owner, access_token, refresh_token, expires_in, scope, token_type) 
+            (id, owner, access_token, refresh_token, expires_in, scope, token_type, jwt_token, client_id)
             values 
-            ($1, $2, $3, $4, $5, $6 ,$7) 
+            ($1, $2, $3, $4, $5, $6 ,$7, $8, $9)
             returning *
             "#,
             record.id,
@@ -23,6 +24,8 @@ impl TokenRepository {
             record.expires_in,
             record.scope,
             record.token_type,
+            record.jwt_token,
+            record.client_id
         )
         .fetch_one(&*POOL)
         .await?)

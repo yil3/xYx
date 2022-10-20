@@ -14,4 +14,5 @@ delete from _sqlx_migrations where description like '%client';
 select now();
 
 
-
+delete from sys_token;
+select * from sys_token;

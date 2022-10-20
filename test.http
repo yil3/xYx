@@ -3,8 +3,23 @@ POST http://localhost:5000/user/register
 content-type: application/json
 
 {
-	"account" : "test4" , 
+	"account" : "test" , 
 	"password" : "test" , 
-	"owner" : "",
+	"origin" : "",
   "nickname": "abc"
 }
+###
+POST http://localhost:5000/token
+content-type: application/json
+
+{
+  "username" : "test" , 
+  "password" : "test",
+  "grant_type": "password",
+  "client_id": "test",
+  "client_secret": "test",
+  "scope": "test"
+}
+###
+GET http://localhost:5000/user/page
+Authorization: Bearer 2b5078e1-e2da-4c0d-8104-f886a06cba3d

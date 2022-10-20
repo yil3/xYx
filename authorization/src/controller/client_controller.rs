@@ -10,6 +10,6 @@ pub fn route() -> Router {
 pub async fn save_client(record: Json<ClientRequest>) -> impl IntoResponse {
     match ClientService.save(&record).await {
         Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::fail(&e.to_string())),
+        Err(e) => Json(R::error(&e.to_string())),
     }
 }
