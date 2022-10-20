@@ -34,7 +34,7 @@ impl Default for TokenEntity {
             access_token: uuid_v4(),
             refresh_token: uuid_v4(),
             token_type: "Bearer".to_string(),
-            expires_in: 60 * 60 * 24 * 30,
+            expires_in: 3600 * 24 * 7,
             jwt_token: Default::default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),
@@ -60,8 +60,3 @@ pub struct ScopeEntity {
     pub description: String,
 }
 
-pub struct Claims {
-    pub sub: String,
-    pub scope: String,
-    pub exp: usize,
-}

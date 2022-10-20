@@ -16,3 +16,4 @@ select now();
 
 delete from sys_token;
 select * from sys_token;
+

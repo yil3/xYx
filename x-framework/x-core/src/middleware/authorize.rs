@@ -40,10 +40,8 @@ where
 
     fn authorize(&mut self, mut request: Request<B>) -> Self::Future {
         Box::pin(async {
-            if request.uri().path() == "/authorize" && request.method() == Method::GET {
-                return Ok(request);
-            }
-            if request.uri().path() == "/token" {
+            let path = request.uri().path();
+            if (path == "/authorize" && request.method() == Method::GET) || path == "/token" || path == "/user/register" {
                 return Ok(request);
             }
             if let Some(header_value) = request.headers().get(AUTHORIZATION) {
