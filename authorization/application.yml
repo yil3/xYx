@@ -20,3 +20,4 @@ auth:
   status: true
   argon_salt: "randomsalt-x"
   token_secret: "randomsecret-x"
+  expired: 86400

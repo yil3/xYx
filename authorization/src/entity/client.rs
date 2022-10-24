@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use sqlx::FromRow;
+use time::OffsetDateTime;
 
+#[derive(FromRow, Deserialize, Serialize, Debug)]
 #[serde_as]
-#[derive(FromRow, Deserialize, Serialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ClientEntity {
     pub id: String,
@@ -12,4 +13,8 @@ pub struct ClientEntity {
     pub redirect_uri: String,
     pub scope: String,
     pub owner: Option<String>,
+    #[serde_as(as = "Rfc3339")]
+    pub created_at: OffsetDateTime,
+    #[serde_as(as = "Rfc3339")]
+    pub updated_at: Option<OffsetDateTime>,
 }

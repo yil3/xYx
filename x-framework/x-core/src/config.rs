@@ -1,25 +1,3 @@
-// #[derive(clap::Parser, Default)]
-// pub struct AppConfig {
-//     #[clap(long, env)]
-//     pub database_url: String,
-//     #[clap(long, env)]
-//     pub rust_log: String,
-//     #[clap(long, env)]
-//     pub argon_salt: String,
-//     #[clap(long, env)]
-//     pub token_secret: String,
-//     #[clap(long, env)]
-//     pub port: u32,
-//     #[clap(long, env)]
-//     pub run_migrations: bool,
-//     #[clap(long, env)]
-//     pub seed: bool,
-//     #[clap(long, env)]
-//     pub cors_origin: String,
-//     #[clap(long, env)]
-//     pub http_timeout: u64,
-// }
-
 use serde::Deserialize;
 use std::fs::read_to_string;
 
@@ -27,6 +5,7 @@ use std::fs::read_to_string;
 pub struct AppConfig {
     pub server: ServerConfig,
     pub database: DatabaseConfig,
+    pub redis: Option<RedisConfig>,
     pub log: LogConfig,
     pub auth: AuthConfig,
 }
@@ -40,6 +19,13 @@ pub struct DatabaseConfig {
     pub host: String,
     pub port: u32,
     pub db_name: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct RedisConfig {
+    pub host: String,
+    pub port: u32,
+    pub password: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -67,6 +53,7 @@ pub struct AuthConfig {
     pub argon_salt: String,
     pub token_secret: String,
     pub status: bool,
+    pub expired: Option<u64>,
 }
 
 impl AppConfig {

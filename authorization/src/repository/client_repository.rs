@@ -5,15 +5,24 @@ use x_core::application::POOL;
 pub struct ClientRepository;
 
 impl ClientRepository {
-    pub async fn insert(&self, record: &ClientEntity) -> Result<ClientResponse> {
+    pub async fn fetch_by_id(&self, id: &str) -> Result<ClientEntity, sqlx::Error> {
         sqlx::query_as!(
-            ClientResponse,
+            ClientEntity,
+            r#"
+            SELECT * FROM sys_client WHERE id = $1
+            "#,
+            id
+        )
+        .fetch_one(&*POOL)
+        .await
+    }
+    pub async fn insert(&self, record: &ClientEntity) -> Result<ClientEntity, sqlx::Error> {
+        sqlx::query_as!(
+            ClientEntity,
             r#"
             INSERT INTO sys_client (id, name, secret, redirect_uri, scope, owner)
             VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING id, name, secret, redirect_uri, scope, owner, 
-            to_char(created_at, 'yyyy-mm-dd hh24:mi:ss') as created_at,
-            to_char(updated_at, 'yyyy-mm-dd hh24:mi:ss') as updated_at
+            RETURNING *
             "#,
             record.id,
             record.name,
@@ -24,12 +33,11 @@ impl ClientRepository {
         )
         .fetch_one(&*POOL)
         .await
-        .map_err(|e| anyhow::anyhow!(e))
     }
 
-    pub async fn update(&self, record: &ClientEntity) -> Result<ClientResponse> {
+    pub async fn update(&self, record: &ClientEntity) -> Result<ClientEntity, sqlx::Error> {
         sqlx::query_as!(
-            ClientResponse,
+            ClientEntity,
             r#"
             UPDATE sys_client
             SET name = coalesce($1, name),
@@ -39,9 +47,7 @@ impl ClientRepository {
                 owner = coalesce($5, owner),
                 updated_at = now()
             WHERE id = $6
-            RETURNING id, name, secret, redirect_uri, scope, owner, 
-            to_char(created_at, 'yyyy-MM-dd hh24:mi:ss') created_at,
-            to_char(updated_at, 'yyyy-MM-dd hh24:mi:ss') updated_at
+            RETURNING *
             "#,
             record.name,
             record.secret,
@@ -52,10 +58,9 @@ impl ClientRepository {
         )
         .fetch_one(&*POOL)
         .await
-        .map_err(|e| anyhow::anyhow!(e))
     }
 
-    pub async fn list(&self) -> Result<Vec<ClientResponse>> {
+    pub async fn list(&self) -> Result<Vec<ClientResponse>, sqlx::Error> {
         sqlx::query_as!(
             ClientResponse,
             r#"
@@ -67,6 +72,17 @@ impl ClientRepository {
         )
         .fetch_all(&*POOL)
         .await
-        .map_err(|e| anyhow::anyhow!(e))
+    }
+
+    pub async fn delete(&self, id: &str) -> Result<()> {
+        sqlx::query!(
+            r#"
+            DELETE FROM sys_client WHERE id = $1
+            "#,
+            id
+        )
+        .execute(&*POOL)
+        .await?;
+        Ok(())
     }
 }

@@ -1,7 +1,8 @@
-use crate::{repository::token_repository::TokenRepository, entity::token::TokenEntity};
+use crate::{entity::token::TokenEntity, repository::token_repository::TokenRepository};
+use anyhow::anyhow;
 use anyhow::Result;
 use x_common::utils::token::TokenUtils;
-
+use x_core::application::Application;
 
 pub struct TokenService;
 
@@ -14,5 +15,15 @@ impl TokenService {
         let jwt_token = TokenUtils::generate_jwt_token(user_id.to_string(), "")?;
         record.jwt_token = jwt_token;
         TokenRepository.insert(record).await
+    }
+
+    pub async fn refresh_token(&self, refresh_token: &str) -> Result<TokenEntity> {
+        let mut record = TokenRepository
+            .find_by_refresh_token(refresh_token)
+            .await
+            .map_err(|_| anyhow!("refresh_token is invalid"))?;
+        record.expires_in = Application::config().auth.expired.unwrap_or(3600 * 24) as i32;
+        record.jwt_token = TokenUtils::generate_jwt_token(record.owner.to_string(), "")?;
+        Ok(TokenRepository.update_by_id(record).await?)
     }
 }

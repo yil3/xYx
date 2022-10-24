@@ -13,7 +13,8 @@ pub struct TokenUtils;
 
 impl TokenUtils {
     pub fn generate_jwt_token(user_id: String, sub: &str) -> XResult<String> {
-        let from_now = Duration::from_secs(3600 * 24 * 7);
+        let exp = env::var("TOKEN_EXPIRED").unwrap().parse::<u64>().unwrap_or(3600 * 24);
+        let from_now = Duration::from_secs(exp);
         let expired_future_time = SystemTime::now().add(from_now);
         let exp = OffsetDateTime::from(expired_future_time);
 

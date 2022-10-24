@@ -21,7 +21,6 @@ use tower_http::auth::AsyncRequireAuthorizationLayer;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use tracing::debug;
-use tracing::info;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
@@ -63,7 +62,6 @@ impl Application {
     }
 
     fn init_env(&self) {
-        debug!("init env");
         if let Some(uri) = Application::generate_db_uri() {
             env::set_var("DATABASE_URL", uri.get(1).unwrap());
         } else {
@@ -71,6 +69,7 @@ impl Application {
         }
         env::set_var("ARGON_SALT", self.config.auth.argon_salt.as_str());
         env::set_var("TOKEN_SECRET", self.config.auth.token_secret.as_str());
+        env::set_var("TOKEN_EXPIRED", self.config.auth.expired.unwrap().to_string().as_str());
     }
 
     pub fn config() -> Arc<AppConfig> {
@@ -78,7 +77,6 @@ impl Application {
     }
 
     pub fn init_log(&mut self) {
-        debug!("init log");
         tracing_subscriber::registry()
             .with(tracing_subscriber::EnvFilter::new(&self.config.log.level))
             .with(tracing_subscriber::fmt::layer())
@@ -106,6 +104,7 @@ impl Application {
     }
 
     fn create_pool() -> Pool<Postgres> {
+        debug!("Creating database connection pool");
         if let Some(uri) = Application::generate_db_uri() {
             let key = uri.get(0).unwrap().clone();
             match key.as_str() {
@@ -130,7 +129,7 @@ impl Application {
     }
 
     pub fn init_router(&mut self) {
-        info!("init router");
+        debug!("init router...");
         self.router = self
             .router
             .to_owned()
@@ -144,12 +143,14 @@ impl Application {
             .layer(Extension(Application::pgpool()))
             .layer(CookieManagerLayer::new());
         if self.config.auth.status {
+            debug!("init auth middleware...");
             self.router = self
                 .router
                 .to_owned()
                 .layer(AsyncRequireAuthorizationLayer::new(XAuthorize));
         }
         if self.config.server.cors.status {
+            debug!("init cors middleware...");
             let mut origins = vec![];
             for ele in self.config.server.cors.origins.to_owned().into_iter() {
                 origins.push(ele.parse::<HeaderValue>().unwrap());

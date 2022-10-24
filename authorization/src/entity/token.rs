@@ -2,7 +2,8 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use sqlx::FromRow;
 use time::OffsetDateTime;
-use x_common::utils::code::{uuid_v4, unique_id};
+use x_common::utils::code::{unique_id, uuid};
+use x_core::application::Application;
 
 use crate::dto::response::token_responses::TokenResponses;
 
@@ -31,10 +32,10 @@ impl Default for TokenEntity {
             client_id: Default::default(),
             owner: Default::default(),
             scope: Default::default(),
-            access_token: uuid_v4(),
-            refresh_token: uuid_v4(),
+            access_token: uuid(),
+            refresh_token: uuid(),
             token_type: "Bearer".to_string(),
-            expires_in: 3600 * 24 * 7,
+            expires_in: Application::config().auth.expired.unwrap_or(3600 * 24) as i32,
             jwt_token: Default::default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),
@@ -59,4 +60,3 @@ pub struct ScopeEntity {
     pub name: String,
     pub description: String,
 }
-

@@ -71,8 +71,6 @@ impl TokenRepository {
         .await?)
     }
 
-    pub fn update(&self) {}
-
     pub fn delete_by_id(&self, _id: String) {}
 
     pub fn fetch_page(&self) {}

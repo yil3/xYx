@@ -1,5 +1,6 @@
 use crate::entity::client::ClientEntity;
 use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
 use x_common::utils;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -24,6 +25,8 @@ impl ClientRequest {
             redirect_uri: String::from(&self.redirect_uri),
             scope: String::from(&self.scope),
             owner: self.owner.clone(),
+            created_at: OffsetDateTime::now_utc(),
+            updated_at: None
         }
     }
 }

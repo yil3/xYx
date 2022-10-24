@@ -1,11 +1,9 @@
-
 use async_trait::async_trait;
 use axum::extract::{FromRequest, RequestParts};
 use axum::{BoxError, Json};
 use serde::de::DeserializeOwned;
 use validator::Validate;
 use x_common::errors::XError;
-
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct ValidationExtractor<T>(pub T);
@@ -22,7 +20,7 @@ where
 
     async fn from_request(request: &mut RequestParts<B>) -> Result<Self, Self::Rejection> {
         let Json(value) = Json::<T>::from_request(request).await?;
-        value.validate()?;
+        value.validate().map_err(|e| XError::AnyhowError(anyhow::anyhow!(e)))?;
         Ok(ValidationExtractor(value))
     }
 }
