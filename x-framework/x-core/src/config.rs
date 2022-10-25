@@ -55,6 +55,7 @@ pub struct AuthConfig {
     pub token_secret: String,
     pub status: bool,
     pub token_expired: Option<u64>,
+    pub ignore: Option<Vec<String>>,
 }
 
 impl AppConfig {

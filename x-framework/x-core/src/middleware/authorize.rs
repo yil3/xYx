@@ -37,9 +37,12 @@ where
 
     fn authorize(&mut self, mut request: Request<B>) -> Self::Future {
         Box::pin(async {
-            let path = request.uri().path();
-            if path == "/authorize" || path == "/authorize/token" || path == "/user/register" {
-                return Ok(request);
+            let uri = request.uri().path();
+            let paths = Application::config().auth.ignore.to_owned().unwrap_or_default();
+            for path in paths {
+                if uri.starts_with(&path) {
+                    return Ok(request);
+                }
             }
             if let Some(header_value) = request.headers().get(AUTHORIZATION) {
                 if header_value.to_str().unwrap().starts_with("Bearer ") {
