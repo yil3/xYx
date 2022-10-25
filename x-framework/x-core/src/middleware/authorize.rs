@@ -1,8 +1,8 @@
 use futures_util::future::BoxFuture;
 use http::header::AUTHORIZATION;
-use http::{Method, StatusCode};
+use http::StatusCode;
 use http_body::Body;
-use sqlx::query_scalar;
+use redis::Commands;
 use tower_http::auth::AsyncAuthorizeRequest;
 
 use anyhow::Result;
@@ -14,7 +14,7 @@ use hyper::Request;
 use x_common::model::response::R;
 use x_common::utils::token::TokenUtils;
 
-use crate::application::POOL;
+use crate::application::Application;
 
 #[derive(Clone, Copy)]
 pub struct XAuthorize;
@@ -23,11 +23,8 @@ pub struct XAuthorize;
 pub struct UserId(pub String);
 
 async fn find_jwt_token(access_token: &str) -> Result<String> {
-    Ok(
-        query_scalar!("select jwt_token from sys_token where access_token = $1", access_token)
-            .fetch_one(&*POOL)
-            .await?,
-    )
+    let jwt: String = Application::redis().get(access_token)?;
+    Ok(jwt)
 }
 
 impl<B> AsyncAuthorizeRequest<B> for XAuthorize
@@ -41,7 +38,7 @@ where
     fn authorize(&mut self, mut request: Request<B>) -> Self::Future {
         Box::pin(async {
             let path = request.uri().path();
-            if (path == "/authorize" && request.method() == Method::GET) || path == "/token" || path == "/user/register" {
+            if path == "/authorize" || path == "/authorize/token" || path == "/user/register" {
                 return Ok(request);
             }
             if let Some(header_value) = request.headers().get(AUTHORIZATION) {

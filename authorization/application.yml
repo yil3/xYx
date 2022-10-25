@@ -14,10 +14,14 @@ database:
   port: 5432
   db_name: postgres
   run_migrations: false
+redis:
+  host: 127.0.0.1
+  port: 6379
+  db: 0
 log:
   level: debug
 auth:
   status: true
   argon_salt: "randomsalt-x"
   token_secret: "randomsecret-x"
-  expired: 86400
+  token_expired: 86400

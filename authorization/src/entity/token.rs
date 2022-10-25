@@ -35,7 +35,7 @@ impl Default for TokenEntity {
             access_token: uuid(),
             refresh_token: uuid(),
             token_type: "Bearer".to_string(),
-            expires_in: Application::config().auth.expired.unwrap_or(3600 * 24) as i32,
+            expires_in: Application::config().auth.token_expired.unwrap_or(3600 * 24) as i32,
             jwt_token: Default::default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),

@@ -11,3 +11,8 @@ pub struct TokenRequest {
     pub username: Option<String>,
     pub password: Option<String>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct TokenRefreshRequest {
+    pub refresh_token: String,
+}

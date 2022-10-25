@@ -28,7 +28,8 @@ use crate::config::AppConfig;
 
 lazy_static! {
     static ref APP_CONFIG: Arc<AppConfig> = Arc::new(AppConfig::parse());
-    pub static ref POOL: Pool<Postgres> = Application::create_pool();
+    pub static ref PG_POOL: Pool<Postgres> = Application::create_pool();
+    pub static ref REDIS_CLIENT: redis::Client = Application::create_redis_client();
 }
 
 pub struct Application {
@@ -69,11 +70,14 @@ impl Application {
         }
         env::set_var("ARGON_SALT", self.config.auth.argon_salt.as_str());
         env::set_var("TOKEN_SECRET", self.config.auth.token_secret.as_str());
-        env::set_var("TOKEN_EXPIRED", self.config.auth.expired.unwrap().to_string().as_str());
+        env::set_var(
+            "TOKEN_EXPIRED",
+            self.config.auth.token_expired.unwrap().to_string().as_str(),
+        );
     }
 
     pub fn config() -> Arc<AppConfig> {
-        APP_CONFIG.clone()
+        APP_CONFIG.to_owned()
     }
 
     pub fn init_log(&mut self) {
@@ -103,6 +107,20 @@ impl Application {
         Some(vec![config.database.category.clone(), uri])
     }
 
+    fn create_redis_client() -> redis::Client {
+        let config = APP_CONFIG.redis.to_owned().unwrap();
+        let uri = format!(
+            "redis://{}:{}@{}:{}/{}",
+            config.username.unwrap_or(String::from("")),
+            config.password.unwrap_or(String::from("")),
+            config.host,
+            config.port,
+            config.db.unwrap_or(0)
+        );
+        debug!("Creating redis client: {}", &uri);
+        redis::Client::open(uri.as_str()).unwrap()
+    }
+
     fn create_pool() -> Pool<Postgres> {
         debug!("Creating database connection pool");
         if let Some(uri) = Application::generate_db_uri() {
@@ -125,7 +143,11 @@ impl Application {
     }
 
     pub fn pgpool() -> Pool<Postgres> {
-        POOL.to_owned()
+        PG_POOL.to_owned()
+    }
+
+    pub fn redis() -> redis::Connection {
+        REDIS_CLIENT.to_owned().get_connection().unwrap()
     }
 
     pub fn init_router(&mut self) {

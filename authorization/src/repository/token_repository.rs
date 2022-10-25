@@ -1,11 +1,22 @@
 use crate::entity::token::TokenEntity;
 use anyhow::Result;
-use sqlx::query_as;
-use x_core::application::POOL;
+use sqlx::{query_as, query, postgres::PgRow};
+use x_core::application::PG_POOL;
 
 pub struct TokenRepository;
 
 impl TokenRepository {
+    pub async fn fetch_user_by_account(&self, account: &str) -> Result<PgRow> {
+        let record= query(
+            r#"
+            SELECT id, password FROM sys_user WHERE account = $1
+            "#,
+        )
+        .bind(account)
+        .fetch_one(&*PG_POOL)
+        .await?;
+        Ok(record)
+    }
     pub async fn insert(&self, record: TokenEntity) -> Result<TokenEntity> {
         Ok(query_as!(
             TokenEntity,
@@ -26,7 +37,7 @@ impl TokenRepository {
             record.jwt_token,
             record.client_id
         )
-        .fetch_one(&*POOL)
+        .fetch_one(&*PG_POOL)
         .await?)
     }
 
@@ -38,7 +49,7 @@ impl TokenRepository {
             "#,
             refresh_token
         )
-        .fetch_one(&*POOL)
+        .fetch_one(&*PG_POOL)
         .await?)
     }
 
@@ -67,7 +78,7 @@ impl TokenRepository {
             record.client_id,
             record.id
         )
-        .fetch_one(&*POOL)
+        .fetch_one(&*PG_POOL)
         .await?)
     }
 

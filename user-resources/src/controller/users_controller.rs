@@ -8,7 +8,7 @@ use axum::{
 use x_common::model::response::R;
 use x_core::middleware::authorize::UserId;
 
-use crate::{dto::request::user_requests::RegisterUserRequest, service::user_service::UserService};
+use crate::{dto::request::users_requests::RegisterUserRequest, service::user_service::UserService};
 
 pub fn route() -> Router {
     Router::new()
@@ -24,8 +24,6 @@ pub async fn register_user(input: Json<RegisterUserRequest>) -> impl IntoRespons
 }
 
 pub async fn fetch_page(request: Request<Body>) -> impl IntoResponse {
-    println!(r#"request: {:#?}"#, request);
     let userid = request.extensions().get::<UserId>().unwrap();
-    println!("userid: {:?}", userid);
     Json(R::success(userid.0.to_owned()))
 }

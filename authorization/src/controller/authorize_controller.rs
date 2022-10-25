@@ -1,5 +1,8 @@
 use crate::{
-    dto::request::{authorize_requests::AuthorizeRequest, token_requests::TokenRequest},
+    dto::request::{
+        authorize_requests::AuthorizeRequest,
+        token_requests::{TokenRefreshRequest, TokenRequest},
+    },
     service::authorize_service::AuthorizeService,
 };
 use axum::{
@@ -14,7 +17,10 @@ use x_common::model::response::R;
 use x_core::middleware::authorize::UserId;
 
 pub fn route() -> Router {
-    Router::new().route("/", get(authorize)).route("/token", post(token))
+    Router::new()
+        .route("/", get(authorize))
+        .route("/token", post(token))
+        .route("/refresh", post(refresh_token))
 }
 
 pub async fn authorize(params: Query<AuthorizeRequest>, request: Request<Body>) -> impl IntoResponse {
@@ -23,22 +29,20 @@ pub async fn authorize(params: Query<AuthorizeRequest>, request: Request<Body>) 
             let url = AuthorizeService.authorize(params, &userid.0).await.unwrap();
             Redirect::to(&url).into_response()
         },
-        None => {
-            Redirect::to(&format!("{}?error=Unauthorize", params.redirect_uri)).into_response()
-        },
+        None => Redirect::to(&format!("{}?error=Unauthorize", params.redirect_uri)).into_response(),
     }
 }
 
-pub async fn token(params: Json<TokenRequest>, _request: Request<Body>) -> impl IntoResponse {
+pub async fn token(params: Json<TokenRequest>) -> impl IntoResponse {
     match AuthorizeService.token(&params).await {
         Ok(token) => Json(R::success(token)),
         Err(e) => Json(R::error(&e.to_string())),
     }
 }
 
-// pub async fn refresh_token(request: Json<TokenRequest>) -> impl IntoResponse {
-//     match AuthorizeService.refresh_token(&request).await {
-//         Ok(token) => Json(R::success(token)),
-//         Err(e) => Json(R::error(&e.to_string())),
-//     }
-// }
+pub async fn refresh_token(request: Json<TokenRefreshRequest>) -> impl IntoResponse {
+    match AuthorizeService.refresh_token(&request.refresh_token).await {
+        Ok(token) => Json(R::success(token)),
+        Err(e) => Json(R::error(&e.to_string())),
+    }
+}

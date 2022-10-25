@@ -2,10 +2,10 @@
 members = [
     "x-framework/x-core",
     "x-framework/x-common",
-]
-exclude = [
     "authorization",
     "user-resources",
+]
+exclude = [
 ]
 
 [profile.release]

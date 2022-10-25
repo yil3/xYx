@@ -12,6 +12,7 @@ x-common = { path = "../x-common/" }
 # tokio = { version = "^1", features = ["full"] }
 axum = { version = "^0", features = ["headers"] }
 sqlx = { version = "^0", features = ["runtime-tokio-rustls", "postgres", "time"] }
+redis = { version = "^0", features = ["tokio-comp"] }
 
 # utilty crates
 serde = { version = "^1", features = ["derive"] }
@@ -37,7 +38,7 @@ time = "^0.3"
 metrics = "^0"
 metrics-exporter-prometheus = "^0"
 
-lazy_static = "1.4"
+lazy_static = "^1"
 
 http = "^0.2"
 http-body = "^0.4"

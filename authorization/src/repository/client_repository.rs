@@ -1,6 +1,6 @@
 use crate::{dto::response::client_responses::ClientResponse, entity::client::ClientEntity};
 use anyhow::Result;
-use x_core::application::POOL;
+use x_core::application::PG_POOL;
 
 pub struct ClientRepository;
 
@@ -13,7 +13,7 @@ impl ClientRepository {
             "#,
             id
         )
-        .fetch_one(&*POOL)
+        .fetch_one(&*PG_POOL)
         .await
     }
     pub async fn insert(&self, record: &ClientEntity) -> Result<ClientEntity, sqlx::Error> {
@@ -31,7 +31,7 @@ impl ClientRepository {
             record.scope,
             record.owner,
         )
-        .fetch_one(&*POOL)
+        .fetch_one(&*PG_POOL)
         .await
     }
 
@@ -56,7 +56,7 @@ impl ClientRepository {
             record.owner,
             record.id,
         )
-        .fetch_one(&*POOL)
+        .fetch_one(&*PG_POOL)
         .await
     }
 
@@ -70,7 +70,7 @@ impl ClientRepository {
             FROM sys_client
             "#,
         )
-        .fetch_all(&*POOL)
+        .fetch_all(&*PG_POOL)
         .await
     }
 
@@ -81,7 +81,7 @@ impl ClientRepository {
             "#,
             id
         )
-        .execute(&*POOL)
+        .execute(&*PG_POOL)
         .await?;
         Ok(())
     }

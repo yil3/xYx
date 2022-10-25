@@ -25,7 +25,9 @@ pub struct DatabaseConfig {
 pub struct RedisConfig {
     pub host: String,
     pub port: u32,
-    pub password: String,
+    pub username: Option<String>,
+    pub password: Option<String>,
+    pub db: Option<u32>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -42,7 +44,6 @@ pub struct CorsConfig {
     pub status: bool,
 }
 
-
 #[derive(Debug, Clone, Deserialize)]
 pub struct LogConfig {
     pub level: String,
@@ -53,30 +54,38 @@ pub struct AuthConfig {
     pub argon_salt: String,
     pub token_secret: String,
     pub status: bool,
-    pub expired: Option<u64>,
+    pub token_expired: Option<u64>,
 }
 
 impl AppConfig {
     pub fn parse() -> Self {
-        // let path = std::env::current_exe()
-        //     .unwrap()
-        //     .to_str()
-        //     .unwrap()
-        //     .split("/")
-        //     .last()
-        //     .unwrap()
-        //     .to_owned()
-        //     + "/application.yml";
-        let filename = std::fs::read_dir("./")
+        let path1 = std::env::current_exe()
             .unwrap()
-            .filter_map(|entry| entry.ok())
-            .filter(|entry| entry.file_name().to_str().unwrap().contains("application"))
-            .map(|entry| entry.file_name().to_str().unwrap().to_owned())
-            .collect::<Vec<String>>()[0]
-            .clone();
-        let yml_str = read_to_string(filename)
-            .map_err(|e| anyhow::anyhow!("Failed to read application.yml: {e}"))
-            .unwrap();
+            .to_str()
+            .unwrap()
+            .split("/")
+            .last()
+            .unwrap()
+            .to_owned()
+            + "/application.yml";
+        let yml_str = match read_to_string(&path1) {
+            Ok(str) => str,
+            Err(_) => {
+                let path2 = std::fs::read_dir("./")
+                    .unwrap()
+                    .filter_map(|entry| entry.ok())
+                    .filter(|entry| entry.file_name().to_str().unwrap().contains("application"))
+                    .map(|entry| entry.file_name().to_str().unwrap().to_owned())
+                    .collect::<Vec<String>>()[0]
+                    .clone();
+                match read_to_string(&path2) {
+                    Ok(str) => str,
+                    Err(_) => {
+                        panic!("application.yml not found");
+                    },
+                }
+            },
+        };
         serde_yaml::from_str(&yml_str).unwrap()
     }
 }
