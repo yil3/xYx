@@ -7,6 +7,10 @@ use x_core::application::Application;
 
 use crate::dto::response::token_responses::TokenResponses;
 
+/**
+* @Author xYx
+* @Date 2022-09-26 11:07:22
+*/
 #[derive(FromRow, Serialize, Deserialize, Debug)]
 #[serde_as]
 #[serde(rename_all = "camelCase")]

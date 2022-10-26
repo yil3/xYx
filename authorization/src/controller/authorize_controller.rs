@@ -16,6 +16,11 @@ use axum::{
 use x_common::model::response::R;
 use x_core::middleware::authorize::UserId;
 
+/**
+* @Author xYx
+* @Date 2022-09-26 11:08:19
+*/
+
 pub fn route() -> Router {
     Router::new()
         .route("/", get(authorize))

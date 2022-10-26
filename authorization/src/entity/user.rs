@@ -3,6 +3,10 @@ use sqlx::FromRow;
 use time::OffsetDateTime;
 use x_common::utils::code;
 
+/**
+* @Author xYx
+* @Date 2022-09-26 11:07:54
+*/
 #[derive(FromRow, Serialize, Deserialize)]
 pub struct UserEntity {
     pub id: String,
