@@ -1,9 +1,12 @@
 import Router from "@/routers";
+import AuthRouter from "./routers/utils/authRouter";
 
 function App() {
   return (
     <div className="App">
-      <Router />
+      <AuthRouter>
+        <Router />
+      </AuthRouter>
     </div>
   );
 }
