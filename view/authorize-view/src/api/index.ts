@@ -1,12 +1,113 @@
 import NProgress from "@/config/nprogress";
-import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse, Canceler } from "axios";
 import { showFullScreenLoading, tryHideFullScreenLoading } from "@/config/serviceLoading";
-import { ResultEnum } from "@/enums/httpEnum";
-import { checkStatus } from "./helper/checkStatus";
-import { AxiosCanceler } from "./helper/axiosCancel";
 // import { setToken } from "@/redux/modules/global/action";
 import { message } from "antd";
 // import { store } from "@/redux";
+
+import { isFunction } from "@/utils/is/index";
+import qs from "qs";
+
+// * 声明一个 Map 用于存储每个请求的标识 和 取消函数
+let pendingMap = new Map<string, Canceler>();
+
+// * 序列化参数
+export const getPendingUrl = (config: AxiosRequestConfig) =>
+  [config.method, config.url, qs.stringify(config.data), qs.stringify(config.params)].join("&");
+
+export class AxiosCanceler {
+  /**
+   * @description: 添加请求
+   * @param {Object} config
+   */
+  addPending(config: AxiosRequestConfig) {
+    // * 在请求开始前，对之前的请求做检查取消操作
+    this.removePending(config);
+    const url = getPendingUrl(config);
+    config.cancelToken =
+      config.cancelToken ||
+      new axios.CancelToken(cancel => {
+        if (!pendingMap.has(url)) {
+          // 如果 pending 中不存在当前请求，则添加进去
+          pendingMap.set(url, cancel);
+        }
+      });
+  }
+
+  /**
+   * @description: 移除请求
+   * @param {Object} config
+   */
+  removePending(config: AxiosRequestConfig) {
+    const url = getPendingUrl(config);
+
+    if (pendingMap.has(url)) {
+      // 如果在 pending 中存在当前请求标识，需要取消当前请求，并且移除
+      const cancel = pendingMap.get(url);
+      cancel && cancel();
+      pendingMap.delete(url);
+    }
+  }
+
+  /**
+   * @description: 清空所有pending
+   */
+  removeAllPending() {
+    pendingMap.forEach(cancel => {
+      cancel && isFunction(cancel) && cancel();
+    });
+    pendingMap.clear();
+  }
+
+  /**
+   * @description: 重置
+   */
+  reset(): void {
+    pendingMap = new Map<string, Canceler>();
+  }
+}
+
+/**
+ * @description: 校验网络请求状态码
+ * @param {Number} status
+ * @return void
+ */
+export const checkStatus = (status: number): void => {
+  switch (status) {
+    case 400:
+      message.error("请求失败！请您稍后重试");
+      break;
+    case 401:
+      message.error("登录失效！请您重新登录");
+      break;
+    case 403:
+      message.error("当前账号无权限访问！");
+      break;
+    case 404:
+      message.error("你所访问的资源不存在！");
+      break;
+    case 405:
+      message.error("请求方式错误！请您稍后重试");
+      break;
+    case 408:
+      message.error("请求超时！请您稍后重试");
+      break;
+    case 500:
+      message.error("服务异常！");
+      break;
+    case 502:
+      message.error("网关错误！");
+      break;
+    case 503:
+      message.error("服务不可用！");
+      break;
+    case 504:
+      message.error("网关超时！");
+      break;
+    default:
+      message.error("请求失败！");
+  }
+};
 
 const axiosCanceler = new AxiosCanceler();
 
@@ -39,7 +140,7 @@ class RequestHttp {
         config.headers!.noLoading || showFullScreenLoading();
         // const token: string = store.getState().global.token;
         const token = localStorage.getItem("token");
-        return { ...config, headers: { ...config.headers, "authorize": token } };
+        return { ...config, headers: { ...config.headers, "Authorization": "Bearer " + token } };
       },
       (error: AxiosError) => {
         return Promise.reject(error);
@@ -58,7 +159,7 @@ class RequestHttp {
         axiosCanceler.removePending(config);
         tryHideFullScreenLoading();
         // * 登录失效（code == 599）
-        if (data.code == ResultEnum.OVERDUE) {
+        if (data.code == 599) {
           // store.dispatch(setToken(""));
           localStorage.removeItem("token");
           message.error(data.msg);
@@ -66,7 +167,7 @@ class RequestHttp {
           return Promise.reject(data);
         }
         // * 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
-        if (data.code && data.code !== ResultEnum.SUCCESS) {
+        if (data.code && data.code !== 200) {
           message.error(data.msg);
           return Promise.reject(data);
         }

@@ -1,7 +1,7 @@
 import { useLocation, Navigate } from "react-router-dom";
-import { AxiosCanceler } from "@/api/helper/axiosCancel";
+import { AxiosCanceler } from "@/api";
 import { searchRoute } from "@/utils/util";
-import { router } from "@/routers/index";
+import { rootRouter } from "@/routers/index";
 
 const axiosCanceler = new AxiosCanceler();
 
@@ -10,7 +10,7 @@ const axiosCanceler = new AxiosCanceler();
  * */
 const AuthRouter = (props: { children: JSX.Element }) => {
   const { pathname } = useLocation();
-  const route = searchRoute(pathname, router);
+  const route = searchRoute(pathname, rootRouter);
   // * 在跳转路由之前，清除所有的请求
   axiosCanceler.removeAllPending();
   // * 判断当前路由是否需要访问权限(不需要权限直接放行)
@@ -18,8 +18,8 @@ const AuthRouter = (props: { children: JSX.Element }) => {
 
   // * 判断是否有Token
   // const token = store.getState().global.token;
-  // const token = localStorage.getItem('token')
-  // if (!token) return <Navigate to="/login" replace />;
+  const token = localStorage.getItem('token')
+  if (!token) return <Navigate to="/login" replace />;
 
   // * 当前账号有权限返回 Router，正常访问页面
   // TODO: 判断当前账号是否有权限访问当前路由

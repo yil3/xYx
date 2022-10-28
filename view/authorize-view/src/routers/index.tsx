@@ -1,3 +1,4 @@
+import { LayoutBasic } from "@/layouts";
 import Login from "@/pages/login";
 import SignUp from "@/pages/signup";
 import { Navigate, useRoutes } from "react-router-dom";
@@ -14,18 +15,23 @@ Object.keys(metaRouters).forEach(item => {
   }
 });
 
-export const router: RouteObject[] = [
-  { path: "/login", element: <Login />, meta: { title: 'login', notRequiresAuth: true } },
-  { path: "/signup", element: <SignUp />, meta: { title: 'signup', notRequiresAuth: true } },
+export const rootRouter: RouteObject[] = [
+  {
+    element: <LayoutBasic />,
+    children: [
+      { path: "/login", element: <Login />, meta: { title: 'login', notRequiresAuth: true } },
+      { path: "/signup", element: <SignUp />, meta: { title: 'signup', notRequiresAuth: true } },
+    ],
+  },
   ...routerArray,
-	{
-		path: "*",
-		element: <Navigate to="/404" />
-	}
+  {
+    path: "*",
+    element: <Navigate to="/404" />
+  }
 ];
 
 const Router = () => {
   // @ts-ignore
-  return useRoutes(router);
+  return useRoutes(rootRouter);
 };
 export default Router;

@@ -24,7 +24,8 @@ auth:
   status: true
   argon_salt: "randomsalt-x"
   token_secret: "randomsecret-x"
-  token_expired: 86400
+  # token_expired: 86400
+  token_expired: 60
   ignore: 
     - /authorize
     - /authorize/token

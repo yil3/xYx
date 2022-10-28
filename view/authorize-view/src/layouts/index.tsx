@@ -20,4 +20,15 @@ const LayoutView = () => {
   );
 };
 
+export const LayoutBasic = () => {
+  return (
+    <div id="parent-area">
+      <Layout.Content style={{ flex: 1,display: "flex" }}>
+        <Outlet></Outlet>
+      </Layout.Content>
+      <Footer />
+    </div>
+  )
+};
+
 export default LayoutView;
