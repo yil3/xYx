@@ -96,7 +96,7 @@ impl AuthorizeService {
     pub async fn validate_user(&self, account: &str, password: &str) -> XResult<String> {
         let row = TokenRepository.fetch_user_by_account(account).await?;
         if let Ok(stored_password) = row.try_get::<String, &str>("password") {
-            if SucurityUtils::verify_password(&stored_password, password.to_string()).unwrap() {
+            if SucurityUtils::verify_password(&stored_password, password.to_string())? {
                 Ok(row.get::<String, &str>("id"))
             } else {
                 Err(XError::InvalidLoginAttmpt)
