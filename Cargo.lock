@@ -81,7 +81,7 @@ dependencies = [
  "serde",
  "serde_with",
  "sqlx",
- "time 0.3.16",
+ "time",
  "tokio",
  "tower-cookies",
  "validator 0.16.0",
@@ -212,12 +212,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfd4d1b31faaa3a89d7934dbded3111da0d2ef28e3ebccdb4f0179f5929d1ef1"
 dependencies = [
  "iana-time-zone",
- "js-sys",
  "num-integer",
  "num-traits",
  "serde",
- "time 0.1.43",
- "wasm-bindgen",
  "winapi",
 ]
 
@@ -258,7 +255,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "344adc371239ef32293cb1c4fe519592fcf21206c79c02854320afcdf3ab4917"
 dependencies = [
  "percent-encoding",
- "time 0.3.16",
+ "time",
  "version_check",
 ]
 
@@ -1708,7 +1705,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with_macros",
- "time 0.3.16",
+ "time",
 ]
 
 [[package]]
@@ -1791,7 +1788,7 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "thiserror",
- "time 0.3.16",
+ "time",
 ]
 
 [[package]]
@@ -1899,7 +1896,7 @@ dependencies = [
  "sqlx-rt",
  "stringprep",
  "thiserror",
- "time 0.3.16",
+ "time",
  "tokio-stream",
  "url",
  "webpki-roots",
@@ -2025,16 +2022,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5516c27b78311c50bf42c071425c560ac799b11c30b31f87e3081965fe5e0180"
 dependencies = [
  "once_cell",
-]
-
-[[package]]
-name = "time"
-version = "0.1.43"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca8a50ef2360fbd1eeb0ecd46795a87a19024eb4b53c5dc916ca1fd95fe62438"
-dependencies = [
- "libc",
- "winapi",
 ]
 
 [[package]]
@@ -2372,7 +2359,7 @@ dependencies = [
  "serde_json",
  "serde_with",
  "sqlx",
- "time 0.3.16",
+ "time",
  "tokio",
  "validator 0.16.0",
  "x-common",
@@ -2765,16 +2752,16 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum",
- "chrono",
  "jsonwebtoken",
  "lazy_static",
  "rs-snowflake",
  "rust-argon2",
  "serde",
  "serde_json",
+ "serde_with",
  "sqlx",
  "thiserror",
- "time 0.3.16",
+ "time",
  "uuid",
  "validator 0.15.0",
 ]
@@ -2800,7 +2787,7 @@ dependencies = [
  "serde_json",
  "serde_yaml",
  "sqlx",
- "time 0.3.16",
+ "time",
  "tower",
  "tower-cookies",
  "tower-http",

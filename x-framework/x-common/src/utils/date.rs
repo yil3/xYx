@@ -1,16 +1,44 @@
-use chrono::NaiveDateTime;
-use chrono::ParseError;
+use serde::Deserialize;
+use serde::Deserializer;
+use serde::Serializer;
+use serde_with::{DeserializeAs, SerializeAs};
 use time::format_description;
+use time::macros::datetime;
 use time::macros::offset;
 use time::OffsetDateTime;
+
+pub struct DateTimeFormat;
+
+impl SerializeAs<OffsetDateTime> for DateTimeFormat {
+    fn serialize_as<S>(date_time: &OffsetDateTime, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let format = time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
+            .map_err(serde::ser::Error::custom)?;
+        serializer.serialize_str(&date_time.format(&format).map_err(serde::ser::Error::custom)?)
+    }
+}
+
+impl DeserializeAs<OffsetDateTime> for DateTimeFormat {
+    fn deserialize_as<D>(deserializer: D) -> Result<OffsetDateTime, D::Error>
+    where
+        D: Deserializer,
+    {
+        let s = String::deserialize(deserializer)?;
+        let format = time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
+            .map_err(serde::de::Error::custom)?;
+        OffsetDateTime::parse(&s, &format).map_err(serde::de::Error::custom)
+    }
+}
 
 // pub fn format (datetime: DateTime<Local>) -> String {
 //     datetime.format("%Y-%m-%d %H:%M:%S").to_string()
 // }
 
-pub fn to_date(datetime: &str) -> Result<NaiveDateTime, ParseError> {
-    NaiveDateTime::parse_from_str(datetime, "%Y-%m-%d %H:%M:%S")
-}
+// pub fn to_date(datetime: &str) -> Result<NaiveDateTime, ParseError> {
+//     NaiveDateTime::parse_from_str(datetime, "%Y-%m-%d %H:%M:%S")
+// }
 
 pub fn timestamp() -> usize {
     // SystemTime::now()
