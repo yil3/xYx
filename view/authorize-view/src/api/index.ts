@@ -153,21 +153,13 @@ class RequestHttp {
      */
     this.service.interceptors.response.use(
       (response: AxiosResponse) => {
-        const { data, config } = response;
+        const { data, config, status } = response;
         NProgress.done();
         // * 在请求结束后，移除本次请求(关闭loading)
         axiosCanceler.removePending(config);
         tryHideFullScreenLoading();
-        // * 登录失效（code == 599）
-        if (data.code == 599) {
-          // store.dispatch(setToken(""));
-          localStorage.removeItem("token");
-          message.error(data.msg);
-          window.location.hash = "/login";
-          return Promise.reject(data);
-        }
         // * 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
-        if (data.code && data.code !== 200) {
+        if (status !== 200) {
           message.error(data.msg);
           return Promise.reject(data);
         }
@@ -182,6 +174,11 @@ class RequestHttp {
         if (error.message.indexOf("timeout") !== -1) message.error("请求超时，请稍后再试");
         // 根据响应的错误状态码，做不同的处理
         if (response) checkStatus(response.status);
+        // * 登录过期，跳转到登录页
+        if (response?.status == 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+        }
         // 服务器结果都没有返回(可能服务器错误可能客户端断网) 断网处理:可以跳转到断网页面
         if (!window.navigator.onLine) window.location.hash = "/500";
         return Promise.reject(error);

@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined, WechatOutlined } from "@ant-design/icons";
-import { Card, Button, Checkbox, Form, Input, Space } from "antd";
+import { Card, Button, Checkbox, Form, Input, Space, message } from "antd";
 import { login } from "@/api/modules/login";
 import { useNavigate } from "react-router-dom";
 import './index.less'
@@ -12,9 +12,14 @@ const Login = (_props: any) => {
     values.client_id = '1';
     values.client_secret = '2';
     login(values).then(res => {
-      localStorage.setItem("token", res.data.access_token);
-      localStorage.setItem("jwt_token", JSON.stringify(res.data.access_token));
-      navigate("/");
+      if (res.success) {
+        localStorage.setItem("token", res.data.access_token);
+        localStorage.setItem("jwt_token", JSON.stringify(res.data.access_token));
+        message.success("login success");
+        navigate("/");
+      } else {
+        message.warn(res.msg);
+      }
     });
   };
 

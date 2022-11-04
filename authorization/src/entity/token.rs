@@ -11,8 +11,8 @@ use crate::dto::response::token_responses::TokenResponses;
 * @Author xYx
 * @Date 2022-09-26 11:07:22
 */
-#[derive(FromRow, Serialize, Deserialize, Debug)]
 #[serde_as]
+#[derive(FromRow, Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TokenEntity {
     pub id: String,
@@ -24,9 +24,8 @@ pub struct TokenEntity {
     pub token_type: String,
     pub expires_in: i32,
     pub jwt_token: String,
-    #[serde_as(as = "Rfc3339")]
     pub created_at: OffsetDateTime,
-    #[serde_as(as = "Rfc3339")]
+    // #[serde_as(as = "Rfc3339")]
     pub updated_at: OffsetDateTime,
 }
 impl Default for TokenEntity {

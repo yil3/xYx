@@ -1,5 +1,5 @@
 import { LockOutlined, MailOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
-import { Card, Button, Form, Input, Space } from "antd";
+import { Card, Button, Form, Input, Space, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import './index.less'
 import { register } from "@/api/modules/login";
@@ -7,9 +7,14 @@ import { register } from "@/api/modules/login";
 const SignUp = (_props: any) => {
   const navigate = useNavigate();
   const onFinish = async (values: any) => {
+    values.account = values.username;
     let res = await register(values);
-    console.log(res);
-    console.log('Success:', values);
+    if (res.success) {
+      message.success("register success");
+      navigate("/login");
+    } else {
+      message.warn(res.msg);
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {

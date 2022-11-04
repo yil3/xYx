@@ -64,9 +64,7 @@ impl ClientRepository {
         sqlx::query_as!(
             ClientResponse,
             r#"
-            SELECT id, name, secret, redirect_uri, scope, owner, 
-            to_char(created_at, 'yyyy-MM-dd hh24:mi:ss') created_at,
-            to_char(updated_at, 'yyyy-MM-dd hh24:mi:ss') updated_at
+            SELECT *, count(*) OVER() AS total
             FROM sys_client
             "#,
         )

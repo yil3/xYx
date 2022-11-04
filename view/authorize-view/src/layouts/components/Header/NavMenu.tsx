@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const items = [
   { label: "首页", key: "/" },
+  { label: "客户端", key: "/client" },
   { label: "令牌", key: "/token" },
 ];
 
