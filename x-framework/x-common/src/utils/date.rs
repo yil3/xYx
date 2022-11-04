@@ -3,7 +3,6 @@ use serde::Deserializer;
 use serde::Serializer;
 use serde_with::{DeserializeAs, SerializeAs};
 use time::format_description;
-use time::macros::datetime;
 use time::macros::offset;
 use time::OffsetDateTime;
 
@@ -16,14 +15,19 @@ impl SerializeAs<OffsetDateTime> for DateTimeFormat {
     {
         let format = time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
             .map_err(serde::ser::Error::custom)?;
-        serializer.serialize_str(&date_time.format(&format).map_err(serde::ser::Error::custom)?)
+        serializer.serialize_str(
+            &date_time
+                .to_offset(offset!(+8))
+                .format(&format)
+                .map_err(serde::ser::Error::custom)?,
+        )
     }
 }
 
-impl DeserializeAs<OffsetDateTime> for DateTimeFormat {
+impl<'de> DeserializeAs<'de, OffsetDateTime> for DateTimeFormat {
     fn deserialize_as<D>(deserializer: D) -> Result<OffsetDateTime, D::Error>
     where
-        D: Deserializer,
+        D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
         let format = time::format_description::parse("[year]-[month]-[day] [hour]:[minute]:[second]")
@@ -41,10 +45,6 @@ impl DeserializeAs<OffsetDateTime> for DateTimeFormat {
 // }
 
 pub fn timestamp() -> usize {
-    // SystemTime::now()
-    //     .duration_since(SystemTime::UNIX_EPOCH)
-    //     .unwrap()
-    //     .as_secs() as usize
     OffsetDateTime::now_utc().unix_timestamp() as usize
 }
 
