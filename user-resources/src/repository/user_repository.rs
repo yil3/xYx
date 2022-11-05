@@ -3,10 +3,8 @@ use sqlx::{postgres::PgQueryResult, query, query_as, query_scalar};
 use x_common::utils::code;
 use x_core::application::PG_POOL;
 
-use crate::{dto::{
-    request::users_requests::{RegisterUserRequest, UpdateUserRequest},
-    response::users_responses::UserDto,
-}, entity::user::UserEntity};
+use crate::{entity::user::UserEntity, dto::user_dto::{RegisterUserRequest, UpdateUserRequest, UserDto}};
+
 
 pub struct UserRepository;
 

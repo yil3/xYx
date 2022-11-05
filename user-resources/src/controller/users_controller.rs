@@ -8,7 +8,7 @@ use axum::{
 use x_common::model::response::R;
 use x_core::middleware::authorize::UserId;
 
-use crate::{dto::request::users_requests::RegisterUserRequest, service::user_service::UserService};
+use crate::{dto::user_dto::RegisterUserRequest, service::user_service::UserService};
 
 pub fn route() -> Router {
     Router::new()

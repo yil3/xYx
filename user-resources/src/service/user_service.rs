@@ -5,8 +5,7 @@ use x_common::{
 };
 
 use crate::{
-    dto::request::users_requests::RegisterUserRequest, entity::user::UserEntity,
-    repository::user_repository::UserRepository,
+    dto::user_dto::RegisterUserRequest, entity::user::UserEntity, repository::user_repository::UserRepository,
 };
 
 pub struct UserService;

@@ -10,5 +10,5 @@ export const saveClient = (data: any) => {
 };
 
 export const fetchClientList = (params: any) => {
-  return http.get('/auth/client/list', {params});
+  return http.get('/auth/client/list', params);
 }

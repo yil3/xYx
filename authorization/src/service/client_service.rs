@@ -1,8 +1,10 @@
 use anyhow::{Ok, Result};
+use x_common::model::page::{CommonPageRequest, Page};
 
 use crate::{
-    dto::{request::client_requests::ClientRequest, response::client_responses::ClientResponse},
-    repository::client_repository::ClientRepository, entity::client::ClientEntity,
+    dto::client_dto::{ClientRequest, ClientResponse},
+    entity::client::ClientEntity,
+    repository::client_repository::ClientRepository,
 };
 
 pub struct ClientService;
@@ -21,8 +23,10 @@ impl ClientService {
         Ok(ClientRepository.fetch_by_id(id).await?)
     }
 
-    pub async fn get_list(&self) -> Result<Vec<ClientResponse>> {
-        Ok(ClientRepository.list().await?)
+    pub async fn get_page(&self, params: &CommonPageRequest) -> Result<Page<ClientResponse>> {
+        let list = ClientRepository.fetch_page(params).await?;
+        let page = Page::build(list, params.limit(), params.offset());
+        Ok(page)
     }
 
     pub async fn delete(&self, id: &str) -> Result<()> {

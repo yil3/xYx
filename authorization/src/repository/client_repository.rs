@@ -1,6 +1,8 @@
-use crate::{dto::response::client_responses::ClientResponse, entity::client::ClientEntity};
 use anyhow::Result;
+use x_common::model::page::CommonPageRequest;
 use x_core::application::PG_POOL;
+
+use crate::{dto::client_dto::ClientResponse, entity::client::ClientEntity};
 
 pub struct ClientRepository;
 
@@ -60,13 +62,17 @@ impl ClientRepository {
         .await
     }
 
-    pub async fn list(&self) -> Result<Vec<ClientResponse>, sqlx::Error> {
+    pub async fn fetch_page(&self, params: &CommonPageRequest) -> Result<Vec<ClientResponse>, sqlx::Error> {
         sqlx::query_as!(
             ClientResponse,
             r#"
             SELECT *, count(*) OVER() AS total
             FROM sys_client
+            ORDER BY created_at DESC
+            limit $1 offset $2
             "#,
+            params.limit(),
+            params.offset(),
         )
         .fetch_all(&*PG_POOL)
         .await

@@ -1,7 +1,7 @@
 use crate::{
     dto::{
-        request::{authorize_requests::AuthorizeRequest, token_requests::TokenRequest},
-        response::token_responses::TokenResponses,
+        authorize_dto::AuthorizeRequest,
+        token_dto::{TokenRequest, TokenResponses},
     },
     repository::token_repository::TokenRepository,
 };

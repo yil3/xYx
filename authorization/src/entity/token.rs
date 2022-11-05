@@ -5,7 +5,7 @@ use time::OffsetDateTime;
 use x_common::utils::code::{unique_id, uuid};
 use x_core::application::Application;
 
-use crate::dto::response::token_responses::TokenResponses;
+use crate::dto::token_dto::TokenResponses;
 
 /**
 * @Author xYx

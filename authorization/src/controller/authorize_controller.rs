@@ -1,7 +1,7 @@
 use crate::{
-    dto::request::{
-        authorize_requests::AuthorizeRequest,
-        token_requests::{TokenRefreshRequest, TokenRequest},
+    dto::{
+        authorize_dto::AuthorizeRequest,
+        token_dto::{TokenRefreshRequest, TokenRequest},
     },
     service::authorize_service::AuthorizeService,
 };

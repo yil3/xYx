@@ -1,11 +1,12 @@
 use axum::{
+    extract::{Path, Query},
     response::IntoResponse,
     routing::{delete, get, post},
-    Json, Router, extract::Path,
+    Json, Router,
 };
-use x_common::model::response::R;
+use x_common::model::{page::CommonPageRequest, response::R};
 
-use crate::{dto::request::client_requests::ClientRequest, service::client_service::ClientService};
+use crate::{dto::client_dto::ClientRequest, service::client_service::ClientService};
 
 /**
 * @Author xYx
@@ -15,7 +16,7 @@ use crate::{dto::request::client_requests::ClientRequest, service::client_servic
 pub fn route() -> Router {
     Router::new()
         .route("/save_client", post(save_client))
-        .route("/list", get(get_list))
+        .route("/list", get(page))
         .route("/delete/:id", delete(delete_by_id))
 }
 
@@ -26,9 +27,9 @@ pub async fn save_client(record: Json<ClientRequest>) -> impl IntoResponse {
     }
 }
 
-pub async fn get_list() -> impl IntoResponse {
-    match ClientService.get_list().await {
-        Ok(record) => Json(R::success(record)),
+pub async fn page(param: Query<CommonPageRequest>) -> impl IntoResponse {
+    match ClientService.get_page(&param).await {
+        Ok(records) => Json(R::success(records)),
         Err(e) => Json(R::error(&e.to_string())),
     }
 }
