@@ -4,9 +4,9 @@ use axum::{
     routing::{delete, get, post},
     Json, Router,
 };
-use x_common::model::{page::CommonPageRequest, response::R};
+use x_common::model::{page::PageParam, response::R};
 
-use crate::{dto::client_dto::ClientRequest, service::client_service::ClientService};
+use crate::{dto::client_dto::ClientParam, service::client_service::ClientService};
 
 /**
 * @Author xYx
@@ -20,14 +20,14 @@ pub fn route() -> Router {
         .route("/delete/:id", delete(delete_by_id))
 }
 
-pub async fn save_client(record: Json<ClientRequest>) -> impl IntoResponse {
+pub async fn save_client(record: Json<ClientParam>) -> impl IntoResponse {
     match ClientService.save(&record).await {
         Ok(record) => Json(R::success(record)),
         Err(e) => Json(R::error(&e.to_string())),
     }
 }
 
-pub async fn page(param: Query<CommonPageRequest>) -> impl IntoResponse {
+pub async fn page(param: Query<PageParam>) -> impl IntoResponse {
     match ClientService.get_page(&param).await {
         Ok(records) => Json(R::success(records)),
         Err(e) => Json(R::error(&e.to_string())),

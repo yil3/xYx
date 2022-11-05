@@ -1,6 +1,4 @@
-use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
-use sqlx::FromRow;
+use serde::{Serialize, Deserialize};
 use time::OffsetDateTime;
 
 /**
@@ -8,9 +6,7 @@ use time::OffsetDateTime;
 * @Date 2022-09-26 10:50:23
 */
 
-#[serde_as]
-#[derive(FromRow, Deserialize, Serialize, Debug)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize)]
 pub struct ClientEntity {
     pub id: String,
     pub secret: String,

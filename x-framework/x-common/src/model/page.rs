@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Default, Serialize)]
+#[derive(Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Page<T> {
     pub page: i64,
     pub size: i64,
-    pub pages: i64,
     pub list: Vec<T>,
+    pub pages: i64,
     pub total: i64,
     pub has_next: bool,
 }
@@ -16,7 +17,7 @@ pub trait Pageable {
 
 impl<T> Page<T>
 where
-    T: serde::Serialize,
+    T: Serialize,
     T: Pageable,
 {
     pub fn build(list: Vec<T>, limit: i64, offset: i64) -> Self {
@@ -38,23 +39,33 @@ where
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct CommonPageRequest {
+#[derive(Serialize, Deserialize)]
+pub struct PageParam {
     pub page: i64,
     pub size: i64,
     pub query: Option<String>,
 }
 
-impl CommonPageRequest {
+impl<'a> PageParam {
     pub fn offset(&self) -> i64 {
         self.size * (self.page - 1)
     }
     pub fn limit(&self) -> i64 {
         self.size
     }
+    pub fn query_to<T>(&'a self) -> anyhow::Result<T>
+    where
+        T: Deserialize<'a>,
+    {
+        if let Some(query) = &self.query {
+            Ok(serde_json::from_str(query)?)
+        } else {
+            Err(anyhow::anyhow!("deserialize query failed"))
+        }
+    }
 }
 
-impl Default for CommonPageRequest {
+impl Default for PageParam {
     fn default() -> Self {
         Self {
             page: 1,

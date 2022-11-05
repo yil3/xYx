@@ -1,13 +1,14 @@
 use crate::entity::client::ClientEntity;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
+use sqlx::FromRow;
 use time::OffsetDateTime;
 use x_common::model::page::Pageable;
 use x_common::utils;
 use x_common::utils::date::DateTimeFormat;
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ClientRequest {
+pub struct ClientParam {
     pub id: Option<String>,
     pub secret: String,
     pub name: String,
@@ -17,9 +18,9 @@ pub struct ClientRequest {
 }
 
 #[serde_as]
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, FromRow)]
 #[serde(rename_all = "camelCase")]
-pub struct ClientResponse {
+pub struct ClientRecord {
     pub id: String,
     pub secret: String,
     pub name: String,
@@ -30,16 +31,18 @@ pub struct ClientResponse {
     pub created_at: OffsetDateTime,
     #[serde_as(as = "Option<DateTimeFormat>")]
     pub updated_at: Option<OffsetDateTime>,
+    #[serde(skip)]
+    #[sqlx(default)]
     pub total: Option<i64>,
 }
 
-impl Pageable for ClientResponse {
+impl Pageable for ClientRecord {
     fn total(&self) -> i64 {
-        self.total.unwrap_or(0)
+        self.total.unwrap_or_default()
     }
 }
 
-impl ClientRequest {
+impl ClientParam {
     pub fn into_entity(&self) -> ClientEntity {
         ClientEntity {
             id: match &self.id {

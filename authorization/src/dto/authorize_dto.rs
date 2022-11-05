@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 
 #[derive(Debug, Deserialize)]
-pub struct AuthorizeRequest {
+pub struct AuthorizeParam {
     pub client_id: String,
     pub redirect_uri: String,
     pub response_type: String,

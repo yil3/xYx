@@ -3,7 +3,7 @@ use sqlx::{postgres::PgQueryResult, query, query_as, query_scalar};
 use x_common::utils::code;
 use x_core::application::PG_POOL;
 
-use crate::{entity::user::UserEntity, dto::user_dto::{RegisterUserRequest, UpdateUserRequest, UserDto}};
+use crate::{entity::user::UserEntity, dto::user_dto::{RegisterUserParam, UpdateUserParam, UserRecord}};
 
 
 pub struct UserRepository;
@@ -21,7 +21,7 @@ impl UserRepository {
         .await?;
         Ok(user)
     }
-    pub async fn insert(&self, record: &RegisterUserRequest) -> Result<String> {
+    pub async fn insert(&self, record: &RegisterUserParam) -> Result<String> {
         let id = code::unique_id();
         let mut trans = PG_POOL.begin().await?;
         query_scalar!(
@@ -46,7 +46,7 @@ impl UserRepository {
         Ok(id)
     }
 
-    pub async fn update(&self, record: &UpdateUserRequest) -> Result<PgQueryResult> {
+    pub async fn update(&self, record: &UpdateUserParam) -> Result<PgQueryResult> {
         let query = query!(
             "UPDATE sys_user SET password = $1 WHERE id = $2",
             record.password,
@@ -63,9 +63,9 @@ impl UserRepository {
             .await?)
     }
 
-    pub async fn fetch_page(&self, limit: i64, offset: i64) -> Result<Vec<UserDto>> {
+    pub async fn fetch_page(&self, limit: i64, offset: i64) -> Result<Vec<UserRecord>> {
         let list = query_as!(
-            UserDto,
+            UserRecord,
             r#"
             select u.id , u.origin, u.account, ui.nickname, count(*) over() as total 
             from sys_user u

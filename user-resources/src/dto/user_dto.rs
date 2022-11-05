@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-#[derive(Clone, Serialize, Deserialize, Debug, Validate, Default)]
-pub struct RegisterUserRequest {
+#[derive(Serialize, Deserialize, Validate)]
+pub struct RegisterUserParam {
     #[validate(required, length(min = 1), email(message = "email is invalid"))]
     pub email: Option<String>,
     #[validate(required, length(min = 1))]
@@ -12,26 +12,27 @@ pub struct RegisterUserRequest {
     pub origin: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Validate)]
-pub struct LoginUserRequest {
+#[derive(Serialize, Deserialize, Validate)]
+pub struct LoginUserParam {
     #[validate(required, length(min = 1), email(message = "email is invalid"))]
     pub email: Option<String>,
     #[validate(required, length(min = 1))]
     pub password: Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug, Default)]
-pub struct UpdateUserRequest {
+#[derive(Deserialize, Serialize)]
+pub struct UpdateUserParam {
     pub id: String,
     pub password: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct UserDto {
+#[derive(Serialize, Deserialize)]
+pub struct UserRecord {
     pub id: String,
     pub account: String,
     pub nickname: Option<String>,
     pub origin: Option<String>,
+    #[serde(skip)]
     pub total: Option<i64>,
 }
 

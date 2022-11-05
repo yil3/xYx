@@ -1,7 +1,7 @@
 use crate::{
     dto::{
-        authorize_dto::AuthorizeRequest,
-        token_dto::{TokenRequest, TokenResponses},
+        authorize_dto::AuthorizeParam,
+        token_dto::{TokenParam, TokenRecord},
     },
     repository::token_repository::TokenRepository,
 };
@@ -20,7 +20,7 @@ use super::{client_service::ClientService, token_service::TokenService};
 pub struct AuthorizeService;
 
 impl AuthorizeService {
-    pub async fn authorize(&self, params: Query<AuthorizeRequest>, userid: &str) -> XResult<String> {
+    pub async fn authorize(&self, params: Query<AuthorizeParam>, userid: &str) -> XResult<String> {
         let mut url = params.redirect_uri.clone();
         if params.client_id.is_empty() {
             url.push_str("?error=invalid_request");
@@ -48,7 +48,7 @@ impl AuthorizeService {
         client_id: &str,
         userid: &str,
         scope: &Option<String>,
-    ) -> XResult<TokenResponses> {
+    ) -> XResult<TokenRecord> {
         let entity = TokenService
             .generate_token(client_id, userid, scope)
             .await
@@ -71,7 +71,7 @@ impl AuthorizeService {
         }
     }
 
-    pub async fn token(&self, params: &TokenRequest) -> XResult<TokenResponses> {
+    pub async fn token(&self, params: &TokenParam) -> XResult<TokenRecord> {
         if params.grant_type == "authorization_code" {
             let code = params.code.as_ref().unwrap();
             match self.validate_code(code) {
@@ -106,7 +106,7 @@ impl AuthorizeService {
         }
     }
 
-    pub async fn refresh_token(&self, refresh_token: &str) -> XResult<TokenResponses> {
+    pub async fn refresh_token(&self, refresh_token: &str) -> XResult<TokenRecord> {
         Ok(TokenService.refresh_token(refresh_token).await?.into_dto())
     }
 

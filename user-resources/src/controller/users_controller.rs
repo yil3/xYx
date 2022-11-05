@@ -1,3 +1,5 @@
+use std::ops::DerefMut;
+
 use axum::{
     body::Body,
     http::Request,
@@ -8,7 +10,7 @@ use axum::{
 use x_common::model::response::R;
 use x_core::middleware::authorize::UserId;
 
-use crate::{dto::user_dto::RegisterUserRequest, service::user_service::UserService};
+use crate::{dto::user_dto::RegisterUserParam, service::user_service::UserService};
 
 pub fn route() -> Router {
     Router::new()
@@ -16,9 +18,9 @@ pub fn route() -> Router {
         .route("/page", get(fetch_page))
 }
 
-pub async fn register_user(input: Json<RegisterUserRequest>) -> impl IntoResponse {
-    match UserService.register(&input).await {
-        Ok(out) => Json(R::success(out)),
+pub async fn register_user(mut input: Json<RegisterUserParam>) -> impl IntoResponse {
+    match UserService.register(input.deref_mut()).await {
+        Ok(output) => Json(R::success(output)),
         Err(e) => Json(R::error(&e.to_string())),
     }
 }

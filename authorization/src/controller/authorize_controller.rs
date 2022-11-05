@@ -1,7 +1,7 @@
 use crate::{
     dto::{
-        authorize_dto::AuthorizeRequest,
-        token_dto::{TokenRefreshRequest, TokenRequest},
+        authorize_dto::AuthorizeParam,
+        token_dto::{TokenRefreshParam, TokenParam},
     },
     service::authorize_service::AuthorizeService,
 };
@@ -28,7 +28,7 @@ pub fn route() -> Router {
         .route("/refresh", post(refresh_token))
 }
 
-pub async fn authorize(params: Query<AuthorizeRequest>, request: Request<Body>) -> impl IntoResponse {
+pub async fn authorize(params: Query<AuthorizeParam>, request: Request<Body>) -> impl IntoResponse {
     match request.extensions().get::<UserId>() {
         Some(userid) => {
             let url = AuthorizeService.authorize(params, &userid.0).await.unwrap();
@@ -38,14 +38,14 @@ pub async fn authorize(params: Query<AuthorizeRequest>, request: Request<Body>) 
     }
 }
 
-pub async fn token(params: Json<TokenRequest>) -> impl IntoResponse {
+pub async fn token(params: Json<TokenParam>) -> impl IntoResponse {
     match AuthorizeService.token(&params).await {
         Ok(token) => Json(R::success(token)),
         Err(e) => Json(R::error(&e.to_string())),
     }
 }
 
-pub async fn refresh_token(request: Json<TokenRefreshRequest>) -> impl IntoResponse {
+pub async fn refresh_token(request: Json<TokenRefreshParam>) -> impl IntoResponse {
     match AuthorizeService.refresh_token(&request.refresh_token).await {
         Ok(token) => Json(R::success(token)),
         Err(e) => Json(R::error(&e.to_string())),
