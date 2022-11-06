@@ -34,7 +34,7 @@ pub async fn page(param: Query<PageParam>) -> impl IntoResponse {
     }
 }
 
-pub async fn delete_by_id(Path(id): Path<String>) -> impl IntoResponse {
+pub async fn delete_by_id(id: Path<String>) -> impl IntoResponse {
     match ClientService.delete(&id).await {
         Ok(record) => Json(R::success(record)),
         Err(e) => Json(R::error(&e.to_string())),

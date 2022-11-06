@@ -19,7 +19,6 @@ use crate::application::Application;
 #[derive(Clone, Copy)]
 pub struct XAuthorize;
 
-#[derive(Debug)]
 pub struct UserId(pub String);
 
 async fn find_jwt_token(access_token: &str) -> Result<String> {

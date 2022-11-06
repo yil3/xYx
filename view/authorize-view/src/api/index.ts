@@ -7,6 +7,7 @@ import { message } from "antd";
 
 import { isFunction } from "@/utils/is/index";
 import qs from "qs";
+import { ResultData } from "./interface";
 
 // * 声明一个 Map 用于存储每个请求的标识 和 取消函数
 let pendingMap = new Map<string, Canceler>();
@@ -132,12 +133,12 @@ class RequestHttp {
      * token校验(JWT) : 接受服务器返回的token,存储到redux/本地储存当中
      */
     this.service.interceptors.request.use(
-      (config: AxiosRequestConfig) => {
+      (config: any) => {
         NProgress.start();
         // * 将当前请求添加到 pending 中
         axiosCanceler.addPending(config);
         // * 如果当前请求不需要显示 loading,在api服务中通过指定的第三个参数: { headers: { noLoading: true } }来控制不显示loading，参见loginApi
-        config.headers!.noLoading || showFullScreenLoading();
+        !config.loading || showFullScreenLoading();
         // const token: string = store.getState().global.token;
         const token = localStorage.getItem("token");
         return { ...config, headers: { ...config.headers, "Authorization": "Bearer " + token } };
@@ -153,17 +154,19 @@ class RequestHttp {
      */
     this.service.interceptors.response.use(
       (response: AxiosResponse) => {
-        const { data, config, status } = response;
+        const { data, config } = response;
         NProgress.done();
         // * 在请求结束后，移除本次请求(关闭loading)
         axiosCanceler.removePending(config);
         tryHideFullScreenLoading();
-        // * 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
-        if (status !== 200) {
-          message.error(data.msg);
+        if (data.success === false) {
+          if (data.msg) {
+            message.error(data.msg);
+          }
           return Promise.reject(data);
         }
         // * 成功请求（在页面上除非特殊情况，否则不用处理失败逻辑）
+        // return Promise.resolve(data);
         return data;
       },
       async (error: AxiosError) => {
@@ -180,23 +183,24 @@ class RequestHttp {
           window.location.href = "/login";
         }
         // 服务器结果都没有返回(可能服务器错误可能客户端断网) 断网处理:可以跳转到断网页面
-        if (!window.navigator.onLine) window.location.hash = "/500";
-        return Promise.reject(error);
+        if (!window.navigator.onLine) window.location.href = "/500";
+        // return Promise.reject(error);
+        return error;
       }
     );
   }
 
   // * 常用请求方法封装
-  get(url: string, params?: object, _object = {}): Promise<any> {
+  async get(url: string, params?: object, _object = {}): Promise<ResultData> {
     return this.service.get(url, { params, ..._object });
   }
-  post(url: string, params?: object, _object = {}): Promise<any> {
-    return this.service.post(url, params, _object);
+  async post(url: string, data?: object, _object = {}): Promise<ResultData> {
+    return this.service.post(url, data, _object);
   }
-  put(url: string, params?: object, _object = {}): Promise<any> {
-    return this.service.put(url, params, _object);
+  async put(url: string, data?: object, _object = {}): Promise<ResultData> {
+    return this.service.put(url, data, _object);
   }
-  delete(url: string, params?: any, _object = {}): Promise<any> {
+  async delete(url: string, params?: any, _object = {}): Promise<ResultData> {
     return this.service.delete(url, { params, ..._object });
   }
 }

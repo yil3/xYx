@@ -14,7 +14,7 @@ const Login = (_props: any) => {
     login(values).then(res => {
       if (res.success) {
         localStorage.setItem("token", res.data.access_token);
-        localStorage.setItem("jwt_token", JSON.stringify(res.data.access_token));
+        localStorage.setItem("jwt_token", JSON.stringify(res.data));
         message.success("login success");
         navigate("/");
       } else {

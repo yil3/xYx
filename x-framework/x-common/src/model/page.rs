@@ -27,7 +27,7 @@ where
             0
         };
         let page = offset + 1;
-        let pages = total / limit;
+        let pages = if (total / limit) == 0 { 1 } else { total / limit };
         Self {
             page,
             size: limit,

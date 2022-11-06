@@ -1,6 +1,6 @@
 import { Menu, MenuProps } from "antd";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 /**
  * @Author xYx
  * @Date 2022-10-27 15:35:39
@@ -13,7 +13,8 @@ const items = [
 ];
 
 const NavMenu = (_props: any) => {
-  const [current, setCurrent] = useState("/");
+  const location = useLocation();
+  const [current, setCurrent] = useState(location.pathname);
   const navigate = useNavigate();
   const onClick: MenuProps["onClick"] = e => {
     navigate(e.key);
