@@ -137,7 +137,7 @@ class RequestHttp {
         NProgress.start();
         // * 将当前请求添加到 pending 中
         axiosCanceler.addPending(config);
-        // * 如果当前请求不需要显示 loading,在api服务中通过指定的第三个参数: { headers: { noLoading: true } }来控制不显示loading，参见loginApi
+        // * 如果当前请求需要显示 loading,在api服务中通过指定的第三个参数: { loading: true } 来控制显示loading，参见loginApi
         !config.loading || showFullScreenLoading();
         // const token: string = store.getState().global.token;
         const token = localStorage.getItem("token");
