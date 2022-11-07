@@ -18,7 +18,8 @@ pub struct ClientParam {
 }
 
 #[serde_as]
-#[derive(Deserialize, Serialize, FromRow)]
+#[derive(FromRow)]
+#[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ClientRecord {
     pub id: String,

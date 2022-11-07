@@ -20,17 +20,16 @@ where
     T: Serialize,
     T: Pageable,
 {
-    pub fn build(list: Vec<T>, limit: i64, offset: i64) -> Self {
+    pub fn build(page: i64, size: i64, list: Vec<T>) -> Self {
         let total = if list.len() > 0 {
             list.get(0).unwrap().total()
         } else {
             0
         };
-        let page = offset + 1;
-        let pages = if (total / limit) == 0 { 1 } else { total / limit };
+        let pages = (total as f64 / size as f64).ceil() as i64;
         Self {
             page,
-            size: limit,
+            size,
             pages,
             list,
             total,

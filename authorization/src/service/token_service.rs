@@ -1,7 +1,10 @@
+use crate::dto::token_dto::TokenRecord;
 use crate::{entity::token::TokenEntity, repository::token_repository::TokenRepository};
 use anyhow::anyhow;
 use anyhow::Result;
 use redis::Commands;
+use x_common::model::page::Page;
+use x_common::model::page::PageParam;
 use x_common::utils::token::TokenUtils;
 use x_core::application::Application;
 
@@ -16,7 +19,7 @@ impl TokenService {
         let jwt_token = TokenUtils::generate_jwt_token(user_id.to_string(), "")?;
         record.jwt_token = jwt_token;
         Application::redis().set_ex(&record.access_token, &record.jwt_token, record.expires_in as usize)?;
-        TokenRepository.insert(record).await
+        Ok(TokenRepository.insert(record).await?)
     }
 
     pub async fn refresh_token(&self, refresh_token: &str) -> Result<TokenEntity> {
@@ -28,5 +31,13 @@ impl TokenService {
         record.jwt_token = TokenUtils::generate_jwt_token(record.owner.to_string(), "")?;
         Application::redis().set_ex(&record.access_token, &record.jwt_token, record.expires_in as usize)?;
         Ok(TokenRepository.update_by_id(record).await?)
+    }
+
+    pub async fn get_page(&self, params: &PageParam) -> Result<Page<TokenRecord>> {
+        Ok(Page::build(
+            params.page,
+            params.size,
+            TokenRepository::fetch_page(&TokenRepository, params).await?,
+        ))
     }
 }

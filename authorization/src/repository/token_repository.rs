@@ -1,24 +1,23 @@
-use crate::entity::token::TokenEntity;
-use anyhow::Result;
-use sqlx::{query_as, query, postgres::PgRow};
+use crate::{dto::token_dto::TokenRecord, entity::token::TokenEntity};
+use sqlx::{postgres::PgRow, query, query_as};
+use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
 pub struct TokenRepository;
 
 impl TokenRepository {
-    pub async fn fetch_user_by_account(&self, account: &str) -> Result<PgRow> {
-        let record= query(
+    pub async fn fetch_user_by_account(&self, account: &str) -> Result<PgRow, sqlx::Error> {
+        query(
             r#"
             SELECT id, password FROM sys_user WHERE account = $1
             "#,
         )
         .bind(account)
         .fetch_one(&*PG_POOL)
-        .await?;
-        Ok(record)
+        .await
     }
-    pub async fn insert(&self, record: TokenEntity) -> Result<TokenEntity> {
-        Ok(query_as!(
+    pub async fn insert(&self, record: TokenEntity) -> Result<TokenEntity, sqlx::Error> {
+        query_as!(
             TokenEntity,
             r#"
             insert into sys_token 
@@ -38,11 +37,11 @@ impl TokenRepository {
             record.client_id
         )
         .fetch_one(&*PG_POOL)
-        .await?)
+        .await
     }
 
-    pub async fn find_by_refresh_token(&self, refresh_token: &str) -> Result<TokenEntity> {
-        Ok(query_as!(
+    pub async fn find_by_refresh_token(&self, refresh_token: &str) -> Result<TokenEntity, sqlx::Error> {
+        query_as!(
             TokenEntity,
             r#"
             select * from sys_token where refresh_token = $1
@@ -50,11 +49,11 @@ impl TokenRepository {
             refresh_token
         )
         .fetch_one(&*PG_POOL)
-        .await?)
+        .await
     }
 
-    pub async fn update_by_id(&self, record: TokenEntity) -> Result<TokenEntity> {
-        Ok(query_as!(
+    pub async fn update_by_id(&self, record: TokenEntity) -> Result<TokenEntity, sqlx::Error> {
+        query_as!(
             TokenEntity,
             r#"
             update sys_token set 
@@ -79,10 +78,22 @@ impl TokenRepository {
             record.id
         )
         .fetch_one(&*PG_POOL)
-        .await?)
+        .await
     }
 
-    pub fn delete_by_id(&self, _id: String) {}
-
-    pub fn fetch_page(&self) {}
+    pub async fn fetch_page(&self, params: &PageParam) -> Result<Vec<TokenRecord>, sqlx::Error> {
+        query_as!(
+            TokenRecord,
+            r#"
+            select
+            access_token, token_type, expires_in, refresh_token, scope, count(*) over() total 
+            from sys_token
+            limit $1 offset $2
+            "#,
+            params.limit(),
+            params.offset()
+        )
+        .fetch_all(&*PG_POOL)
+        .await
+    }
 }

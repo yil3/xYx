@@ -43,12 +43,7 @@ impl AuthorizeService {
         Ok(url)
     }
 
-    pub async fn generate_token(
-        &self,
-        client_id: &str,
-        userid: &str,
-        scope: &Option<String>,
-    ) -> XResult<TokenRecord> {
+    pub async fn generate_token(&self, client_id: &str, userid: &str, scope: &Option<String>) -> XResult<TokenRecord> {
         let entity = TokenService
             .generate_token(client_id, userid, scope)
             .await
@@ -94,7 +89,10 @@ impl AuthorizeService {
     }
 
     pub async fn validate_user(&self, account: &str, password: &str) -> XResult<String> {
-        let row = TokenRepository.fetch_user_by_account(account).await?;
+        let row = TokenRepository
+            .fetch_user_by_account(account)
+            .await
+            .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
         if let Ok(stored_password) = row.try_get::<String, &str>("password") {
             if SucurityUtils::verify_password(&stored_password, password.to_string())? {
                 Ok(row.get::<String, &str>("id"))

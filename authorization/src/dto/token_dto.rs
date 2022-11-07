@@ -1,5 +1,6 @@
 use serde::Deserialize;
 use serde::Serialize;
+use x_common::model::page::Pageable;
 
 #[derive(Deserialize)]
 pub struct TokenParam {
@@ -23,5 +24,13 @@ pub struct TokenRecord {
     pub token_type: String,
     pub expires_in: i32,
     pub refresh_token: String,
-    pub scope: String,
+    pub scope: Option<String>,
+    #[serde(skip)]
+    pub total: Option<i64>
+}
+
+impl Pageable for TokenRecord {
+    fn total(&self) -> i64 {
+        self.total.unwrap_or_default()
+    }
 }

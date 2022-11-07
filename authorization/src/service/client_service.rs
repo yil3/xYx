@@ -1,5 +1,5 @@
 use anyhow::{Ok, Result};
-use x_common::model::page::{PageParam, Page};
+use x_common::model::page::{Page, PageParam};
 
 use crate::{
     dto::client_dto::{ClientParam, ClientRecord},
@@ -24,9 +24,11 @@ impl ClientService {
     }
 
     pub async fn get_page(&self, params: &PageParam) -> Result<Page<ClientRecord>> {
-        let list = ClientRepository.fetch_page(params).await?;
-        let page = Page::build(list, params.limit(), params.offset());
-        Ok(page)
+        Ok(Page::build(
+            params.page,
+            params.size,
+            ClientRepository.fetch_page(params).await?,
+        ))
     }
 
     pub async fn delete(&self, id: &str) -> Result<()> {

@@ -46,7 +46,8 @@ impl TokenEntity {
             refresh_token: self.refresh_token,
             expires_in: self.expires_in,
             token_type: self.token_type,
-            scope: self.scope.unwrap_or_default(),
+            scope: Some(self.scope.unwrap_or_default()),
+            total: Some(0)
         }
     }
 }

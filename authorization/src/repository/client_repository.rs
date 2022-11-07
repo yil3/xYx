@@ -18,6 +18,7 @@ impl ClientRepository {
         .fetch_one(&*PG_POOL)
         .await
     }
+
     pub async fn insert(&self, record: &ClientEntity) -> Result<ClientEntity, sqlx::Error> {
         sqlx::query_as!(
             ClientEntity,
