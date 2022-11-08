@@ -18,4 +18,7 @@ select now();
 delete from sys_token;
 select * from sys_token;
 
-insert into sys_client (id, name, secret, redirect_uri, scope, owner, created_at, updated_at) values (1,'test', 'test', 'http://baidu.com', 'test', 'test', now(), now());
+insert into sys_client (id, name, secret, redirect_uri, scope, owner, created_at, updated_at) 
+values 
+(12,'test', 'test', 'http://baidu.com', 'test', 'test', now(), now());
+
