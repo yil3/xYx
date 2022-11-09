@@ -169,6 +169,7 @@ impl Application {
             self.router = self
                 .router
                 .to_owned()
+                // .layer(from_extractor::<UserId>())
                 .layer(AsyncRequireAuthorizationLayer::new(XAuthorize));
         }
         if self.config.server.cors.status {

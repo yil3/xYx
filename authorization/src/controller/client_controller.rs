@@ -1,5 +1,7 @@
 use axum::{
+    body::Body,
     extract::{Path, Query},
+    http::Request,
     response::IntoResponse,
     routing::{delete, get, post},
     Json, Router,
@@ -20,7 +22,8 @@ pub fn route() -> Router {
         .route("/delete/:id", delete(delete_by_id))
 }
 
-pub async fn save_client(record: Json<ClientParam>) -> impl IntoResponse {
+pub async fn save_client(record: Json<ClientParam>, request: Request<Body>) -> impl IntoResponse {
+    println!("request: {request:#?}");
     match ClientService.save(&record).await {
         Ok(record) => Json(R::success(record)),
         Err(e) => Json(R::error(&e.to_string())),

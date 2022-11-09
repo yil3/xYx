@@ -75,7 +75,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "axum 0.6.0-rc.2",
+ "axum",
  "redis",
  "reqwest",
  "serde",
@@ -102,7 +102,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "acee9fd5073ab6b045a275b3e709c163dd36c90685219cb21804a147b58dba43"
 dependencies = [
  "async-trait",
- "axum-core 0.2.9",
+ "axum-core",
  "bitflags",
  "bytes",
  "futures-util",
@@ -111,38 +111,7 @@ dependencies = [
  "http-body",
  "hyper",
  "itoa",
- "matchit 0.5.0",
- "memchr",
- "mime",
- "percent-encoding",
- "pin-project-lite",
- "serde",
- "serde_json",
- "serde_urlencoded",
- "sync_wrapper",
- "tokio",
- "tower",
- "tower-http",
- "tower-layer",
- "tower-service",
-]
-
-[[package]]
-name = "axum"
-version = "0.6.0-rc.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2628a243073c55aef15a1c1fe45c87f21b84f9e89ca9e7b262a180d3d03543d"
-dependencies = [
- "async-trait",
- "axum-core 0.3.0-rc.2",
- "bitflags",
- "bytes",
- "futures-util",
- "http",
- "http-body",
- "hyper",
- "itoa",
- "matchit 0.6.0",
+ "matchit",
  "memchr",
  "mime",
  "percent-encoding",
@@ -163,22 +132,6 @@ name = "axum-core"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "37e5939e02c56fecd5c017c37df4238c0a839fa76b7f97acdd7efb804fd181cc"
-dependencies = [
- "async-trait",
- "bytes",
- "futures-util",
- "http",
- "http-body",
- "mime",
- "tower-layer",
- "tower-service",
-]
-
-[[package]]
-name = "axum-core"
-version = "0.3.0-rc.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "473bd0762170028bb6b5068be9e97de2a9f0af3bf2084498d840498f47194d3d"
 dependencies = [
  "async-trait",
  "bytes",
@@ -1027,12 +980,6 @@ name = "matchit"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "73cbba799671b762df5a175adf59ce145165747bb891505c43d09aefbbf38beb"
-
-[[package]]
-name = "matchit"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3dfc802da7b1cf80aefffa0c7b2f77247c8b32206cc83c270b61264f5b360a80"
 
 [[package]]
 name = "md-5"
@@ -2246,7 +2193,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19833e336396f3953e5ab1513d72b5e5ea51d5ad39b78d306766a05740b48b97"
 dependencies = [
  "async-trait",
- "axum-core 0.2.9",
+ "axum-core",
  "cookie",
  "futures-util",
  "http",
@@ -2432,7 +2379,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "axum 0.5.17",
+ "axum",
  "serde",
  "serde_json",
  "serde_with",
@@ -2829,7 +2776,7 @@ name = "x-common"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "axum 0.5.17",
+ "axum",
  "jsonwebtoken",
  "lazy_static",
  "rs-snowflake",
@@ -2850,7 +2797,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "axum 0.5.17",
+ "axum",
  "dotenv",
  "futures-util",
  "headers",
