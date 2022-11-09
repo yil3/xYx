@@ -5,7 +5,7 @@ import { RouteObject } from "../interface";
 const route: RouteObject[] = [{
   element: <LayoutView />,
   children: [
-    { path: "/", element: <Home />, meta: { title: "Home" } },
+    { path: "/", element: <Home />, meta: { title: "Home", key:"" } },
   ],
 }]
 

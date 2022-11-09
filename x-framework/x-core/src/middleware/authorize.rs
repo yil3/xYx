@@ -19,6 +19,7 @@ use crate::application::Application;
 #[derive(Clone, Copy)]
 pub struct XAuthorize;
 
+#[derive(Default, Debug)]
 pub struct UserId(pub String);
 
 async fn find_jwt_token(access_token: &str) -> Result<String> {
@@ -48,8 +49,8 @@ where
                     let access_token = header_value.to_str().unwrap().replace("Bearer ", "");
                     let jwt_token = find_jwt_token(&access_token).await.unwrap_or_default();
                     match TokenUtils::fetch_current_user_id_from_jwt_token(jwt_token) {
-                        Ok(uid) => {
-                            request.extensions_mut().insert(UserId(uid));
+                        Ok(userid) => {
+                            request.extensions_mut().insert(UserId(userid));
                             return Ok(request);
                         },
                         Err(_) => {

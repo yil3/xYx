@@ -9,7 +9,7 @@ import Client from "@/views/client";
 const route: RouteObject[] = [{
   element: <LayoutView />,
   children: [
-    { path: "/client", element: <Client />, meta: { title: "Client" } },
+    { path: "/client", element: <Client />, meta: { title: "Client", key:"client" } },
   ],
 }]
 
