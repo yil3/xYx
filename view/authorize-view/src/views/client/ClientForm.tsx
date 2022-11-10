@@ -1,12 +1,19 @@
-import { Form, Input, Modal } from "antd";
+import { Form, Input, message, Modal } from "antd";
 import { saveClient } from "@/api/modules/client";
 
 const ClientForm = (props: any) => {
   const [form] = Form.useForm();
   const save = () => {
     form.validateFields().then(async (values) => {
-      console.log(values);
-      await saveClient(values);
+      const res = await saveClient(values);
+      if (res.success) {
+        message.success('保存成功');
+        props.handleCancel();
+        props.getData(props.params);
+        form.resetFields();
+      } else {
+        message.error('保存失败');
+      }
     });
   }
   return (

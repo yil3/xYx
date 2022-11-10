@@ -1,12 +1,11 @@
 use axum::{
-    body::Body,
     extract::{Path, Query},
-    http::Request,
     response::IntoResponse,
     routing::{delete, get, post},
     Json, Router,
 };
 use x_common::model::{page::PageParam, response::R};
+use x_core::middleware::authentication::CurrentUser;
 
 use crate::{dto::client_dto::ClientParam, service::client_service::ClientService};
 
@@ -22,8 +21,8 @@ pub fn route() -> Router {
         .route("/delete/:id", delete(delete_by_id))
 }
 
-pub async fn save_client(record: Json<ClientParam>, request: Request<Body>) -> impl IntoResponse {
-    println!("request: {request:#?}");
+pub async fn save_client(mut record: Json<ClientParam>, userid: CurrentUser) -> impl IntoResponse {
+    record.owner = Some(userid.id().to_string());
     match ClientService.save(&record).await {
         Ok(record) => Json(R::success(record)),
         Err(e) => Json(R::error(&e.to_string())),

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchClientList } from '@/api/modules/client'
-import { Button, Input, Row, Space, Table, TablePaginationConfig } from "antd";
+import { fetchClientList, deleteClient } from '@/api/modules/client'
+import { Button, Input, message, Modal, Row, Space, Table, TablePaginationConfig } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import ClientForm from './ClientForm';
 import { ColumnsType } from "antd/lib/table";
@@ -18,11 +18,6 @@ const Client = () => {
   const [params, setParams] = useState<TableParams>({
     page: 1,
     size: 10,
-    query: '',
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
   });
   const columns: ColumnsType<any> = [
     { title: '客户端名称', dataIndex: 'name' },
@@ -37,7 +32,7 @@ const Client = () => {
       render: (_: any, record: any) => (
         <Space size="middle">
           <a onClick={() => { console.log("record", record) }}>编辑</a>
-          <a>删除</a>
+          <a onClick={() => deleteData(record.id)}>删除</a>
         </Space>
       )
     }
@@ -54,7 +49,27 @@ const Client = () => {
       }
     });
   };
+  const deleteData = async (id: string) => {
+    Modal.confirm({
+      title: '提示',
+      content: '确定删除吗？',
+      onOk: async () => {
+        const res = await deleteClient(id);
+        if (res.success) {
+          message.success('删除成功');
+          getData(params);
+        } else {
+          message.error('删除失败');
+        }
+      }
+    });
+  };
   const pageChange = (pagination: any) => {
+    setParams({
+      ...params,
+      page: pagination.current,
+      size: pagination.pageSize,
+    });
     getData({
       ...params,
       page: pagination.current,
@@ -82,7 +97,7 @@ const Client = () => {
   return (
     <>
       <Table rowKey={record => record.id} dataSource={data} columns={columns} pagination={params.pagination} onChange={pageChange} title={title} />
-      <ClientForm isShow={isModalOpen} handleCancel={handleCancel} />
+      <ClientForm isShow={isModalOpen} handleCancel={handleCancel} getData={getData} params={params} />
     </>
   );
 }

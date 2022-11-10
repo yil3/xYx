@@ -1,20 +1,18 @@
 use crate::{
     dto::{
         authorize_dto::AuthorizeParam,
-        token_dto::{TokenRefreshParam, TokenParam},
+        token_dto::{TokenParam, TokenRefreshParam},
     },
     service::authorize_service::AuthorizeService,
 };
 use axum::{
-    body::Body,
     extract::Query,
-    http::Request,
     response::{IntoResponse, Redirect},
     routing::{get, post},
     Json, Router,
 };
 use x_common::model::response::R;
-use x_core::middleware::authorize::UserId;
+use x_core::middleware::authentication::CurrentUser;
 
 /**
 * @Author xYx
@@ -28,14 +26,9 @@ pub fn route() -> Router {
         .route("/refresh", post(refresh_token))
 }
 
-pub async fn authorize(params: Query<AuthorizeParam>, request: Request<Body>) -> impl IntoResponse {
-    match request.extensions().get::<UserId>() {
-        Some(userid) => {
-            let url = AuthorizeService.authorize(params, &userid.0).await.unwrap();
-            Redirect::to(&url).into_response()
-        },
-        None => Redirect::to(&format!("{}?error=Unauthorize", params.redirect_uri)).into_response(),
-    }
+pub async fn authorize(params: Query<AuthorizeParam>, user: CurrentUser) -> impl IntoResponse {
+    let url = AuthorizeService.authorize(params, user.id()).await.unwrap();
+    Redirect::to(&url).into_response()
 }
 
 pub async fn token(params: Json<TokenParam>) -> impl IntoResponse {

@@ -4,11 +4,12 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 
 use crate::handlers::http_time_out::handle_timeout_error;
-use crate::middleware::authorize::XAuthorize;
+use crate::middleware::authentication::CurrentUser;
 use crate::middleware::functions::metrics::track_metrics;
 use axum::error_handling::HandleErrorLayer;
 use axum::extract::Extension;
 use axum::middleware;
+use axum::middleware::from_extractor;
 use axum::Router;
 use http::{HeaderValue, Method};
 use lazy_static::lazy_static;
@@ -16,8 +17,6 @@ use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 use std::time::Duration;
 use tower::ServiceBuilder;
-use tower_cookies::CookieManagerLayer;
-use tower_http::auth::AsyncRequireAuthorizationLayer;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use tracing::debug;
@@ -162,15 +161,11 @@ impl Application {
                     .timeout(Duration::from_secs(self.config.server.http_timeout)),
             )
             .layer(Extension(self.config.as_ref().clone()))
-            .layer(Extension(Application::pgpool()))
-            .layer(CookieManagerLayer::new());
+            .layer(Extension(Application::pgpool()));
         if self.config.auth.status {
             debug!("init auth middleware...");
-            self.router = self
-                .router
-                .to_owned()
-                // .layer(from_extractor::<UserId>())
-                .layer(AsyncRequireAuthorizationLayer::new(XAuthorize));
+            self.router = self.router.to_owned().layer(from_extractor::<CurrentUser>())
+            // .layer(AsyncRequireAuthorizationLayer::new(XAuthorize));
         }
         if self.config.server.cors.status {
             debug!("init cors middleware...");

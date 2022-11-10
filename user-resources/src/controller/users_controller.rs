@@ -1,14 +1,11 @@
 use std::ops::DerefMut;
 
 use axum::{
-    body::Body,
-    http::Request,
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
 use x_common::model::response::R;
-use x_core::middleware::authorize::UserId;
 
 use crate::{dto::user_dto::RegisterUserParam, service::user_service::UserService};
 
@@ -25,7 +22,6 @@ pub async fn register_user(mut input: Json<RegisterUserParam>) -> impl IntoRespo
     }
 }
 
-pub async fn fetch_page(request: Request<Body>) -> impl IntoResponse {
-    let userid = request.extensions().get::<UserId>().unwrap();
-    Json(R::success(userid.0.to_owned()))
+pub async fn fetch_page() -> impl IntoResponse {
+    Json(R::success("ok"))
 }
