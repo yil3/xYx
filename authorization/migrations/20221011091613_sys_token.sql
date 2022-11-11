@@ -30,3 +30,5 @@ comment on column sys_token.jwt_token is 'JWT 令牌';
 comment on column sys_token.created_at is '创建时间';
 comment on column sys_token.updated_at is '更新时间';
 
+create trigger sys_token_updated_at before update on sys_token for each row execute procedure trigger_set_updated_at();
+

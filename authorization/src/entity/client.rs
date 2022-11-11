@@ -15,5 +15,5 @@ pub struct ClientEntity {
     pub scope: String,
     pub owner: Option<String>,
     pub created_at: OffsetDateTime,
-    pub updated_at: Option<OffsetDateTime>,
+    pub updated_at: OffsetDateTime,
 }

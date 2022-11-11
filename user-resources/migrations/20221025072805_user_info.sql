@@ -19,4 +19,4 @@ comment on column sys_user_info.email is '邮箱';
 comment on column sys_user_info.nickname is '昵称';
 comment on column sys_user_info.updated_at is '更新时间';
 
-
+create trigger sys_user_info_updated_at_trigger before update on sys_user_info for each row execute procedure update_updated_at_column();

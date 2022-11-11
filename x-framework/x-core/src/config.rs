@@ -61,14 +61,12 @@ pub struct AuthConfig {
 impl AppConfig {
     pub fn parse() -> Self {
         let path1 = std::env::current_exe()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .split("/")
-            .last()
-            .unwrap()
+            .as_ref()
+            .map(|p| p.file_name().unwrap().to_str().unwrap())
+            .unwrap_or_default()
             .to_owned()
             + "/application.yml";
+        println!("path1: {}", path1);
         let yml_str = match read_to_string(&path1) {
             Ok(str) => str,
             Err(_) => {

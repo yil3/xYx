@@ -24,19 +24,21 @@ serde_yaml = "^0"
 dotenv = "^0"
 
 tracing = "^0"
-tracing-subscriber = { version = "^0", features = ["env-filter"] }
+tracing-subscriber = { version = "^0", features = ["env-filter", "time"] }
+tracing-appender = "0.2.2"
+# color-eyre = "0.6.2"
 
 anyhow = "^1"
 validator = { version = "^0", features = ["derive"] }
-async-trait = "0.1"
+async-trait = "^0"
 # thiserror = "1"
 # rust-argon2 = "1.0"
 # clap = { version = "^3", features = ["derive", "env"] }
 # mockall = "0.11.1"
-time = "^0.3"
+time = { version = "^0", features = ["macros"] }
 
-metrics = "^0"
-metrics-exporter-prometheus = "^0"
+# metrics = "^0"
+# metrics-exporter-prometheus = "^0"
 
 lazy_static = "^1"
 

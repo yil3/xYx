@@ -30,8 +30,8 @@ pub struct ClientRecord {
     pub owner: Option<String>,
     #[serde_as(as = "DateTimeFormat")]
     pub created_at: OffsetDateTime,
-    #[serde_as(as = "Option<DateTimeFormat>")]
-    pub updated_at: Option<OffsetDateTime>,
+    #[serde_as(as = "DateTimeFormat")]
+    pub updated_at: OffsetDateTime,
     #[serde(skip)]
     #[sqlx(default)]
     pub total: Option<i64>,
@@ -56,7 +56,7 @@ impl ClientParam {
             scope: String::from(&self.scope),
             owner: self.owner.clone(),
             created_at: OffsetDateTime::now_utc(),
-            updated_at: None,
+            updated_at: OffsetDateTime::now_utc(),
         }
     }
 }

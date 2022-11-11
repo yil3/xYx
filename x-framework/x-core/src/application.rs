@@ -5,10 +5,9 @@ use std::sync::Arc;
 
 use crate::handlers::http_time_out::handle_timeout_error;
 use crate::middleware::authentication::CurrentUser;
-use crate::middleware::functions::metrics::track_metrics;
+// use crate::middleware::functions::metrics::track_metrics;
 use axum::error_handling::HandleErrorLayer;
 use axum::extract::Extension;
-use axum::middleware;
 use axum::middleware::from_extractor;
 use axum::Router;
 use http::{HeaderValue, Method};
@@ -16,12 +15,16 @@ use lazy_static::lazy_static;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 use std::time::Duration;
+use time::{macros::format_description, UtcOffset};
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use tracing::debug;
+use tracing_appender::rolling;
+use tracing_subscriber::fmt::writer::MakeWriterExt;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
+use tracing_subscriber::{fmt, fmt::time::OffsetTime, EnvFilter};
 
 use crate::config::AppConfig;
 
@@ -80,9 +83,22 @@ impl Application {
     }
 
     pub fn init_log(&mut self) {
+        let exe = std::env::current_exe()
+            .as_ref()
+            .map(|p| p.file_name().unwrap().to_str().unwrap())
+            .unwrap_or_default()
+            .to_owned();
+        let debug_file = rolling::daily(String::from(&exe) + "/logs", "debug");
+        let error_file = rolling::daily(String::from(&exe) + "/logs", "error").with_max_level(tracing::Level::ERROR);
+        let all_files = debug_file.and(error_file);
+        let local_time = OffsetTime::new(
+            UtcOffset::from_hms(8, 0, 0).unwrap(),
+            format_description!("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]"),
+        );
         tracing_subscriber::registry()
-            .with(tracing_subscriber::EnvFilter::new(&self.config.log.level))
-            .with(tracing_subscriber::fmt::layer())
+            .with(fmt::layer().with_writer(all_files).with_ansi(false))
+            .with(fmt::layer().with_timer(local_time))
+            .with(EnvFilter::new(&self.config.log.level))
             .init();
     }
 
@@ -178,6 +194,6 @@ impl Application {
                 .to_owned()
                 .layer(CorsLayer::new().allow_origin(origins).allow_methods([Method::GET]));
         }
-        self.router = self.router.to_owned().route_layer(middleware::from_fn(track_metrics));
+        // self.router = self.router.to_owned().route_layer(middleware::from_fn(track_metrics));
     }
 }
