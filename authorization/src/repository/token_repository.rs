@@ -86,7 +86,7 @@ impl TokenRepository {
             TokenRecord,
             r#"
             select
-            access_token, token_type, expires_in, refresh_token, scope, count(*) over() total 
+            access_token, token_type, expires_in, refresh_token, scope, jwt_token, count(*) over() total 
             from sys_token
             limit $1 offset $2
             "#,

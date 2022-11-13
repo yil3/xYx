@@ -20,6 +20,7 @@ pub fn route() -> Router {
     Router::new()
         .route("/", get(authorize))
         .route("/token", post(token))
+        .route("/sign_out", post(sign_out))
         .route("/refresh/:refresh_token", post(refresh_token))
 }
 
@@ -40,4 +41,8 @@ pub async fn refresh_token(refresh_token: Path<String>) -> impl IntoResponse {
         Ok(token) => Json(R::success(token)),
         Err(e) => Json(R::error(&e.to_string())),
     }
+}
+
+pub async fn sign_out() -> impl IntoResponse {
+    Json(R::success(()))
 }

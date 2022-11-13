@@ -22,12 +22,12 @@ pub struct AuthorizeService;
 impl AuthorizeService {
     pub async fn authorize(&self, params: Query<AuthorizeParam>, userid: &str) -> XResult<String> {
         let mut url = params.redirect_uri.clone();
-        if userid.is_empty() {
-            url.push_str("?error=unauthorized");
+        if params.client_id.is_empty() {
+            url.push_str("?error=client_is_empty");
             return Ok(url);
         }
-        if params.client_id.is_empty() {
-            url.push_str("?error=invalid_request");
+        if self.verify_client(&params.client_id).await.is_err() {
+            url.push_str("?error=invalid_client");
             return Ok(url);
         }
         if params.response_type == "code" {
