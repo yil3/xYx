@@ -1,12 +1,9 @@
 use crate::{
-    dto::{
-        authorize_dto::AuthorizeParam,
-        token_dto::{TokenParam, TokenRefreshParam},
-    },
+    dto::{authorize_dto::AuthorizeParam, token_dto::TokenParam},
     service::authorize_service::AuthorizeService,
 };
 use axum::{
-    extract::Query,
+    extract::{Path, Query},
     response::{IntoResponse, Redirect},
     routing::{get, post},
     Json, Router,
@@ -23,7 +20,7 @@ pub fn route() -> Router {
     Router::new()
         .route("/", get(authorize))
         .route("/token", post(token))
-        .route("/refresh", post(refresh_token))
+        .route("/refresh/:refresh_token", post(refresh_token))
 }
 
 pub async fn authorize(params: Query<AuthorizeParam>, user: CurrentUser) -> impl IntoResponse {
@@ -38,8 +35,8 @@ pub async fn token(params: Json<TokenParam>) -> impl IntoResponse {
     }
 }
 
-pub async fn refresh_token(request: Json<TokenRefreshParam>) -> impl IntoResponse {
-    match AuthorizeService.refresh_token(&request.refresh_token).await {
+pub async fn refresh_token(refresh_token: Path<String>) -> impl IntoResponse {
+    match AuthorizeService.refresh_token(&refresh_token).await {
         Ok(token) => Json(R::success(token)),
         Err(e) => Json(R::error(&e.to_string())),
     }

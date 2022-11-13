@@ -1,6 +1,4 @@
--- Add migration script here
-
-drop table if exists sys_user;
+-- Add up migration script here
 
 create table sys_user(
   id varchar(32) not null primary key,
@@ -22,3 +20,4 @@ drop index if exists sys_user_account_idx;
 create unique index sys_user_account_idx on sys_user(account);
 
 create trigger sys_user_updated_at_trigger before update on sys_user for each row execute procedure trigger_set_updated_at();
+

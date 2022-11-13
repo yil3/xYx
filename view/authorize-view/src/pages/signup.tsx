@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import './index.less'
 import { register } from "@/api/modules/login";
 
-const SignUp = (_props: any) => {
+export default function SignUp(_props: any) {
   const navigate = useNavigate();
   const onFinish = async (values: any) => {
     values.account = values.username;
@@ -105,4 +105,3 @@ const SignUp = (_props: any) => {
   );
 }
 
-export default SignUp;

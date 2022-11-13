@@ -3,7 +3,7 @@ import { DownOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 
-const Me = (_props: any) => {
+export default function Me(_props: any) {
   const navigate = useNavigate();
   const items = [
     {
@@ -32,4 +32,3 @@ const Me = (_props: any) => {
   );
 };
 
-export default Me;

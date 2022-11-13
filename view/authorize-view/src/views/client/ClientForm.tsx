@@ -1,39 +1,41 @@
-import { Form, Input, message, Modal } from "antd";
+import { Form, Input, message } from "antd";
 import { saveClient } from "@/api/modules/client";
+import { FormInstance } from "antd/es/form/Form";
 
-const ClientForm = (props: any) => {
-  const [form] = Form.useForm();
+interface ClientFormProps {
+  form: FormInstance;
+  onSaved: () => void;
+}
+
+export default function ClientForm(props: ClientFormProps) {
   const save = () => {
-    form.validateFields().then(async (values) => {
-      const res = await saveClient(values);
+    props.form.validateFields().then(async (values: any) => {
+      const id = props.form.getFieldValue("id");
+      const res = await saveClient({ id, ...values });
       if (res.success) {
         message.success('保存成功');
-        props.handleCancel();
-        props.getData(props.params);
-        form.resetFields();
+        props.form.resetFields();
+        props.onSaved();
       } else {
         message.error('保存失败');
       }
     });
   }
   return (
-    <Modal title="客户端表单" open={props.isShow} onCancel={() => props.handleCancel()} onOk={save}>
-      <Form labelCol={{ span: 4 }} name="client" form={form}>
-        <Form.Item label="客户端名称" name="name">
-          <Input />
-        </Form.Item>
-        <Form.Item label="范围" name="scope">
-          <Input />
-        </Form.Item>
-        <Form.Item label="回调地址" name="redirect_uri">
-          <Input />
-        </Form.Item>
-        <Form.Item label="密钥" name="secret">
-          <Input />
-        </Form.Item>
-      </Form>
-    </Modal>
+    <Form labelCol={{ span: 4 }} name="client" form={props.form} onFinish={save}>
+      <Form.Item label="名称" name="name" rules={[{ required: true, message: '请输入客户端名称' }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item label="范围" name="scope" rules={[{ required: true, message: '请输入作用范围' }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item label="回调地址" name="redirectUri" rules={[{ required: true, message: '请输入正确的url', type: 'url' }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item label="密钥" name="secret" rules={[{ required: true, message: '请输入密钥' }]}>
+        <Input />
+      </Form.Item>
+    </Form>
   )
 }
 
-export default ClientForm;

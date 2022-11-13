@@ -17,7 +17,7 @@ use crate::{dto::client_dto::ClientParam, service::client_service::ClientService
 pub fn route() -> Router {
     Router::new()
         .route("/save_client", post(save_client))
-        .route("/list", get(page))
+        .route("/page", get(page))
         .route("/delete/:id", delete(delete_by_id))
 }
 

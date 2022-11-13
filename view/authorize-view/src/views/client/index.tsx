@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react";
-import { fetchClientList, deleteClient } from '@/api/modules/client'
-import { Button, Input, message, Modal, Row, Space, Table, TablePaginationConfig } from "antd";
+import { fetchClientPage, deleteClient } from '@/api/modules/client'
+import { Button, Input, message, Modal, Row, Space, Table } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import ClientForm from './ClientForm';
 import { ColumnsType } from "antd/lib/table";
+import { useForm } from "antd/lib/form/Form";
+import ClientForm from './ClientForm';
 
 interface TableParams {
   page: number;
   size: number;
   query?: string;
-  pagination?: TablePaginationConfig;
 }
 
-const Client = () => {
-  const [data, setData] = useState();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [params, setParams] = useState<TableParams>({
-    page: 1,
-    size: 10,
-  });
+/**
+* @Author xYx
+* @Date 2022-11-13 20:47:06
+*/
+export default function Client() {
+  const [data, setData] = useState<any[]>();
+  const [visible, setVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [form] = useForm();
+  const [params, setParams] = useState<TableParams>({ page: 1, size: 10 });
+  const [total, setTotal] = useState(0);
   const columns: ColumnsType<any> = [
     { title: '客户端名称', dataIndex: 'name' },
     { title: '范围', dataIndex: 'scope' },
@@ -31,23 +35,16 @@ const Client = () => {
       title: '操作', width: '10%',
       render: (_: any, record: any) => (
         <Space size="middle">
-          <a onClick={() => { console.log("record", record) }}>编辑</a>
+          <a onClick={() => showModal(record)}>编辑</a>
           <a onClick={() => deleteData(record.id)}>删除</a>
         </Space>
       )
     }
   ];
   const getData = async (params: any) => {
-    const res = await fetchClientList(params);
+    const res = await fetchClientPage(params);
     setData(res.data?.list);
-    setParams({
-      ...params,
-      pagination: {
-        current: params.page,
-        pageSize: params.size,
-        total: res.data?.total,
-      }
-    });
+    setTotal(res.data?.total);
   };
   const deleteData = async (id: string) => {
     Modal.confirm({
@@ -64,42 +61,35 @@ const Client = () => {
       }
     });
   };
-  const pageChange = (pagination: any) => {
-    setParams({
-      ...params,
-      page: pagination.current,
-      size: pagination.pageSize,
-    });
-    getData({
-      ...params,
-      page: pagination.current,
-      size: pagination.pageSize,
-    });
-  }
   const title = () => (
     <Row>
       <Space>
-        <Input placeholder="请输入客户端名称搜索" />
+        <Input placeholder="请输入客户端名称搜索" onBlur={e => setParams({ ...params, query: e.currentTarget.value })}/>
       </Space>
       <Button icon={<PlusOutlined />} type="primary" style={{ marginLeft: "auto" }} onClick={showModal}>新增</Button>
     </Row>
   );
-  const showModal = () => {
-    setIsModalOpen(true);
+  const showModal = (record: any = {}) => {
+    setModalTitle(record.id ? '编辑客户端' : '新增客户端');
+    form.setFieldsValue(record);
+    setVisible(true)
   };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  useEffect(() => {
+  const handleCancel = () => setVisible(false);
+  const handleOk = () => form.submit();
+  const saved = () => {
     getData(params);
-  }, []);
+    setVisible(false);
+  };
+  const pageChange = (page: number, size: number) => setParams({ ...params, page, size });
+
+  useEffect(() => { getData(params) }, [params]);
   return (
     <>
-      <Table rowKey={record => record.id} dataSource={data} columns={columns} pagination={params.pagination} onChange={pageChange} title={title} />
-      <ClientForm isShow={isModalOpen} handleCancel={handleCancel} getData={getData} params={params} />
+      <Table rowKey={record => record.id} dataSource={data} columns={columns} pagination={{ onChange: pageChange, total }} title={title} />
+      <Modal open={visible} onCancel={handleCancel} title={modalTitle} onOk={handleOk}>
+        <ClientForm form={form} onSaved={saved} />
+      </Modal>
     </>
   );
 }
 
-export default Client;

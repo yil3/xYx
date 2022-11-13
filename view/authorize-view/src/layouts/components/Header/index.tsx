@@ -2,7 +2,7 @@ import { Layout } from "antd";
 import Me from "./Me";
 import NavMenu from "./NavMenu";
 
-const Header = () => {
+export default function Header() {
   return (
     <Layout.Header
       style={{ padding: 0, display: "flex", backgroundColor: "#fff" }}
@@ -14,4 +14,3 @@ const Header = () => {
   );
 };
 
-export default Header;

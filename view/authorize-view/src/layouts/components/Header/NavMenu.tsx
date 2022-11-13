@@ -12,7 +12,7 @@ const items = [
   { label: "令牌", key: "/token" },
 ];
 
-const NavMenu = (_props: any) => {
+export default function NavMenu(_props: any) {
   const location = useLocation();
   const [current, setCurrent] = useState(location.pathname);
   const navigate = useNavigate();
@@ -23,4 +23,3 @@ const NavMenu = (_props: any) => {
   return <Menu style={{ flex: 1 }} onClick={onClick} mode="horizontal" defaultSelectedKeys={[current]} items={items} />;
 };
 
-export default NavMenu;

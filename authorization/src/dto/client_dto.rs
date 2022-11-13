@@ -8,6 +8,7 @@ use x_common::utils;
 use x_common::utils::date::DateTimeFormat;
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct ClientParam {
     pub id: Option<String>,
     pub secret: String,

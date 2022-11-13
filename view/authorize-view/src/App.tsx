@@ -1,7 +1,7 @@
 import Router from "@/routers";
 import AuthRouter from "./routers/utils/authRouter";
 
-function App() {
+export default function App() {
   return (
     <div className="App">
       <AuthRouter>
@@ -11,4 +11,3 @@ function App() {
   );
 }
 
-export default App;

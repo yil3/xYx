@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import './index.less'
 
 
-const Login = (_props: any) => {
+export default function Login(_props: any) {
   const navigate = useNavigate();
   const onFinish = (values: any) => {
     values.grant_type = 'password';
@@ -88,4 +88,3 @@ const Login = (_props: any) => {
   )
 }
 
-export default Login;

@@ -13,10 +13,6 @@ pub struct TokenParam {
     pub password: Option<String>,
 }
 
-#[derive(Deserialize)]
-pub struct TokenRefreshParam {
-    pub refresh_token: String,
-}
 
 #[derive(Serialize, Default)]
 pub struct TokenRecord {

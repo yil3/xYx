@@ -10,7 +10,7 @@ pub struct UserEntity {
     pub origin: Option<String>,
     pub password: String,
     pub created_at: OffsetDateTime,
-    pub updated_at: Option<OffsetDateTime>,
+    pub updated_at: OffsetDateTime,
 }
 
 impl Default for UserEntity {
@@ -21,7 +21,7 @@ impl Default for UserEntity {
             origin: Default::default(),
             password: String::from("hashed password"),
             created_at: OffsetDateTime::now_utc(),
-            updated_at: Some(OffsetDateTime::now_utc()),
+            updated_at: OffsetDateTime::now_utc(),
         }
     }
 }

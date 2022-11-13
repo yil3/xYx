@@ -1,6 +1,4 @@
--- Add migration script here
-
-drop table if exists sys_client;
+-- Add up migration script here
 
 create table sys_client(
   id varchar(32) not null primary key,

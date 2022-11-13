@@ -1,6 +1,6 @@
 import { Layout } from "antd";
 
-const Footer = () => {
+export default function Footer() {
   return (
     <Layout.Footer
       style={{
@@ -13,4 +13,3 @@ const Footer = () => {
   );
 };
 
-export default Footer;

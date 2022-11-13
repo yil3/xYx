@@ -1,7 +1,5 @@
--- Add migration script here
+-- Add up migration script here
 
-
-drop table if exists sys_token;
 
 create table sys_token(
   id varchar(32) not null primary key,

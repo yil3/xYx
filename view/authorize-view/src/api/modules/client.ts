@@ -9,8 +9,8 @@ export const saveClient = (data: any) => {
   return http.post('/auth/client/save_client', data);
 };
 
-export const fetchClientList = (params: any) => {
-  return http.get('/auth/client/list', params);
+export const fetchClientPage = (params: any) => {
+  return http.get('/auth/client/page', params);
 }
 
 export const deleteClient = (id: any) => {
