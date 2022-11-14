@@ -33,6 +33,9 @@ impl TokenService {
         Ok(TokenRepository.update_by_id(record).await?)
     }
 
+    pub async fn remove_expired_token(&self) {
+        TokenRepository.remove_expired_token().await.expect("remove_expired_token error");
+    }
     pub async fn get_page(&self, params: &PageParam) -> Result<Page<TokenRecord>> {
         Ok(Page::build(
             params.page,

@@ -3,11 +3,14 @@ use crate::{
     service::authorize_service::AuthorizeService,
 };
 use axum::{
+    body::Body,
     extract::{Path, Query},
+    http::Request,
     response::{IntoResponse, Redirect},
     routing::{get, post},
     Json, Router,
 };
+use reqwest::header::AUTHORIZATION;
 use x_common::model::response::R;
 use x_core::middleware::authentication::CurrentUser;
 
@@ -43,6 +46,15 @@ pub async fn refresh_token(refresh_token: Path<String>) -> impl IntoResponse {
     }
 }
 
-pub async fn sign_out() -> impl IntoResponse {
+pub async fn sign_out(request: Request<Body>) -> impl IntoResponse {
+    let access_token = request
+        .headers()
+        .get(AUTHORIZATION)
+        .and_then(|token| token.to_str().ok())
+        .and_then(|str| Some(str.replace("Bearer ", "")));
+    AuthorizeService
+        .signout(&access_token.unwrap_or_default())
+        .await
+        .expect_err("sign out error");
     Json(R::success(()))
 }

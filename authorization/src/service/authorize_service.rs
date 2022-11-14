@@ -1,7 +1,7 @@
 use crate::{
     dto::{
         authorize_dto::AuthorizeParam,
-        token_dto::{TokenParam, TokenRecord},
+        token_dto::{TokenDto, TokenParam},
     },
     repository::token_repository::TokenRepository,
 };
@@ -47,30 +47,7 @@ impl AuthorizeService {
         Ok(url)
     }
 
-    pub async fn generate_token(&self, client_id: &str, userid: &str, scope: &Option<String>) -> XResult<TokenRecord> {
-        let entity = TokenService
-            .generate_token(client_id, userid, scope)
-            .await
-            .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
-        Ok(entity.into_dto())
-    }
-
-    pub async fn generate_code(&self, userid: &str) -> XResult<String> {
-        let key = utils::code::uuid();
-        Application::redis()
-            .set_ex(&key, userid, 600)
-            .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
-        Ok(key)
-    }
-
-    pub async fn verify_client(&self, client_id: &str) -> XResult<()> {
-        match ClientService.find_by_id(client_id).await {
-            Ok(_client) => Ok(()),
-            Err(_) => Err(XError::AnyhowError(anyhow!("client is invalid"))),
-        }
-    }
-
-    pub async fn token(&self, params: &TokenParam) -> XResult<TokenRecord> {
+    pub async fn token(&self, params: &TokenParam) -> XResult<TokenDto> {
         if params.grant_type == "authorization_code" {
             let code = params.code.as_ref().unwrap();
             match self.validate_code(code) {
@@ -92,7 +69,40 @@ impl AuthorizeService {
         Err(XError::InternalServerError)
     }
 
-    pub async fn validate_user(&self, account: &str, password: &str) -> XResult<String> {
+    pub async fn refresh_token(&self, refresh_token: &str) -> XResult<TokenDto> {
+        Ok(TokenService.refresh_token(refresh_token).await?.into_dto())
+    }
+
+    pub async fn signout(&self, access_token: &str) -> XResult<()> {
+        Application::redis().del(access_token).map_err(|e| XError::AnyhowError(anyhow!(e)))?;
+        TokenService.remove_expired_token().await;
+        Ok(())
+    }
+
+    async fn generate_token(&self, client_id: &str, userid: &str, scope: &Option<String>) -> XResult<TokenDto> {
+        let entity = TokenService
+            .generate_token(client_id, userid, scope)
+            .await
+            .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
+        Ok(entity.into_dto())
+    }
+
+    async fn generate_code(&self, userid: &str) -> XResult<String> {
+        let key = utils::code::uuid();
+        Application::redis()
+            .set_ex(&key, userid, 600)
+            .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
+        Ok(key)
+    }
+
+    async fn verify_client(&self, client_id: &str) -> XResult<()> {
+        match ClientService.find_by_id(client_id).await {
+            Ok(_client) => Ok(()),
+            Err(_) => Err(XError::AnyhowError(anyhow!("client is invalid"))),
+        }
+    }
+
+    async fn validate_user(&self, account: &str, password: &str) -> XResult<String> {
         let row = TokenRepository
             .fetch_user_by_account(account)
             .await
@@ -108,11 +118,10 @@ impl AuthorizeService {
         }
     }
 
-    pub async fn refresh_token(&self, refresh_token: &str) -> XResult<TokenRecord> {
-        Ok(TokenService.refresh_token(refresh_token).await?.into_dto())
-    }
-
-    pub fn validate_code(&self, code: &str) -> Option<String> {
-        Some(Application::redis().get(code).unwrap())
+    fn validate_code(&self, code: &str) -> Option<String> {
+        match Application::redis().get(code) {
+            Ok(userid) => Some(userid),
+            _ => None,
+        }
     }
 }

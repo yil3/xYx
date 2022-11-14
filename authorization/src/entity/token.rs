@@ -2,7 +2,7 @@ use time::OffsetDateTime;
 use x_common::utils::code::{unique_id, uuid};
 use x_core::application::Application;
 
-use crate::dto::token_dto::TokenRecord;
+use crate::dto::token_dto::TokenDto;
 
 /**
 * @Author xYx
@@ -40,14 +40,13 @@ impl Default for TokenEntity {
 }
 
 impl TokenEntity {
-    pub fn into_dto(self) -> TokenRecord {
-        TokenRecord {
+    pub fn into_dto(self) -> TokenDto {
+        TokenDto {
             access_token: self.access_token,
             refresh_token: self.refresh_token,
             expires_in: self.expires_in,
             token_type: self.token_type,
             scope: Some(self.scope.unwrap_or_default()),
-            total: Some(0)
         }
     }
 }

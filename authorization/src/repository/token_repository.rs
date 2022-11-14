@@ -96,4 +96,15 @@ impl TokenRepository {
         .fetch_all(&*PG_POOL)
         .await
     }
+
+    pub async fn remove_expired_token(&self) -> Result<u64, sqlx::Error> {
+        query!(
+            r#"
+            delete from sys_token where created_at + make_interval(secs => expires_in) < current_timestamp
+            "#,
+        )
+        .execute(&*PG_POOL)
+        .await
+        .map(|r| r.rows_affected())
+    }
 }

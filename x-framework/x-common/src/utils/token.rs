@@ -34,9 +34,9 @@ impl TokenUtils {
         Ok(token)
     }
 
-    pub fn fetch_current_user_id_from_jwt_token(token: String) -> XResult<String>{
+    pub fn fetch_current_user_id_from_jwt_token(token: &str) -> XResult<String>{
         let decoded_token = decode::<Claims>(
-            token.as_str(),
+            token,
             &DecodingKey::from_secret(env::var("TOKEN_SECRET").unwrap().as_bytes()),
             &Validation::new(Algorithm::HS256),
         )
