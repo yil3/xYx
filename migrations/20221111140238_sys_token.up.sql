@@ -2,7 +2,7 @@
 
 
 create table sys_token(
-  id varchar(32) not null primary key,
+  id uuid primary key default gen_random_uuid(),
   client_id varchar not null,
   owner varchar not null,
   access_token varchar not null,

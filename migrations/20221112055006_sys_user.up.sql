@@ -1,7 +1,7 @@
 -- Add up migration script here
 
 create table sys_user(
-  id varchar(32) not null primary key,
+  id uuid primary key default gen_random_uuid(),
   password varchar not null,
   origin varchar,
   created_at timestamptz not null default now(),

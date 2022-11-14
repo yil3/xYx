@@ -1,7 +1,7 @@
 -- Add up migration script here
 
 create table sys_client(
-  id varchar(32) not null primary key,
+  id uuid primary key default gen_random_uuid(),
   name varchar not null,
   secret varchar not null,
   redirect_uri varchar not null,
