@@ -1,13 +1,12 @@
+use std::env;
 use std::ops::Add;
 use std::time::{Duration, SystemTime};
-use std::env;
 
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use sqlx::types::time::OffsetDateTime;
 
-use crate::errors::{XResult, XError};
+use crate::errors::{XError, XResult};
 use crate::model::authorize::Claims;
-
 
 pub struct TokenUtils;
 
@@ -34,7 +33,7 @@ impl TokenUtils {
         Ok(token)
     }
 
-    pub fn fetch_current_user_id_from_jwt_token(token: &str) -> XResult<String>{
+    pub fn fetch_current_user_id(token: &str) -> XResult<String> {
         let decoded_token = decode::<Claims>(
             token,
             &DecodingKey::from_secret(env::var("TOKEN_SECRET").unwrap().as_bytes()),
@@ -43,5 +42,15 @@ impl TokenUtils {
         .map_err(|err| XError::InternalServerErrorWithContext(err.to_string()))?;
 
         Ok(decoded_token.claims.user_id)
+    }
+
+    pub fn fetch_claims(token: &str) -> XResult<Claims> {
+        let decoded_token = decode::<Claims>(
+            token,
+            &DecodingKey::from_secret(env::var("TOKEN_SECRET").unwrap().as_bytes()),
+            &Validation::new(Algorithm::HS256),
+        )
+        .map_err(|err| XError::InternalServerErrorWithContext(err.to_string()))?;
+        Ok(decoded_token.claims)
     }
 }

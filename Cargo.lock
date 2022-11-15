@@ -83,7 +83,7 @@ dependencies = [
  "sqlx",
  "time",
  "tokio",
- "validator 0.16.0",
+ "validator",
  "x-common",
  "x-core",
 ]
@@ -206,9 +206,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "chrono"
-version = "0.4.22"
+version = "0.4.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bfd4d1b31faaa3a89d7934dbded3111da0d2ef28e3ebccdb4f0179f5929d1ef1"
+checksum = "16b0a3d9ed01224b22057780a37bb8c5dbfe1be8ba48678e7bf57ec4b385411f"
 dependencies = [
  "iana-time-zone",
  "num-integer",
@@ -1445,9 +1445,9 @@ dependencies = [
 
 [[package]]
 name = "rs-snowflake"
-version = "0.5.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3148be9baabb59959aeaf4b27597bce9f071511a6a74a4a20a2c5681722a21e"
+checksum = "e60ef3b82994702bbe4e134d98aadca4b49ed04440148985678d415c68127666"
 
 [[package]]
 name = "rust-argon2"
@@ -2242,35 +2242,19 @@ dependencies = [
  "sqlx",
  "time",
  "tokio",
- "validator 0.16.0",
+ "validator",
  "x-common",
  "x-core",
 ]
 
 [[package]]
 name = "uuid"
-version = "0.8.2"
+version = "1.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
+checksum = "422ee0de9031b5b948b97a8fc04e3aa35230001a722ddd27943e0be31564ce4c"
 dependencies = [
  "getrandom",
  "serde",
-]
-
-[[package]]
-name = "validator"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f07b0a1390e01c0fc35ebb26b28ced33c9a3808f7f9fbe94d3cc01e233bfeed5"
-dependencies = [
- "idna 0.2.3",
- "lazy_static",
- "regex",
- "serde",
- "serde_derive",
- "serde_json",
- "url",
- "validator_derive 0.15.0",
 ]
 
 [[package]]
@@ -2286,23 +2270,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "url",
- "validator_derive 0.16.0",
-]
-
-[[package]]
-name = "validator_derive"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea7ed5e8cf2b6bdd64a6c4ce851da25388a89327b17b88424ceced6bd5017923"
-dependencies = [
- "if_chain",
- "lazy_static",
- "proc-macro-error",
- "proc-macro2",
- "quote",
- "regex",
- "syn",
- "validator_types 0.15.0",
+ "validator_derive",
 ]
 
 [[package]]
@@ -2318,17 +2286,7 @@ dependencies = [
  "quote",
  "regex",
  "syn",
- "validator_types 0.16.0",
-]
-
-[[package]]
-name = "validator_types"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2ddf34293296847abfc1493b15c6e2f5d3cd19f57ad7d22673bf4c6278da329"
-dependencies = [
- "proc-macro2",
- "syn",
+ "validator_types",
 ]
 
 [[package]]
@@ -2638,7 +2596,7 @@ dependencies = [
  "thiserror",
  "time",
  "uuid",
- "validator 0.15.0",
+ "validator",
 ]
 
 [[package]]
@@ -2666,6 +2624,6 @@ dependencies = [
  "tracing",
  "tracing-appender",
  "tracing-subscriber",
- "validator 0.16.0",
+ "validator",
  "x-common",
 ]

@@ -2,7 +2,7 @@
 
 create table sys_user_info(
   id uuid primary key default gen_random_uuid(),
-  owner varchar(32) not null unique,
+  owner varchar(64) not null unique,
   mobile varchar(32),
   email varchar,
   nickname varchar,

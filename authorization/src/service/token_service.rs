@@ -16,6 +16,7 @@ impl TokenService {
         record.client_id = client_id.to_owned();
         record.owner = user_id.to_owned();
         record.scope = scope.to_owned();
+        // TODO: 获取用户角色、权限
         let jwt_token = TokenUtils::generate_jwt_token(user_id.to_string(), "")?;
         record.jwt_token = jwt_token;
         Application::redis().set_ex(&record.access_token, &record.jwt_token, record.expires_in as usize)?;

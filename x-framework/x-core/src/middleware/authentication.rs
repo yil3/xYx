@@ -21,7 +21,6 @@ use crate::application::Application;
 #[derive(Clone, Copy)]
 pub struct XAuthorize;
 
-#[derive(Debug)]
 pub struct CurrentUser(String);
 
 impl CurrentUser {
@@ -43,7 +42,7 @@ where
         for path in paths {
             if uri.starts_with(&path) {
                 match find_jwt_token(&req.headers()).await {
-                    Ok(jwt_token) => match TokenUtils::fetch_current_user_id_from_jwt_token(&jwt_token) {
+                    Ok(jwt_token) => match TokenUtils::fetch_current_user_id(&jwt_token) {
                         Ok(user_id) => return Ok(CurrentUser(user_id)),
                         _ => return Ok(CurrentUser("".to_string())),
                     },
@@ -52,7 +51,7 @@ where
             }
         }
         match find_jwt_token(&req.headers()).await {
-            Ok(jwt_token) => match TokenUtils::fetch_current_user_id_from_jwt_token(&jwt_token) {
+            Ok(jwt_token) => match TokenUtils::fetch_current_user_id(&jwt_token) {
                 Ok(user_id) => Ok(CurrentUser(user_id)),
                 _ => Err(build_json_respones(StatusCode::UNAUTHORIZED, "token is invalid")),
             },
@@ -101,7 +100,7 @@ where
                 }
             }
             match find_jwt_token(request.headers()).await {
-                Ok(jwt_token) => match TokenUtils::fetch_current_user_id_from_jwt_token(&jwt_token) {
+                Ok(jwt_token) => match TokenUtils::fetch_current_user_id(&jwt_token) {
                     Ok(userid) => {
                         request.extensions_mut().insert(CurrentUser(userid));
                         return Ok(request);
