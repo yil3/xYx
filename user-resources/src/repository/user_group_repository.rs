@@ -46,7 +46,7 @@ impl UserGroupRepository {
     }
 
     pub async fn fetch_page(&self, param: &PageParam) -> Result<Vec<UserGroupDto>> {
-        let mut sql = String::from("select*, count(*) over() as total from user_group where 1 = 1");
+        let mut sql = String::from("select *, count(*) over() as total from user_group where 1 = 1");
         sql.push_str(&format!(" limit {} offset {}", param.limit(), param.offset()));
         sql.push_str(" order by created_at desc");
         let page = query_as(&sql).fetch_all(&*PG_POOL).await?;
