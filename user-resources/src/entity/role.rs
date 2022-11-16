@@ -1,17 +1,16 @@
-use sqlx::FromRow;
 use time::OffsetDateTime;
+
 /**
 * @Author xYx
-* @Date 2022-11-16 11:32:54
+* @Date 2022-11-16 11:31:09
 */
-#[derive(FromRow)]
-pub struct PermissionEntity {
+pub struct RoleEntity {
     pub id: String,
     pub owner: String,
     pub name: String,
     pub code: String,
-    pub role_id: String,
     pub description: String,
+    pub parent_id: String,
     pub status: bool,
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
@@ -19,16 +18,15 @@ pub struct PermissionEntity {
     pub updated_by: String,
 }
 
-pub struct PermissionTypeEntity {
+pub struct UserRoleEntity {
     pub id: String,
-    pub owner: String,
-    pub name: String,
-    pub description: String,
+    pub user_id: String,
+    pub role_id: String,
 }
 
-pub struct RolePermissionEntity {
+pub struct UserGroupRoleEntity {
     pub id: String,
+    pub user_group_id: String,
     pub role_id: String,
-    pub permission_id: String,
-    pub permission_type_id: String,
 }
+

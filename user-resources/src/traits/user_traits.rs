@@ -5,7 +5,8 @@ use async_trait::async_trait;
 
 use x_common::errors::XResult;
 
-use crate::entity::user_info::UserInfoEntity;
+use crate::entity::user::UserInfoEntity;
+
 
 pub type DynUsersService = Arc<dyn IUserService + Send + Sync>;
 pub type DynUsersRepository = Arc<dyn IUserRepository + Send + Sync>;

@@ -18,7 +18,7 @@ impl SucurityUtils {
         Ok(hashed_password)
     }
 
-    pub fn verify_password(stored_password: &str, attempted_password: String) -> XResult<bool> {
+    pub fn verify_password(stored_password: &str, attempted_password: &str) -> XResult<bool> {
         let hashes_match = argon2::verify_encoded(stored_password, attempted_password.as_bytes())
             .map_err(|err| XError::InternalServerErrorWithContext(err.to_string()))?;
         Ok(hashes_match)

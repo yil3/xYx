@@ -2,15 +2,15 @@
 
 
 create table sys_token(
-  id uuid primary key default gen_random_uuid(),
-  client_id varchar not null,
-  owner varchar not null,
+  id varchar(64) primary key default gen_random_uuid(),
+  client_id varchar(64) not null,
+  owner varchar(64) not null references sys_user(id),
   access_token varchar not null,
   refresh_token varchar not null,
   token_type varchar not null,
   expires_in int not null,
   scope varchar,
-  jwt_token varchar not null,
+  jwt_token text not null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

@@ -16,7 +16,7 @@ impl UserService {
 
     pub async fn validate_user(&self, account: &str, password: &str) -> XResult<UserEntity> {
         let user = UserRepository.fetch_user_by_account(account).await?;
-        if SucurityUtils::verify_password(&user.password, password.to_string())? {
+        if SucurityUtils::verify_password(&user.password, password)? {
             Ok(user)
         } else {
             Err(XError::InvalidLoginAttmpt)

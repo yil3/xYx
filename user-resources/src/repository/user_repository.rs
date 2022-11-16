@@ -1,10 +1,11 @@
 use anyhow::Result;
 use sqlx::{postgres::PgQueryResult, query, query_as, query_scalar};
-use x_common::utils::code;
 use x_core::application::PG_POOL;
 
-use crate::{entity::user::UserEntity, dto::user_dto::{RegisterUserParam, UpdateUserParam, UserRecord}};
-
+use crate::{
+    dto::user_dto::{RegisterUserParam, UpdateUserParam, UserRecord},
+    entity::user::UserEntity,
+};
 
 pub struct UserRepository;
 
@@ -13,7 +14,9 @@ impl UserRepository {
         let user = query_as!(
             UserEntity,
             r#"
-            SELECT * FROM sys_user WHERE account = $1
+            SELECT su.* FROM sys_user su
+            left join user_account ua on su.id = ua.owner
+            WHERE ua.account = $1
             "#,
             account
         )
@@ -22,22 +25,24 @@ impl UserRepository {
         Ok(user)
     }
     pub async fn insert(&self, record: &RegisterUserParam) -> Result<String> {
-        let id = code::unique_id();
         let mut trans = PG_POOL.begin().await?;
-        query_scalar!(
-            "INSERT INTO sys_user (id, account, password, origin) VALUES ($1, $2, $3, $4) returning id",
-            id,
-            record.account,
+        let id = query_scalar!(
+            "INSERT INTO sys_user (password, origin) VALUES ($1, $2) returning id",
             record.password,
-            record.origin
+            record.origin,
         )
         .fetch_one(&mut trans)
         .await?;
-
         query!(
-            "INSERT INTO sys_user_info (id, owner, nickname) VALUES ($1, $2, $3)",
-            code::unique_id(),
-            id,
+            r#"insert into user_account(account, owner, category) values ($1, $2, '0')"#,
+            record.account,
+            &id
+        )
+        .execute(&mut trans)
+        .await?;
+        query!(
+            "INSERT INTO user_info (owner, nickname) VALUES ($1, $2)",
+            &id,
             record.nickname
         )
         .execute(&mut trans)
@@ -67,9 +72,10 @@ impl UserRepository {
         let list = query_as!(
             UserRecord,
             r#"
-            select u.id , u.origin, u.account, ui.nickname, count(*) over() as total 
+            select u.id , u.origin, ua.account, ui.nickname, count(*) over() as total 
             from sys_user u
-            left join sys_user_info ui on ui.owner = u.id
+            left join user_account ua on u.id = ua.owner and ua.category = '0'
+            left join user_info ui on ui.owner = u.id
             left join sys_token st on st.owner = u.id
             limit $1 offset $2
             "#,

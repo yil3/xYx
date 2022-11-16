@@ -2,7 +2,7 @@ use anyhow::{Ok, Result};
 use x_common::model::page::{Page, PageParam};
 
 use crate::{
-    dto::client_dto::{ClientParam, ClientRecord},
+    dto::client_dto::{ClientParam, ClientDto},
     entity::client::ClientEntity,
     repository::client_repository::ClientRepository,
 };
@@ -10,7 +10,7 @@ use crate::{
 pub struct ClientService;
 
 impl ClientService {
-    pub async fn save(&self, record: &ClientParam) -> Result<ClientEntity> {
+    pub async fn save(&self, record: &ClientParam) -> Result<ClientDto> {
         let entity = record.into_entity();
         if record.id.is_some() {
             Ok(ClientRepository.update(&entity).await?)
@@ -23,7 +23,7 @@ impl ClientService {
         Ok(ClientRepository.fetch_by_id(id).await?)
     }
 
-    pub async fn get_page(&self, params: &PageParam) -> Result<Page<ClientRecord>> {
+    pub async fn get_page(&self, params: &PageParam) -> Result<Page<ClientDto>> {
         Ok(Page::build(
             params.page,
             params.size,

@@ -108,7 +108,7 @@ impl AuthorizeService {
             .await
             .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
         if let Ok(stored_password) = row.try_get::<String, &str>("password") {
-            if SucurityUtils::verify_password(&stored_password, password.to_string())? {
+            if SucurityUtils::verify_password(&stored_password, password)? {
                 Ok(row.get::<String, &str>("id"))
             } else {
                 Err(XError::InvalidLoginAttmpt)

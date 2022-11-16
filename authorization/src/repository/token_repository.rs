@@ -9,7 +9,9 @@ impl TokenRepository {
     pub async fn fetch_user_by_account(&self, account: &str) -> Result<PgRow, sqlx::Error> {
         query(
             r#"
-            SELECT id, password FROM sys_user WHERE account = $1
+            SELECT su.* FROM sys_user su
+            left join user_account ua on su.id = ua.owner
+            WHERE ua.account = $1
             "#,
         )
         .bind(account)

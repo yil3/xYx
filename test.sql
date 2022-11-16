@@ -20,7 +20,9 @@ values
 
 delete from sys_token where created_at + (expires_in || ' sec')::interval < current_timestamp;
 delete from sys_token where created_at + expires_in * interval '1 sec' < current_timestamp;
-delete from sys_token where created_at + make_interval(secs => expires_in) < current_timestamp
+delete from sys_token where created_at + make_interval(secs => expires_in) < current_timestamp;
 
-select * from sys_user_group;
+select * from user_group;
+select * from sys_user;
+
 

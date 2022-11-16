@@ -13,8 +13,8 @@ export default function Login(_props: any) {
     values.client_secret = '2';
     login(values).then(res => {
       if (res.success) {
-        localStorage.setItem("token", res.data.access_token);
-        localStorage.setItem("jwt_token", JSON.stringify(res.data));
+        localStorage.setItem("token", res.data.accessToken);
+        localStorage.setItem("jwtToken", JSON.stringify(res.data));
         message.success("login success");
         navigate("/");
       } else {
@@ -75,7 +75,7 @@ export default function Login(_props: any) {
                 </div>
                 <div style={{ display: "flex", flexFlow: "wrap" }}>
                   <Space>
-                    <WechatOutlined style={{ fontSize: '20px' }}/>
+                    <WechatOutlined style={{ fontSize: '20px' }} />
                   </Space>
                 </div>
               </div>

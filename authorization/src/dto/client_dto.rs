@@ -22,12 +22,13 @@ pub struct ClientParam {
 #[derive(FromRow)]
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ClientRecord {
+pub struct ClientDto {
     pub id: String,
     pub secret: String,
     pub name: String,
     pub redirect_uri: String,
     pub scope: String,
+    pub status: bool,
     pub owner: Option<String>,
     #[serde_as(as = "DateTimeFormat")]
     pub created_at: OffsetDateTime,
@@ -38,7 +39,7 @@ pub struct ClientRecord {
     pub total: Option<i64>,
 }
 
-impl Pageable for ClientRecord {
+impl Pageable for ClientDto {
     fn total(&self) -> i64 {
         self.total.unwrap_or_default()
     }
@@ -55,6 +56,7 @@ impl ClientParam {
             name: String::from(&self.name),
             redirect_uri: String::from(&self.redirect_uri),
             scope: String::from(&self.scope),
+            status: true,
             owner: self.owner.clone(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),

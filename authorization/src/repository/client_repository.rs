@@ -2,7 +2,7 @@ use anyhow::Result;
 use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
-use crate::{dto::client_dto::ClientRecord, entity::client::ClientEntity};
+use crate::{dto::client_dto::ClientDto, entity::client::ClientEntity};
 
 pub struct ClientRepository;
 
@@ -19,28 +19,25 @@ impl ClientRepository {
         .await
     }
 
-    pub async fn insert(&self, record: &ClientEntity) -> Result<ClientEntity, sqlx::Error> {
-        sqlx::query_as!(
-            ClientEntity,
+    pub async fn insert(&self, record: &ClientEntity) -> Result<ClientDto, sqlx::Error> {
+        sqlx::query_as(
             r#"
-            INSERT INTO sys_client (id, name, secret, redirect_uri, scope, owner)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            INSERT INTO sys_client (name, secret, redirect_uri, scope, owner)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING *
             "#,
-            record.id,
-            record.name,
-            record.secret,
-            record.redirect_uri,
-            record.scope,
-            record.owner,
         )
+        .bind(&record.name)
+        .bind(&record.secret)
+        .bind(&record.redirect_uri)
+        .bind(&record.scope)
+        .bind(&record.owner)
         .fetch_one(&*PG_POOL)
         .await
     }
 
-    pub async fn update(&self, record: &ClientEntity) -> Result<ClientEntity, sqlx::Error> {
-        sqlx::query_as!(
-            ClientEntity,
+    pub async fn update(&self, record: &ClientEntity) -> Result<ClientDto, sqlx::Error> {
+        sqlx::query_as(
             r#"
             UPDATE sys_client
             SET name = coalesce($1, name),
@@ -52,20 +49,20 @@ impl ClientRepository {
             WHERE id = $6
             RETURNING *
             "#,
-            record.name,
-            record.secret,
-            record.redirect_uri,
-            record.scope,
-            record.owner,
-            record.id,
         )
+        .bind(&record.name)
+        .bind(&record.secret)
+        .bind(&record.redirect_uri)
+        .bind(&record.scope)
+        .bind(&record.owner)
+        .bind(&record.id)
         .fetch_one(&*PG_POOL)
         .await
     }
 
-    pub async fn fetch_page(&self, param: &PageParam) -> Result<Vec<ClientRecord>, sqlx::Error> {
+    pub async fn fetch_page(&self, param: &PageParam) -> Result<Vec<ClientDto>, sqlx::Error> {
         sqlx::query_as!(
-            ClientRecord,
+            ClientDto,
             r#"
             SELECT *, count(*) OVER() AS total
             FROM sys_client

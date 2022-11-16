@@ -14,6 +14,7 @@ pub struct ClientEntity {
     pub redirect_uri: String,
     pub scope: String,
     pub owner: Option<String>,
+    pub status: bool,
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
 }
