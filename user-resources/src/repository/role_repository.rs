@@ -1,7 +1,8 @@
-use sqlx::query_scalar;
+use sqlx::{query_as, query_scalar};
+use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
-use crate::entity::role::RoleEntity;
+use crate::{dto::role_dto::RoleDto, entity::role::RoleEntity};
 
 /**
 * @Author xYx
@@ -51,5 +52,24 @@ impl RoleRepository {
         .fetch_one(&*PG_POOL)
         .await?;
         Ok(id)
+    }
+
+    pub async fn delete(&self, id: &str) -> anyhow::Result<String> {
+        let id = query_scalar!("DELETE FROM sys_role WHERE id = $1 RETURNING id", id)
+            .fetch_one(&*PG_POOL)
+            .await?;
+        Ok(id)
+    }
+
+    pub async fn fetch_page(&self, param: PageParam) -> Result<Vec<RoleDto>, sqlx::Error> {
+        let mut sql = "SELECT * FROM sys_role WHERE 1 = 1".to_string();
+        if let Some(query) = &param.query {
+            if !query.is_empty() {
+                sql.push_str(&format!(" AND name LIKE '%{}%'", query));
+            }
+        }
+        sql.push_str(" ORDER BY created_at DESC");
+        sql.push_str(&format!(" LIMIT {} OFFSET {}", param.limit(), param.offset()));
+        query_as(&sql).fetch_all(&*PG_POOL).await
     }
 }
