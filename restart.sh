@@ -12,33 +12,31 @@ echo -n "please input number: "
 read num
 
 case $num in 
-  1) echo 'restart authorization'
-    if [ -n "$(lsof -i:5000 -t)" ]
+  1) if [ -n "$(lsof -i:5000 -t)" ]
       then kill -9 $(lsof -i:5000 -t)
     fi
-    cd ./authorization
-    nohup cargo run > /dev/null 2>&1 &
+    nohup cargo run --bin authorization > /dev/null 2>&1 &
+    echo 'restartd authorization'
     ;;
-  2) echo 'restart user-resource'
-    if [ -n "$(lsof -i:5010 -t)" ]
+  2) if [ -n "$(lsof -i:5010 -t)" ]
       then kill -9 $(lsof -i:5010 -t)
     fi
-    cd ./user-resources
-    nohup cargo run > /dev/null 2>&1 &
+    nohup cargo run --bin user-resources > /dev/null 2>&1 &
+    echo 'restartd user-resources'
     ;;
-  3) echo 'restart authorize-view'
-    if [ -n "$(lsof -i:3000 -t)" ]
+  3) if [ -n "$(lsof -i:3000 -t)" ]
       then kill -9 $(lsof -i:3000 -t)
     fi
     cd ./view/authorize-view
     nohup yarn dev > /dev/null 2>&1 &
+    echo 'restartd authorize-view'
     ;;
-  4) echo 'restart user-resource-view'
-    if [ -n "$(lsof -i:3010 -t)" ]
+  4) if [ -n "$(lsof -i:3010 -t)" ]
       then kill -9 $(lsof -i:3010 -t)
     fi
     cd ./view/user-resource-view
     nohup yarn dev > /dev/null 2>&1 &
+    echo 'restartd user-resource-view'
     ;;
   *) echo 'please input number 1-4'
     exit 1

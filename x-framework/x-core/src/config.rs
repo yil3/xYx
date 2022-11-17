@@ -66,7 +66,6 @@ impl AppConfig {
             .unwrap_or_default()
             .to_owned()
             + "/application.yml";
-        println!("path1: {}", path1);
         let yml_str = match read_to_string(&path1) {
             Ok(str) => str,
             Err(_) => {

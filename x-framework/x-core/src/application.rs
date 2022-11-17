@@ -20,7 +20,7 @@ use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use tracing::debug;
-use tracing_appender::rolling;
+use tracing_appender::{non_blocking, rolling};
 use tracing_subscriber::fmt::writer::MakeWriterExt;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -88,15 +88,16 @@ impl Application {
             .map(|p| p.file_name().unwrap().to_str().unwrap())
             .unwrap_or_default()
             .to_owned();
-        let debug_file = rolling::daily(String::from(&exe) + "/logs", "debug");
-        let error_file = rolling::daily(String::from(&exe) + "/logs", "error").with_max_level(tracing::Level::ERROR);
-        let all_files = debug_file.and(error_file);
+        let all_log = rolling::daily("logs", String::from(&exe) + "_debug");
+        let error_log = rolling::daily("logs", String::from(&exe) + "_error").with_max_level(tracing::Level::ERROR);
+        let (non_blocking, _guard) = non_blocking(all_log);
+        let all_log = non_blocking.and(error_log);
         let local_time = OffsetTime::new(
             UtcOffset::from_hms(8, 0, 0).unwrap(),
             format_description!("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]"),
         );
         tracing_subscriber::registry()
-            .with(fmt::layer().with_writer(all_files).with_ansi(false))
+            .with(fmt::layer().with_writer(all_log).with_ansi(false))
             .with(fmt::layer().with_timer(local_time))
             .with(EnvFilter::new(&self.config.log.level))
             .init();
