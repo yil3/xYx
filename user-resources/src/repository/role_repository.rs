@@ -72,4 +72,11 @@ impl RoleRepository {
         sql.push_str(&format!(" LIMIT {} OFFSET {}", param.limit(), param.offset()));
         query_as(&sql).fetch_all(&*PG_POOL).await
     }
+
+    pub async fn fetch_by_parent_id(&self, parent_id: &str) -> Result<Vec<RoleDto>, sqlx::Error> {
+        query_as("SELECT * FROM sys_role WHERE parent_id = $1")
+            .bind(parent_id)
+            .fetch_all(&*PG_POOL)
+            .await
+    }
 }

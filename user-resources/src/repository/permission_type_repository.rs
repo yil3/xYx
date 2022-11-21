@@ -1,6 +1,6 @@
 use x_core::application::PG_POOL;
 
-use crate::entity::permission::PermissionEntity;
+use crate::entity::permission::PermissionTypeEntity;
 
 /**
 * @Author xYx
@@ -10,8 +10,8 @@ use crate::entity::permission::PermissionEntity;
 pub struct PermissionTypeRepository;
 
 impl PermissionTypeRepository {
-    pub async fn insert(&self, record: &PermissionEntity) -> Result<String, sqlx::Error> {
-        sqlx::query_scalar!(
+    pub async fn insert(&self, mut record: PermissionTypeEntity) -> anyhow::Result<PermissionTypeEntity> {
+        let id = sqlx::query_scalar!(
             r#"
             INSERT INTO permission_type (owner, name, description)
             VALUES ($1, $2, $3)
@@ -22,10 +22,12 @@ impl PermissionTypeRepository {
             &record.description
         )
         .fetch_one(&*PG_POOL)
-        .await
+        .await?;
+        record.id = id;
+        Ok(record)
     }
-    
-    pub async fn update(&self, record: &PermissionEntity) -> Result<String, sqlx::Error> {
+
+    pub async fn update(&self, record: PermissionTypeEntity) -> anyhow::Result<PermissionTypeEntity> {
         sqlx::query_scalar!(
             r#"
             UPDATE permission_type
@@ -38,6 +40,32 @@ impl PermissionTypeRepository {
             &record.id
         )
         .fetch_one(&*PG_POOL)
+        .await?;
+        Ok(record)
+    }
+
+    pub async fn delete(&self, id: &str) -> Result<u64, sqlx::Error> {
+        sqlx::query!(
+            r#"
+            DELETE FROM permission_type
+            WHERE id = $1
+            "#,
+            id
+        )
+        .execute(&*PG_POOL)
+        .await
+        .map(|r| r.rows_affected())
+    }
+
+    pub async fn fetch_all(&self) -> Result<Vec<PermissionTypeEntity>, sqlx::Error> {
+        sqlx::query_as!(
+            PermissionTypeEntity,
+            r#"
+            SELECT id, owner, name, description
+            FROM permission_type
+            "#,
+        )
+        .fetch_all(&*PG_POOL)
         .await
     }
 }

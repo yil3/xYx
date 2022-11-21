@@ -32,6 +32,7 @@ pub struct RoleDto {
     pub total: i64,
 }
 
+
 #[derive(Deserialize)]
 pub struct RoleParam {
     pub id: Option<String>,
