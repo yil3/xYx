@@ -6,7 +6,7 @@
 pub struct UserUserGroupService;
 
 impl UserUserGroupService {
-    pub async fn save(user_id: &str, group_id: &str) -> anyhow::Result<u64> {
-        todo!()
-    }
+    // pub async fn save(user_id: &str, group_id: &str) -> anyhow::Result<u64> {
+    //     todo!()
+    // }
 }

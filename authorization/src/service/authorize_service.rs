@@ -1,12 +1,9 @@
 use crate::{
-    dto::{
-        authorize_dto::AuthorizeParam,
-        token_dto::{TokenDto, TokenParam},
-    },
+    domain::{authorize_domain::AuthorizeParam, token_domain::TokenParam},
+    dto::token_dto::TokenDto,
     repository::token_repository::TokenRepository,
 };
 use anyhow::anyhow;
-use axum::extract::Query;
 use redis::Commands;
 use sqlx::Row;
 use x_common::{
@@ -20,7 +17,7 @@ use super::{client_service::ClientService, token_service::TokenService};
 pub struct AuthorizeService;
 
 impl AuthorizeService {
-    pub async fn authorize(&self, params: Query<AuthorizeParam>, userid: &str) -> XResult<String> {
+    pub async fn authorize(&self, params: &AuthorizeParam, userid: &str) -> XResult<String> {
         let mut url = params.redirect_uri.clone();
         if params.client_id.is_empty() {
             url.push_str("?error=client_is_empty");
@@ -74,7 +71,9 @@ impl AuthorizeService {
     }
 
     pub async fn signout(&self, access_token: &str) -> XResult<()> {
-        Application::redis().del(access_token).map_err(|e| XError::AnyhowError(anyhow!(e)))?;
+        Application::redis()
+            .del(access_token)
+            .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
         TokenService.remove_expired_token().await;
         Ok(())
     }

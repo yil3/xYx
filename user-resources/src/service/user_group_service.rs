@@ -1,7 +1,7 @@
 use x_common::model::page::PageParam;
 
 use crate::{
-    dto::user_gourp_dto::{UserGroupDto, UserGroupParam},
+    domain::user_group_domain::UserGroupParam, dto::user_gourp_dto::UserGroupDto,
     repository::user_group_repository::UserGroupRepository,
 };
 
@@ -12,7 +12,7 @@ use crate::{
 pub struct UserGroupService;
 
 impl UserGroupService {
-    pub async fn save(param: UserGroupParam) -> anyhow::Result<UserGroupDto> {
+    pub async fn save(param: &UserGroupParam) -> anyhow::Result<UserGroupDto> {
         let record = param.into_entity();
         Ok(if record.id.is_empty() {
             UserGroupRepository.insert(&record).await?
@@ -21,7 +21,7 @@ impl UserGroupService {
         })
     }
 
-    pub async fn get_page(param: PageParam) -> anyhow::Result<Vec<UserGroupDto>> {
+    pub async fn page(param: PageParam) -> anyhow::Result<Vec<UserGroupDto>> {
         Ok(UserGroupRepository.fetch_page(&param).await?)
     }
 

@@ -1,5 +1,5 @@
 use crate::{
-    dto::{authorize_dto::AuthorizeParam, token_dto::TokenParam},
+    domain::{authorize_domain::AuthorizeParam, token_domain::TokenParam},
     service::authorize_service::AuthorizeService,
 };
 use axum::{
@@ -28,7 +28,7 @@ pub fn route() -> Router {
 }
 
 pub async fn authorize(params: Query<AuthorizeParam>, user: CurrentUser) -> impl IntoResponse {
-    let url = AuthorizeService.authorize(params, user.id()).await.unwrap();
+    let url = AuthorizeService.authorize(&params, user.id()).await.unwrap();
     Redirect::to(&url).into_response()
 }
 
