@@ -4,6 +4,7 @@ use time::OffsetDateTime;
 * @Author xYx
 * @Date 2022-11-16 11:25:24
 */
+#[derive(Clone)]
 pub struct UserGroupEntity {
     pub id: String,
     pub owner: String,

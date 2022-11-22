@@ -3,7 +3,8 @@ use sqlx::{postgres::PgQueryResult, query, query_as, query_scalar};
 use x_core::application::PG_POOL;
 
 use crate::{
-    dto::user_dto::{RegisterUserParam, UpdateUserParam, UserRecord},
+    domain::user_domain::{RegisterUserParam, UpdateUserParam},
+    dto::user_dto::UserDto,
     entity::user::UserEntity,
 };
 
@@ -68,9 +69,9 @@ impl UserRepository {
             .await?)
     }
 
-    pub async fn fetch_page(&self, limit: i64, offset: i64) -> Result<Vec<UserRecord>> {
+    pub async fn fetch_page(&self, limit: i64, offset: i64) -> Result<Vec<UserDto>> {
         let list = query_as!(
-            UserRecord,
+            UserDto,
             r#"
             select u.id , u.origin, ua.account, ui.nickname, count(*) over() as total 
             from sys_user u

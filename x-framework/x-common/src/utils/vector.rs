@@ -31,15 +31,15 @@ where
     ///    assert_eq!(tree.len(), 2);
     fn to_tree(&self, parent_id: &str) -> Vec<T> {
         let f = |pid: &str| -> Vec<T> {
-            let mut list = self
+            let mut v = self
                 .iter()
                 .filter(|x| x.get_parent_id() == pid)
                 .cloned()
                 .collect::<Vec<T>>();
-            for e in list.iter_mut() {
+            for e in v.iter_mut() {
                 e.set_children(self.to_tree(e.get_id()));
             }
-            list
+            v
         };
         f(parent_id)
     }

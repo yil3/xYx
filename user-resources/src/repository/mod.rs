@@ -1,4 +1,5 @@
 pub mod user_repository;
+pub mod user_user_group_repository;
 pub mod user_role_repository;
 pub mod user_group_role_repository;
 pub mod user_group_repository;

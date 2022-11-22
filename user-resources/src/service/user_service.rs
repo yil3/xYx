@@ -4,8 +4,13 @@ use x_common::{
     utils::sucurity::SucurityUtils,
 };
 
-use crate::{dto::user_dto::RegisterUserParam, entity::user::UserEntity, repository::user_repository::UserRepository};
-
+use crate::{
+    domain::user_domain::RegisterUserParam, entity::user::UserEntity, repository::user_repository::UserRepository,
+};
+/**
+* @Author xYx
+* @Date 2022-11-22 15:49:42
+*/
 pub struct UserService;
 impl UserService {
     pub async fn register(&self, input: &mut RegisterUserParam) -> Result<String> {

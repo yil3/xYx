@@ -3,5 +3,6 @@ pub mod repository;
 pub mod controller;
 pub mod traits;
 pub mod entity;
+pub mod domain;
 pub mod dto;
 pub mod router;
