@@ -1,8 +1,8 @@
 use axum::Router;
 
-use crate::controller::users_controller;
+use crate::handler::users_handler;
 
 pub fn router() -> Router {
     Router::new()
-        .nest("/user", users_controller::route())
+        .nest("/user", users_handler::route())
 }

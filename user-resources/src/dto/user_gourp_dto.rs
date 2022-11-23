@@ -10,7 +10,6 @@ use x_common::{model::page::Pageable, utils::date::DateTimeFormat};
 * @Date 2022-11-16 16:02:58
 */
 
-
 #[serde_as]
 #[derive(FromRow, Serialize)]
 #[serde(rename_all = "camelCase")]

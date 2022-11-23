@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use time::OffsetDateTime;
 
-use crate::entity::user_group::UserGroupEntity;
+use crate::entity::user_group::{UserGroupEntity, UserUserGroupEntity};
 
 /**
 * @Author xYx
@@ -20,11 +20,29 @@ pub struct UserGroupParam {
     pub updated_by: Option<String>,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UserUserGroupBody {
+    pub id: Option<String>,
+    pub user_id: String,
+    pub user_group_id: String,
+}
+
+impl UserUserGroupBody {
+    pub fn into_entity(&self) -> UserUserGroupEntity {
+        UserUserGroupEntity {
+            id: self.id.to_owned().unwrap_or_default(),
+            user_id: self.user_id.to_owned(),
+            user_group_id: self.user_group_id.to_owned(),
+        }
+    }
+}
+
 impl UserGroupParam {
     pub fn into_entity(&self) -> UserGroupEntity {
         UserGroupEntity {
             id: self.id.to_owned().unwrap_or_default(),
-            owner: self.owner.to_owned().unwrap_or_default(),
+            owner: self.owner.to_owned().unwrap_or("system".to_string()),
             name: self.name.to_owned().unwrap_or_default(),
             description: self.description.to_owned(),
             status: self.status.unwrap_or_default(),

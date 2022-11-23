@@ -9,6 +9,7 @@ use crate::entity::role::RoleEntity;
 */
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RoleParam {
     pub id: Option<String>,
     pub owner: Option<String>,
@@ -25,10 +26,10 @@ impl RoleParam {
     pub fn into_entity(&self) -> RoleEntity {
         RoleEntity {
             id: self.id.to_owned().unwrap_or_default(),
-            owner: self.owner.to_owned().unwrap_or_default(),
+            owner: self.owner.to_owned().unwrap_or("system".into()),
             name: self.name.to_owned().unwrap_or_default(),
             code: self.code.to_owned().unwrap_or_default(),
-            description: self.description.to_owned().unwrap_or_default(),
+            description: self.description.to_owned(),
             parent_id: self.parent_id.to_owned().unwrap_or_default(),
             status: self.status.unwrap_or_default(),
             created_at: OffsetDateTime::now_utc(),

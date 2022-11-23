@@ -3,7 +3,9 @@ use sqlx::query_as;
 use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
-use crate::{dto::user_gourp_dto::UserGroupDto, entity::user_group::UserGroupEntity};
+use crate::{
+    dto::user_gourp_dto::UserGroupDto, vo::user_group_vo::UserGroupParam,
+};
 
 /**
 * @Author xYx
@@ -12,35 +14,31 @@ use crate::{dto::user_gourp_dto::UserGroupDto, entity::user_group::UserGroupEnti
 pub struct UserGroupRepository;
 
 impl UserGroupRepository {
-    pub async fn insert(&self, record: &UserGroupEntity) -> Result<UserGroupDto> {
-        let record = query_as(
-            "INSERT INTO user_group (owner, name, description, created_by) VALUES ($1, $2, $3, $4) returning *",
-        )
-        .bind(&record.owner)
-        .bind(&record.name)
-        .bind(&record.description)
-        .bind(&record.created_by)
-        .fetch_one(&*PG_POOL)
-        .await?;
-        Ok(record)
+    pub async fn insert(&self, param: &UserGroupParam) -> Result<UserGroupDto, sqlx::Error> {
+        query_as("INSERT INTO user_group (owner, name, description, created_by) VALUES ($1, $2, $3, $4) returning *")
+            .bind(&param.owner)
+            .bind(&param.name)
+            .bind(&param.description)
+            .bind(&param.created_by)
+            .fetch_one(&*PG_POOL)
+            .await
     }
 
-    pub async fn update(&self, record: &UserGroupEntity) -> Result<UserGroupDto> {
-        let record = query_as(
+    pub async fn update(&self, param: &UserGroupParam) -> Result<UserGroupDto, sqlx::Error> {
+        query_as(
             r#"update user_group set 
             name = coalesce($1, name), description = coalesce($2, description), 
             status = coalesce($3, status), updated_by = coalesce($4, updated_by)
             where id = $5 
             returning *"#,
         )
-        .bind(&record.name)
-        .bind(&record.description)
-        .bind(&record.status)
-        .bind(&record.updated_by)
-        .bind(&record.id)
+        .bind(&param.name)
+        .bind(&param.description)
+        .bind(&param.status)
+        .bind(&param.updated_by)
+        .bind(&param.id)
         .fetch_one(&*PG_POOL)
-        .await?;
-        Ok(record)
+        .await
     }
 
     pub async fn fetch_page(&self, param: &PageParam) -> Result<Vec<UserGroupDto>> {

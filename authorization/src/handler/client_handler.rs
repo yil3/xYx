@@ -7,7 +7,7 @@ use axum::{
 use x_common::model::{page::PageParam, response::R};
 use x_core::middleware::authentication::CurrentUser;
 
-use crate::{domain::client_domain::ClientParam, service::client_service::ClientService};
+use crate::{vo::client_vo::ClientParam, service::client_service::ClientService};
 
 /**
 * @Author xYx

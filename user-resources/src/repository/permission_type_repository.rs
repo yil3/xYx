@@ -10,38 +10,37 @@ use crate::entity::permission::PermissionTypeEntity;
 pub struct PermissionTypeRepository;
 
 impl PermissionTypeRepository {
-    pub async fn insert(&self, mut record: PermissionTypeEntity) -> anyhow::Result<PermissionTypeEntity> {
-        let id = sqlx::query_scalar!(
+    pub async fn insert(&self, record: PermissionTypeEntity) -> Result<PermissionTypeEntity, sqlx::Error> {
+        sqlx::query_as!(
+            PermissionTypeEntity,
             r#"
             INSERT INTO permission_type (owner, name, description)
             VALUES ($1, $2, $3)
-            returning id
+            returning *
             "#,
-            &record.owner,
-            &record.name,
-            &record.description
+            record.owner,
+            record.name,
+            record.description
         )
         .fetch_one(&*PG_POOL)
-        .await?;
-        record.id = id;
-        Ok(record)
+        .await
     }
 
-    pub async fn update(&self, record: PermissionTypeEntity) -> anyhow::Result<PermissionTypeEntity> {
-        sqlx::query_scalar!(
+    pub async fn update(&self, record: PermissionTypeEntity) -> Result<PermissionTypeEntity, sqlx::Error> {
+        sqlx::query_as!(
+            PermissionTypeEntity,
             r#"
             UPDATE permission_type
             SET name = coalesce($1, name), description = coalesce($2, description)
             WHERE id = $3
-            returning id
+            returning *
             "#,
             &record.name,
             &record.description,
             &record.id
         )
         .fetch_one(&*PG_POOL)
-        .await?;
-        Ok(record)
+        .await
     }
 
     pub async fn delete(&self, id: &str) -> Result<u64, sqlx::Error> {

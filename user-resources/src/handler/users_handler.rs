@@ -7,7 +7,7 @@ use axum::{
 };
 use x_common::model::response::R;
 
-use crate::{domain::user_domain::RegisterUserParam, service::user_service::UserService};
+use crate::{vo::user_vo::RegisterUserParam, service::user_service::UserService};
 
 pub fn route() -> Router {
     Router::new()

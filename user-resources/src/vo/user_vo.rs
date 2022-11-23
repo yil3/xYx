@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use validator::Validate;
 
 /**
@@ -6,7 +6,7 @@ use validator::Validate;
 * @Date 2022-11-22 15:45:37
 */
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Deserialize, Validate)]
 pub struct RegisterUserParam {
     #[validate(required, length(min = 1), email(message = "email is invalid"))]
     pub email: Option<String>,
@@ -17,7 +17,7 @@ pub struct RegisterUserParam {
     pub origin: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Deserialize, Validate)]
 pub struct LoginUserParam {
     #[validate(required, length(min = 1), email(message = "email is invalid"))]
     pub email: Option<String>,
@@ -25,7 +25,7 @@ pub struct LoginUserParam {
     pub password: Option<String>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize)]
 pub struct UpdateUserParam {
     pub id: String,
     pub password: Option<String>,

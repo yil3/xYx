@@ -1,10 +1,8 @@
-use sqlx::FromRow;
 use time::OffsetDateTime;
 /**
 * @Author xYx
 * @Date 2022-11-16 11:32:54
 */
-#[derive(FromRow)]
 pub struct PermissionEntity {
     pub id: String,
     pub owner: String,

@@ -1,5 +1,5 @@
 use crate::{
-    domain::{authorize_domain::AuthorizeParam, token_domain::TokenParam},
+    vo::{authorize_vo::AuthorizeParam, token_vo::TokenParam},
     service::authorize_service::AuthorizeService,
 };
 use axum::{

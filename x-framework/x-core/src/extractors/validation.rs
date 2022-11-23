@@ -6,10 +6,10 @@ use validator::Validate;
 use x_common::errors::XError;
 
 #[derive(Debug, Clone, Copy, Default)]
-pub struct ValidationExtractor<T>(pub T);
+pub struct ValidationForm<T>(pub T);
 
 #[async_trait]
-impl<T, B> FromRequest<B> for ValidationExtractor<T>
+impl<T, B> FromRequest<B> for ValidationForm<T>
 where
     T: DeserializeOwned + Validate,
     B: http_body::Body + Send,
@@ -20,7 +20,7 @@ where
 
     async fn from_request(request: &mut RequestParts<B>) -> Result<Self, Self::Rejection> {
         let Json(value) = Json::<T>::from_request(request).await?;
-        value.validate().map_err(|e| XError::AnyhowError(anyhow::anyhow!(e)))?;
-        Ok(ValidationExtractor(value))
+        value.validate()?;
+        Ok(ValidationForm(value))
     }
 }

@@ -5,7 +5,7 @@ use x_common::{
 };
 
 use crate::{
-    domain::user_domain::RegisterUserParam, entity::user::UserEntity, repository::user_repository::UserRepository,
+    vo::user_vo::RegisterUserParam, entity::user::UserEntity, repository::user_repository::UserRepository,
 };
 /**
 * @Author xYx
@@ -26,5 +26,10 @@ impl UserService {
         } else {
             Err(XError::InvalidLoginAttmpt)
         }
+    }
+    
+    pub async fn get_user_by_group_id(&self, _group_id: &str) -> Result<Vec<UserEntity>> {
+        // TODO:
+        todo!()
     }
 }

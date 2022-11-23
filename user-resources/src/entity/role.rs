@@ -9,7 +9,7 @@ pub struct RoleEntity {
     pub owner: String,
     pub name: String,
     pub code: String,
-    pub description: String,
+    pub description: Option<String>,
     pub parent_id: String,
     pub status: bool,
     pub created_at: OffsetDateTime,

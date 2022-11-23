@@ -1,6 +1,6 @@
 use x_core::application::PG_POOL;
 
-use crate::entity::permission::PermissionEntity;
+use crate::{entity::permission::PermissionEntity, vo::permission_vo::PermissionParam};
 
 /**
 * @Author xYx
@@ -9,51 +9,51 @@ use crate::entity::permission::PermissionEntity;
 pub struct PermissionRepository;
 
 impl PermissionRepository {
-    pub async fn insert(&self, mut record: PermissionEntity) -> Result<PermissionEntity, sqlx::Error> {
-        let id = sqlx::query_scalar!(
+    pub async fn insert(&self, record: &PermissionParam) -> Result<PermissionEntity, sqlx::Error> {
+        sqlx::query_as!(
+            PermissionEntity,
             r#"
             insert into sys_permission 
             (owner, name, code, role_id, description, created_by, updated_by) 
             values ($1, $2, $3, $4, $5, $6, $7)
-            returning id
+            returning *
         "#,
-            &record.owner,
-            &record.name,
-            &record.code,
-            &record.role_id,
-            &record.description,
-            &record.created_by,
-            &record.updated_by
+            record.owner,
+            record.name,
+            record.code,
+            record.role_id,
+            record.description,
+            record.created_by,
+            record.updated_by
         )
         .fetch_one(&*PG_POOL)
-        .await?;
-        record.id = id;
-        Ok(record)
+        .await
     }
 
-    pub async fn update(&self, record: PermissionEntity) -> Result<PermissionEntity, sqlx::Error> {
-        sqlx::query!(
+    pub async fn update(&self, record: &PermissionParam) -> Result<PermissionEntity, sqlx::Error> {
+        sqlx::query_as!(
+            PermissionEntity,
             r#"
-            update sys_permission set
-            owner = coalesce($1, owner),
-            name = coalesce($2, name),
-            code = coalesce($3, code),
-            role_id = coalesce($4, role_id),
-            description = coalesce($5, description),
-            updated_by = coalesce($6, updated_by)
-            where id = $7
-        "#,
-            &record.owner,
-            &record.name,
-            &record.code,
-            &record.role_id,
-            &record.description,
-            &record.updated_by,
-            &record.id
+              update sys_permission set
+              owner = coalesce($1, owner),
+              name = coalesce($2, name),
+              code = coalesce($3, code),
+              role_id = coalesce($4, role_id),
+              description = coalesce($5, description),
+              updated_by = coalesce($6, updated_by)
+              where id = $7
+              returning *
+          "#,
+            record.owner,
+            record.name,
+            record.code,
+            record.role_id,
+            record.description,
+            record.updated_by,
+            record.id
         )
-        .execute(&*PG_POOL)
-        .await?;
-        Ok(record)
+        .fetch_one(&*PG_POOL)
+        .await
     }
 
     pub async fn delete(&self, id: &str) -> Result<u64, sqlx::Error> {

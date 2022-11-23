@@ -3,7 +3,7 @@ use sqlx::{postgres::PgQueryResult, query, query_as, query_scalar};
 use x_core::application::PG_POOL;
 
 use crate::{
-    domain::user_domain::{RegisterUserParam, UpdateUserParam},
+    vo::user_vo::{RegisterUserParam, UpdateUserParam},
     dto::user_dto::UserDto,
     entity::user::UserEntity,
 };

@@ -2,7 +2,7 @@ use anyhow::{Ok, Result};
 use x_common::model::page::{Page, PageParam};
 
 use crate::{
-    domain::client_domain::ClientParam, dto::client_dto::ClientDto, entity::client::ClientEntity,
+    vo::client_vo::ClientParam, dto::client_dto::ClientDto, entity::client::ClientEntity,
     repository::client_repository::ClientRepository,
 };
 

@@ -1,9 +1,9 @@
 use axum::Router;
 
-use crate::controller::{client_controller, authorize_controller};
+use crate::handler::{client_handler, authorize_handler};
 
 pub fn router() -> Router {
     Router::new()
-        .nest("/authorize", authorize_controller::route())
-        .nest("/client", client_controller::route())
+        .nest("/authorize", authorize_handler::route())
+        .nest("/client", client_handler::route())
 }
