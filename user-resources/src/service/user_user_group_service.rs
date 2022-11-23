@@ -1,4 +1,4 @@
-use crate::{repository::user_user_group_repository::UserUserGroupRepository, vo::user_group_vo::UserUserGroupBody};
+use crate::{repository::user_user_group_repository::UserUserGroupRepository, vo::user_group_vo::UserUserGroupParam};
 
 /**
 * @Author xYx
@@ -8,8 +8,8 @@ use crate::{repository::user_user_group_repository::UserUserGroupRepository, vo:
 pub struct UserUserGroupService;
 
 impl UserUserGroupService {
-    pub async fn save(param: &UserUserGroupBody) -> anyhow::Result<String> {
-        let entity = param.into_entity();
+    pub async fn save(param: &UserUserGroupParam) -> anyhow::Result<String> {
+        let entity = param.into_po();
         Ok(if entity.id.is_empty() {
             UserUserGroupRepository.insert(&entity).await?
         } else {

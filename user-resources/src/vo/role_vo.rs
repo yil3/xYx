@@ -23,7 +23,7 @@ pub struct RoleParam {
 }
 
 impl RoleParam {
-    pub fn into_entity(&self) -> Role {
+    pub fn into_po(&self) -> Role {
         Role {
             id: self.id.to_owned().unwrap_or_default(),
             owner: self.owner.to_owned().unwrap_or("system".into()),

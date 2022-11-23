@@ -2,7 +2,7 @@ use sqlx::{query, query_as};
 use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
-use crate::{dto::role_dto::RoleDto, po::role::Role, vo::role_vo::RoleParam};
+use crate::{po::role::Role, vo::role_vo::RoleParam, dto::role_dto::RolePageDto};
 
 /**
 * @Author xYx
@@ -61,8 +61,8 @@ impl RoleRepository {
             .map(|r| r.rows_affected())
     }
 
-    pub async fn fetch_page(&self, param: PageParam) -> Result<Vec<RoleDto>, sqlx::Error> {
-        let mut sql = "SELECT * FROM sys_role WHERE 1 = 1".to_string();
+    pub async fn fetch_page(&self, param: PageParam) -> Result<Vec<RolePageDto>, sqlx::Error> {
+        let mut sql = "SELECT *, count(*) over() total FROM sys_role WHERE 1 = 1".to_string();
         if let Some(query) = &param.query {
             if !query.is_empty() {
                 sql.push_str(&format!(" AND name LIKE '%{}%'", query));
@@ -73,14 +73,14 @@ impl RoleRepository {
         query_as(&sql).fetch_all(&*PG_POOL).await
     }
 
-    pub async fn fetch_by_parent_id(&self, parent_id: &str) -> Result<Vec<RoleDto>, sqlx::Error> {
+    pub async fn fetch_by_parent_id(&self, parent_id: &str) -> Result<Vec<Role>, sqlx::Error> {
         query_as("SELECT * FROM sys_role WHERE parent_id = $1")
             .bind(parent_id)
             .fetch_all(&*PG_POOL)
             .await
     }
 
-    pub async fn fetch_all(&self) -> Result<Vec<RoleDto>, sqlx::Error> {
+    pub async fn fetch_all(&self) -> Result<Vec<Role>, sqlx::Error> {
         query_as("SELECT * FROM sys_role").fetch_all(&*PG_POOL).await
     }
 }

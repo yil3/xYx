@@ -7,7 +7,7 @@ use axum::{
 };
 use x_common::model::response::R;
 
-use crate::{vo::user_vo::RegisterUserParam, service::user_service::UserService};
+use crate::{service::user_service::UserService, vo::user_vo::RegisterUserParam};
 
 pub fn route() -> Router {
     Router::new()
@@ -15,8 +15,8 @@ pub fn route() -> Router {
         .route("/page", get(fetch_page))
 }
 
-pub async fn register_user(mut input: Json<RegisterUserParam>) -> impl IntoResponse {
-    match UserService.register(input.deref_mut()).await {
+pub async fn register_user(mut param: Json<RegisterUserParam>) -> impl IntoResponse {
+    match UserService.register(param.deref_mut()).await {
         Ok(output) => Json(R::success(output)),
         Err(e) => Json(R::error(&e.to_string())),
     }

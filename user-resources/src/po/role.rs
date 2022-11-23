@@ -1,9 +1,11 @@
+use sqlx::FromRow;
 use time::OffsetDateTime;
 
 /**
 * @Author xYx
 * @Date 2022-11-16 11:31:09
 */
+#[derive(Debug, Clone, FromRow)]
 pub struct Role {
     pub id: String,
     pub owner: String,

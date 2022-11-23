@@ -34,19 +34,19 @@ pub struct PermissionDto {
 }
 
 impl From<Permission> for PermissionDto {
-    fn from(entity: Permission) -> Self {
+    fn from(record: Permission) -> Self {
         Self {
-            id: entity.id,
-            owner: entity.owner,
-            name: entity.name,
-            code: entity.code,
-            role_id: entity.role_id,
-            description: entity.description,
-            status: entity.status,
-            created_at: entity.created_at,
-            updated_at: entity.updated_at,
-            created_by: entity.created_by,
-            updated_by: entity.updated_by,
+            id: record.id,
+            owner: record.owner,
+            name: record.name,
+            code: record.code,
+            role_id: record.role_id,
+            description: record.description,
+            status: record.status,
+            created_at: record.created_at,
+            updated_at: record.updated_at,
+            created_by: record.created_by,
+            updated_by: record.updated_by,
             total: None,
         }
     }
