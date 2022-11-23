@@ -2,14 +2,14 @@ use anyhow::Result;
 use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
-use crate::{dto::client_dto::ClientDto, entity::client::ClientEntity};
+use crate::{dto::client_dto::ClientDto, po::client::Client};
 
 pub struct ClientRepository;
 
 impl ClientRepository {
-    pub async fn fetch_by_id(&self, id: &str) -> Result<ClientEntity, sqlx::Error> {
+    pub async fn fetch_by_id(&self, id: &str) -> Result<Client, sqlx::Error> {
         sqlx::query_as!(
-            ClientEntity,
+            Client,
             r#"
             SELECT * FROM sys_client WHERE id = $1
             "#,
@@ -19,7 +19,7 @@ impl ClientRepository {
         .await
     }
 
-    pub async fn insert(&self, record: &ClientEntity) -> Result<ClientDto, sqlx::Error> {
+    pub async fn insert(&self, record: &Client) -> Result<ClientDto, sqlx::Error> {
         sqlx::query_as(
             r#"
             INSERT INTO sys_client (name, secret, redirect_uri, scope, owner)
@@ -36,7 +36,7 @@ impl ClientRepository {
         .await
     }
 
-    pub async fn update(&self, record: &ClientEntity) -> Result<ClientDto, sqlx::Error> {
+    pub async fn update(&self, record: &Client) -> Result<ClientDto, sqlx::Error> {
         sqlx::query_as(
             r#"
             UPDATE sys_client

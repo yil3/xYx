@@ -1,6 +1,6 @@
 use x_core::application::PG_POOL;
 
-use crate::entity::permission::PermissionTypeEntity;
+use crate::po::permission::PermissionType;
 
 /**
 * @Author xYx
@@ -10,9 +10,9 @@ use crate::entity::permission::PermissionTypeEntity;
 pub struct PermissionTypeRepository;
 
 impl PermissionTypeRepository {
-    pub async fn insert(&self, record: PermissionTypeEntity) -> Result<PermissionTypeEntity, sqlx::Error> {
+    pub async fn insert(&self, record: PermissionType) -> Result<PermissionType, sqlx::Error> {
         sqlx::query_as!(
-            PermissionTypeEntity,
+            PermissionType,
             r#"
             INSERT INTO permission_type (owner, name, description)
             VALUES ($1, $2, $3)
@@ -26,9 +26,9 @@ impl PermissionTypeRepository {
         .await
     }
 
-    pub async fn update(&self, record: PermissionTypeEntity) -> Result<PermissionTypeEntity, sqlx::Error> {
+    pub async fn update(&self, record: PermissionType) -> Result<PermissionType, sqlx::Error> {
         sqlx::query_as!(
-            PermissionTypeEntity,
+            PermissionType,
             r#"
             UPDATE permission_type
             SET name = coalesce($1, name), description = coalesce($2, description)
@@ -56,9 +56,9 @@ impl PermissionTypeRepository {
         .map(|r| r.rows_affected())
     }
 
-    pub async fn fetch_all(&self) -> Result<Vec<PermissionTypeEntity>, sqlx::Error> {
+    pub async fn fetch_all(&self) -> Result<Vec<PermissionType>, sqlx::Error> {
         sqlx::query_as!(
-            PermissionTypeEntity,
+            PermissionType,
             r#"
             SELECT id, owner, name, description
             FROM permission_type

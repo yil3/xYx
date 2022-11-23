@@ -1,7 +1,7 @@
 use anyhow::Result;
 
 use crate::{
-    entity::role::RoleEntity, repository::role_repository::RoleRepository,
+    po::role::Role, repository::role_repository::RoleRepository,
     vo::role_vo::RoleParam,
 };
 
@@ -13,7 +13,7 @@ use crate::{
 pub struct RoleService;
 
 impl RoleService {
-    pub async fn save(&self, param: &mut RoleParam) -> Result<RoleEntity> {
+    pub async fn save(&self, param: &mut RoleParam) -> Result<Role> {
         Ok(if param.id.is_none() {
             RoleRepository.insert(param).await?
         } else {

@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::entity::permission::PermissionEntity;
+use crate::po::permission::Permission;
 
 /**
 * @Author xYx
@@ -22,8 +22,8 @@ pub struct PermissionParam {
 }
 
 impl PermissionParam {
-    pub fn into_entity(&self) -> PermissionEntity {
-        PermissionEntity {
+    pub fn into_entity(&self) -> Permission {
+        Permission {
             id: self.id.to_owned().unwrap_or_default(),
             owner: self.owner.to_owned().unwrap_or_default(),
             name: self.name.to_owned().unwrap_or_default(),

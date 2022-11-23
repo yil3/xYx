@@ -8,7 +8,7 @@ use crate::dto::token_dto::TokenDto;
 * @Author xYx
 * @Date 2022-09-26 11:07:22
 */
-pub struct TokenEntity {
+pub struct Token {
     pub id: String,
     pub client_id: String,
     pub owner: String,
@@ -21,9 +21,9 @@ pub struct TokenEntity {
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
 }
-impl Default for TokenEntity {
+impl Default for Token {
     fn default() -> Self {
-        TokenEntity {
+        Token {
             id: unique_id(),
             client_id: Default::default(),
             owner: Default::default(),
@@ -39,7 +39,7 @@ impl Default for TokenEntity {
     }
 }
 
-impl TokenEntity {
+impl Token {
     pub fn into_dto(self) -> TokenDto {
         TokenDto {
             access_token: self.access_token,

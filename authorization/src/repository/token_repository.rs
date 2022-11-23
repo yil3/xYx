@@ -1,4 +1,4 @@
-use crate::{dto::token_dto::TokenRecord, entity::token::TokenEntity};
+use crate::{dto::token_dto::TokenRecord, po::token::Token};
 use sqlx::{postgres::PgRow, query, query_as};
 use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
@@ -18,9 +18,9 @@ impl TokenRepository {
         .fetch_one(&*PG_POOL)
         .await
     }
-    pub async fn insert(&self, record: TokenEntity) -> Result<TokenEntity, sqlx::Error> {
+    pub async fn insert(&self, record: Token) -> Result<Token, sqlx::Error> {
         query_as!(
-            TokenEntity,
+            Token,
             r#"
             insert into sys_token 
             (id, owner, access_token, refresh_token, expires_in, scope, token_type, jwt_token, client_id)
@@ -42,9 +42,9 @@ impl TokenRepository {
         .await
     }
 
-    pub async fn find_by_refresh_token(&self, refresh_token: &str) -> Result<TokenEntity, sqlx::Error> {
+    pub async fn find_by_refresh_token(&self, refresh_token: &str) -> Result<Token, sqlx::Error> {
         query_as!(
-            TokenEntity,
+            Token,
             r#"
             select * from sys_token where refresh_token = $1
             "#,
@@ -54,9 +54,9 @@ impl TokenRepository {
         .await
     }
 
-    pub async fn update_by_id(&self, record: TokenEntity) -> Result<TokenEntity, sqlx::Error> {
+    pub async fn update_by_id(&self, record: Token) -> Result<Token, sqlx::Error> {
         query_as!(
-            TokenEntity,
+            Token,
             r#"
             update sys_token set 
             access_token = coalesce($1, access_token),

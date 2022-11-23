@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use time::OffsetDateTime;
 
-use crate::entity::user_group::{UserGroupEntity, UserUserGroupEntity};
+use crate::po::user_group::{UserGroup, UserUserGroup};
 
 /**
 * @Author xYx
@@ -29,8 +29,8 @@ pub struct UserUserGroupBody {
 }
 
 impl UserUserGroupBody {
-    pub fn into_entity(&self) -> UserUserGroupEntity {
-        UserUserGroupEntity {
+    pub fn into_entity(&self) -> UserUserGroup {
+        UserUserGroup {
             id: self.id.to_owned().unwrap_or_default(),
             user_id: self.user_id.to_owned(),
             user_group_id: self.user_group_id.to_owned(),
@@ -39,8 +39,8 @@ impl UserUserGroupBody {
 }
 
 impl UserGroupParam {
-    pub fn into_entity(&self) -> UserGroupEntity {
-        UserGroupEntity {
+    pub fn into_entity(&self) -> UserGroup {
+        UserGroup {
             id: self.id.to_owned().unwrap_or_default(),
             owner: self.owner.to_owned().unwrap_or("system".to_string()),
             name: self.name.to_owned().unwrap_or_default(),

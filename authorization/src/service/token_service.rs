@@ -1,5 +1,5 @@
 use crate::dto::token_dto::TokenRecord;
-use crate::{entity::token::TokenEntity, repository::token_repository::TokenRepository};
+use crate::{po::token::Token, repository::token_repository::TokenRepository};
 use anyhow::anyhow;
 use anyhow::Result;
 use redis::Commands;
@@ -11,8 +11,8 @@ use x_core::application::Application;
 pub struct TokenService;
 
 impl TokenService {
-    pub async fn generate_token(&self, client_id: &str, user_id: &str, scope: &Option<String>) -> Result<TokenEntity> {
-        let mut record = TokenEntity::default();
+    pub async fn generate_token(&self, client_id: &str, user_id: &str, scope: &Option<String>) -> Result<Token> {
+        let mut record = Token::default();
         record.client_id = client_id.to_owned();
         record.owner = user_id.to_owned();
         record.scope = scope.to_owned();
@@ -23,7 +23,7 @@ impl TokenService {
         Ok(TokenRepository.insert(record).await?)
     }
 
-    pub async fn refresh_token(&self, refresh_token: &str) -> Result<TokenEntity> {
+    pub async fn refresh_token(&self, refresh_token: &str) -> Result<Token> {
         let mut record = TokenRepository
             .find_by_refresh_token(refresh_token)
             .await

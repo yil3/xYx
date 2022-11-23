@@ -1,6 +1,6 @@
 use x_core::application::PG_POOL;
 
-use crate::{entity::permission::PermissionEntity, vo::permission_vo::PermissionParam};
+use crate::{po::permission::Permission, vo::permission_vo::PermissionParam};
 
 /**
 * @Author xYx
@@ -9,9 +9,9 @@ use crate::{entity::permission::PermissionEntity, vo::permission_vo::PermissionP
 pub struct PermissionRepository;
 
 impl PermissionRepository {
-    pub async fn insert(&self, record: &PermissionParam) -> Result<PermissionEntity, sqlx::Error> {
+    pub async fn insert(&self, record: &PermissionParam) -> Result<Permission, sqlx::Error> {
         sqlx::query_as!(
-            PermissionEntity,
+            Permission,
             r#"
             insert into sys_permission 
             (owner, name, code, role_id, description, created_by, updated_by) 
@@ -30,9 +30,9 @@ impl PermissionRepository {
         .await
     }
 
-    pub async fn update(&self, record: &PermissionParam) -> Result<PermissionEntity, sqlx::Error> {
+    pub async fn update(&self, record: &PermissionParam) -> Result<Permission, sqlx::Error> {
         sqlx::query_as!(
-            PermissionEntity,
+            Permission,
             r#"
               update sys_permission set
               owner = coalesce($1, owner),
@@ -68,9 +68,9 @@ impl PermissionRepository {
         .map(|r| r.rows_affected())
     }
 
-    pub async fn fetch_by_role_id(&self, role_id: &str) -> Result<Vec<PermissionEntity>, sqlx::Error> {
+    pub async fn fetch_by_role_id(&self, role_id: &str) -> Result<Vec<Permission>, sqlx::Error> {
         sqlx::query_as!(
-            PermissionEntity,
+            Permission,
             r#"
             select * from sys_permission where role_id = $1
         "#,

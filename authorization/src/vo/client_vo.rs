@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use time::OffsetDateTime;
 
-use crate::entity::client::ClientEntity;
+use crate::po::client::Client;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -15,8 +15,8 @@ pub struct ClientParam {
 }
 
 impl ClientParam {
-    pub fn into_entity(&self) -> ClientEntity {
-        ClientEntity {
+    pub fn into_entity(&self) -> Client {
+        Client {
             id: self.id.to_owned().unwrap_or_default(),
             secret: self.secret.to_owned(),
             name: self.name.to_owned(),

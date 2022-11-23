@@ -2,7 +2,7 @@ use anyhow::{Ok, Result};
 use x_common::model::page::{Page, PageParam};
 
 use crate::{
-    vo::client_vo::ClientParam, dto::client_dto::ClientDto, entity::client::ClientEntity,
+    vo::client_vo::ClientParam, dto::client_dto::ClientDto, po::client::Client,
     repository::client_repository::ClientRepository,
 };
 
@@ -18,7 +18,7 @@ impl ClientService {
         }
     }
 
-    pub async fn find_by_id(&self, id: &str) -> Result<ClientEntity> {
+    pub async fn find_by_id(&self, id: &str) -> Result<Client> {
         Ok(ClientRepository.fetch_by_id(id).await?)
     }
 

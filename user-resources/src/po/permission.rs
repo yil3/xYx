@@ -1,16 +1,15 @@
 use time::OffsetDateTime;
-
 /**
 * @Author xYx
-* @Date 2022-11-16 11:31:09
+* @Date 2022-11-16 11:32:54
 */
-pub struct RoleEntity {
+pub struct Permission {
     pub id: String,
     pub owner: String,
     pub name: String,
     pub code: String,
-    pub description: Option<String>,
-    pub parent_id: String,
+    pub role_id: String,
+    pub description: String,
     pub status: bool,
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
@@ -18,15 +17,16 @@ pub struct RoleEntity {
     pub updated_by: String,
 }
 
-pub struct UserRoleEntity {
+pub struct PermissionType {
     pub id: String,
-    pub user_id: String,
-    pub role_id: String,
+    pub owner: String,
+    pub name: String,
+    pub description: String,
 }
 
-pub struct UserGroupRoleEntity {
+pub struct RolePermission {
     pub id: String,
-    pub user_group_id: String,
     pub role_id: String,
+    pub permission_id: String,
+    pub permission_type_id: String,
 }
-

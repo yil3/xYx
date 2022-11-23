@@ -2,7 +2,7 @@ use sqlx::{query, query_as};
 use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
-use crate::{dto::role_dto::RoleDto, entity::role::RoleEntity, vo::role_vo::RoleParam};
+use crate::{dto::role_dto::RoleDto, po::role::Role, vo::role_vo::RoleParam};
 
 /**
 * @Author xYx
@@ -12,9 +12,9 @@ use crate::{dto::role_dto::RoleDto, entity::role::RoleEntity, vo::role_vo::RoleP
 pub struct RoleRepository;
 
 impl RoleRepository {
-    pub async fn insert(&self, record: &RoleParam) -> Result<RoleEntity, sqlx::Error> {
+    pub async fn insert(&self, record: &RoleParam) -> Result<Role, sqlx::Error> {
         query_as!(
-            RoleEntity,
+            Role,
             "INSERT INTO sys_role 
                 (owner, name, code, description, parent_id, created_by, updated_by) 
                 VALUES 
@@ -32,9 +32,9 @@ impl RoleRepository {
         .await
     }
 
-    pub async fn update(&self, record: &RoleParam) -> Result<RoleEntity, sqlx::Error> {
+    pub async fn update(&self, record: &RoleParam) -> Result<Role, sqlx::Error> {
         query_as!(
-            RoleEntity,
+            Role,
             "UPDATE sys_role SET 
                 name = coalesce($1, name),
                 code = coalesce($2, code),

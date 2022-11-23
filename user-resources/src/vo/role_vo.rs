@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use time::OffsetDateTime;
 
-use crate::entity::role::RoleEntity;
+use crate::po::role::Role;
 
 /**
 * @Author xYx
@@ -23,8 +23,8 @@ pub struct RoleParam {
 }
 
 impl RoleParam {
-    pub fn into_entity(&self) -> RoleEntity {
-        RoleEntity {
+    pub fn into_entity(&self) -> Role {
+        Role {
             id: self.id.to_owned().unwrap_or_default(),
             owner: self.owner.to_owned().unwrap_or("system".into()),
             name: self.name.to_owned().unwrap_or_default(),

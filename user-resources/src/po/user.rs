@@ -8,7 +8,7 @@ use x_common::utils::code;
 */
 
 #[derive(Serialize, Deserialize)]
-pub struct UserEntity {
+pub struct User {
     pub id: String,
     pub origin: Option<String>,
     pub password: String,
@@ -27,7 +27,7 @@ pub struct UserAccount {
     pub deleted: bool,
 }
 
-pub struct UserInfoEntity {
+pub struct UserInfo {
     pub id: String,
     pub owner: String,
     pub nickname: String,
@@ -37,9 +37,9 @@ pub struct UserInfoEntity {
     pub updated_at: OffsetDateTime,
 }
 
-impl Default for UserEntity {
+impl Default for User {
     fn default() -> Self {
-        UserEntity {
+        User {
             id: code::unique_id(),
             origin: Default::default(),
             password: String::from("123456"),

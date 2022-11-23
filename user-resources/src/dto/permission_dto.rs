@@ -4,7 +4,7 @@ use sqlx::FromRow;
 use time::OffsetDateTime;
 use x_common::utils::date::DateTimeFormat;
 
-use crate::entity::permission::PermissionEntity;
+use crate::po::permission::Permission;
 
 /**
 * @Author xYx
@@ -33,8 +33,8 @@ pub struct PermissionDto {
     pub total: Option<i64>,
 }
 
-impl From<PermissionEntity> for PermissionDto {
-    fn from(entity: PermissionEntity) -> Self {
+impl From<Permission> for PermissionDto {
+    fn from(entity: Permission) -> Self {
         Self {
             id: entity.id,
             owner: entity.owner,

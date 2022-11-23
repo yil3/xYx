@@ -1,6 +1,6 @@
 use x_core::application::PG_POOL;
 
-use crate::entity::role::UserRoleEntity;
+use crate::po::role::UserRole;
 
 /**
 * @Author xYx
@@ -10,7 +10,7 @@ use crate::entity::role::UserRoleEntity;
 pub struct UserRoleRepository;
 
 impl UserRoleRepository {
-    pub async fn insert(&self, record: &UserRoleEntity) -> Result<u64, sqlx::Error> {
+    pub async fn insert(&self, record: &UserRole) -> Result<u64, sqlx::Error> {
         sqlx::query("INSERT INTO user_role (user_id, role_id) VALUES ($1, $2)")
             .bind(&record.user_id)
             .bind(&record.role_id)

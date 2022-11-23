@@ -1,7 +1,7 @@
 use sqlx::{query, query_scalar};
 use x_core::application::PG_POOL;
 
-use crate::entity::user_group::UserUserGroupEntity;
+use crate::po::user_group::UserUserGroup;
 
 /**
 * @Author xYx
@@ -11,7 +11,7 @@ use crate::entity::user_group::UserUserGroupEntity;
 pub struct UserUserGroupRepository;
 
 impl UserUserGroupRepository {
-    pub async fn insert(&self, record: &UserUserGroupEntity) -> anyhow::Result<String> {
+    pub async fn insert(&self, record: &UserUserGroup) -> anyhow::Result<String> {
         Ok(query_scalar!(
             r#"
             INSERT INTO user_user_group (user_id, user_group_id)
@@ -25,7 +25,7 @@ impl UserUserGroupRepository {
         .await?)
     }
 
-    pub async fn update(&self, record: &UserUserGroupEntity) -> anyhow::Result<String> {
+    pub async fn update(&self, record: &UserUserGroup) -> anyhow::Result<String> {
         Ok(query_scalar!(
             r#"
             UPDATE user_user_group

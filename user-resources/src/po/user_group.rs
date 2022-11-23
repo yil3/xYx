@@ -5,7 +5,7 @@ use time::OffsetDateTime;
 * @Date 2022-11-16 11:25:24
 */
 #[derive(Clone)]
-pub struct UserGroupEntity {
+pub struct UserGroup {
     pub id: String,
     pub owner: String,
     pub name: String,
@@ -17,7 +17,7 @@ pub struct UserGroupEntity {
     pub updated_at: OffsetDateTime,
 }
 
-pub struct UserUserGroupEntity {
+pub struct UserUserGroup {
     pub id: String,
     pub user_id: String,
     pub user_group_id: String,

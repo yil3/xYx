@@ -7,7 +7,7 @@ use time::OffsetDateTime;
 */
 
 #[derive(Serialize, Deserialize)]
-pub struct ClientEntity {
+pub struct Client {
     pub id: String,
     pub secret: String,
     pub name: String,

@@ -5,15 +5,15 @@ use x_core::application::PG_POOL;
 use crate::{
     vo::user_vo::{RegisterUserParam, UpdateUserParam},
     dto::user_dto::UserDto,
-    entity::user::UserEntity,
+    po::user::User,
 };
 
 pub struct UserRepository;
 
 impl UserRepository {
-    pub async fn fetch_user_by_account(&self, account: &str) -> Result<UserEntity> {
+    pub async fn fetch_user_by_account(&self, account: &str) -> Result<User> {
         let user = query_as!(
-            UserEntity,
+            User,
             r#"
             SELECT su.* FROM sys_user su
             left join user_account ua on su.id = ua.owner
