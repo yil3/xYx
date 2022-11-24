@@ -1,5 +1,5 @@
 use time::OffsetDateTime;
-use x_common::utils::code::{unique_id, uuid};
+use x_common::utils::code::uuid;
 use x_core::application::Application;
 
 use crate::dto::token_dto::TokenDto;
@@ -24,7 +24,7 @@ pub struct Token {
 impl Default for Token {
     fn default() -> Self {
         Token {
-            id: unique_id(),
+            id: Default::default(),
             client_id: Default::default(),
             owner: Default::default(),
             scope: Default::default(),

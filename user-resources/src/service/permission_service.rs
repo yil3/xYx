@@ -20,4 +20,21 @@ impl PermissionService {
             PermissionDto::from(PermissionRepository.update(param).await?)
         })
     }
+
+    pub async fn delete_by_id(&self, id: &str) -> Result<u64> {
+        Ok(PermissionRepository.delete(id).await?)
+    }
+
+    pub async fn get_by_role(&self, role_id: &str) -> Result<Vec<PermissionDto>> {
+        Ok(PermissionRepository
+            .fetch_by_role_id(role_id)
+            .await?
+            .into_iter()
+            .map(|it| PermissionDto::from(it))
+            .collect())
+    }
+
+    pub async fn get_permission_sign_by_user(&self, user_id: &str) -> Result<Vec<Option<String>>> {
+        Ok(PermissionRepository.fetch_permission_sign_by_user(user_id).await?)
+    }
 }

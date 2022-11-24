@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::fs::read_to_string;
+use std::{fs::read_to_string, collections::HashMap};
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct AppConfig {
@@ -8,6 +8,7 @@ pub struct AppConfig {
     pub redis: Option<RedisConfig>,
     pub log: LogConfig,
     pub auth: AuthConfig,
+    pub opts: Option<HashMap<String, String>>
 }
 
 #[derive(Debug, Clone, Deserialize)]

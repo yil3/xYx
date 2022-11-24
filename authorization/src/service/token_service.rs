@@ -3,6 +3,7 @@ use crate::{po::token::Token, repository::token_repository::TokenRepository};
 use anyhow::anyhow;
 use anyhow::Result;
 use redis::Commands;
+use x_common::model::authorize::UserInfo;
 use x_common::model::page::Page;
 use x_common::model::page::PageParam;
 use x_common::utils::token::TokenUtils;
@@ -16,10 +17,23 @@ impl TokenService {
         record.client_id = client_id.to_owned();
         record.owner = user_id.to_owned();
         record.scope = scope.to_owned();
-        // TODO: 获取用户角色、权限
+        let roles = reqwest::get(format!("http://localhost:5010/roles/list?user_id={}", user_id))
+            .await?
+            .json::<Vec<String>>()
+            .await?;
+        let permissions = reqwest::get(format!("http://localhost:5010/permissions/list?user_id={}", user_id))
+            .await?
+            .json::<Vec<String>>()
+            .await?;
         let jwt_token = TokenUtils::generate_jwt_token(user_id.to_string(), "")?;
-        record.jwt_token = jwt_token;
-        Application::redis().set_ex(&record.access_token, &record.jwt_token, record.expires_in as usize)?;
+        record.jwt_token = jwt_token.to_owned();
+        let user_info = serde_json::to_string(&UserInfo {
+            roles,
+            permissions,
+            jwt_token,
+            user_id: user_id.into(),
+        })?;
+        Application::redis().set_ex(&record.access_token, user_info, record.expires_in as usize)?;
         Ok(TokenRepository.insert(record).await?)
     }
 
@@ -35,7 +49,10 @@ impl TokenService {
     }
 
     pub async fn remove_expired_token(&self) {
-        TokenRepository.remove_expired_token().await.expect("remove_expired_token error");
+        TokenRepository
+            .remove_expired_token()
+            .await
+            .expect("remove_expired_token error");
     }
     pub async fn get_page(&self, params: &PageParam) -> Result<Page<TokenRecord>> {
         Ok(Page::build(

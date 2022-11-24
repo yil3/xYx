@@ -9,13 +9,22 @@ use crate::{po::permission::Permission, vo::permission_vo::PermissionParam};
 pub struct PermissionRepository;
 
 impl PermissionRepository {
-    pub async fn fetch_permission_sign_by_user(user_id: &str) -> Result<Vec<Option<String>>, sqlx::Error> {
+    pub async fn fetch_permission_sign_by_user(&self, user_id: &str) -> Result<Vec<Option<String>>, sqlx::Error> {
         let result = sqlx::query!(
             r#"
-                select p.name || '::' || pt.name as name from role_permission rp
-                left join sys_permission p on rp.permission_id = p.id
+                select p.name || '::' || pt.name as name 
+                from sys_permission p
+                left join role_permission rp on rp.permission_id = p.id
                 left join permission_type pt on pt.id = rp.permission_type_id
-                where rp.role_id in (select role_id from user_role where user_id = $1)
+
+                left join sys_role r on r.id = rp.role_id
+                left join user_role ur on ur.role_id = r.id
+
+                left join sys_role r1 on r1.parent_id = r.id
+
+                left join user_user_group uug on uug.user_id = ur.user_id
+                left join user_group_role ugr on ugr.user_group_id = uug.user_group_id
+                where ur.user_id = $1 and uug.user_id = $1
                 order by p.name
             "#,
             user_id
