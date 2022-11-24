@@ -9,7 +9,7 @@ use crate::{po::permission::Permission, vo::permission_vo::PermissionParam};
 pub struct PermissionRepository;
 
 impl PermissionRepository {
-    pub async fn fetch_permission_by_user(user_id: &str) -> Result<Vec<Option<String>>, sqlx::Error> {
+    pub async fn fetch_permission_sign_by_user(user_id: &str) -> Result<Vec<Option<String>>, sqlx::Error> {
         let result = sqlx::query!(
             r#"
                 select p.name || '::' || pt.name as name from role_permission rp
