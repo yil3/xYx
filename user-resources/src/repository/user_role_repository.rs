@@ -1,6 +1,5 @@
+use sqlx::query;
 use x_core::application::PG_POOL;
-
-use crate::po::role::UserRole;
 
 /**
 * @Author xYx
@@ -10,20 +9,43 @@ use crate::po::role::UserRole;
 pub struct UserRoleRepository;
 
 impl UserRoleRepository {
-    pub async fn insert(&self, record: &UserRole) -> Result<u64, sqlx::Error> {
-        sqlx::query("INSERT INTO user_role (user_id, role_id) VALUES ($1, $2)")
-            .bind(&record.user_id)
-            .bind(&record.role_id)
-            .execute(&*PG_POOL)
-            .await
-            .map(|r| r.rows_affected())
+
+    pub async fn insert_role_by_user_id(&self, user_id: &str, role_ids: &Vec<String>) -> Result<u64, sqlx::Error> {
+        let mut tx = PG_POOL.begin().await?;
+        let mut count = 0;
+        for role_id in role_ids {
+            count += query!(
+                r#"
+                    insert into user_role (user_id, role_id) values ($1, $2)
+                "#,
+                user_id,
+                role_id
+            )
+            .execute(&mut tx)
+            .await?
+            .rows_affected();
+        }
+        tx.commit().await?;
+        Ok(count)
     }
 
-    pub async fn delete(&self, id: &str) -> Result<u64, sqlx::Error> {
-        sqlx::query("DELETE FROM user_role WHERE id = $1")
-            .bind(id)
-            .execute(&*PG_POOL)
-            .await
-            .map(|r| r.rows_affected())
+    pub async fn remove_role_by_user_id(&self, user_id: &str, role_ids: &Vec<String>) -> Result<u64, sqlx::Error> {
+        let mut tx = PG_POOL.begin().await?;
+        let mut count = 0;
+        for role_id in role_ids {
+            count += query!(
+                r#"
+                    delete from user_role where user_id = $1 and role_id = $2
+                "#,
+                user_id,
+                role_id
+            )
+            .execute(&mut tx)
+            .await?
+            .rows_affected();
+        }
+        tx.commit().await?;
+        Ok(count)
     }
+
 }

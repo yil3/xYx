@@ -1,7 +1,11 @@
 use anyhow::Result;
-use x_common::utils::vector::Tree;
+use x_common::utils::vector;
 
-use crate::{dto::role_dto::RoleDto, repository::role_repository::RoleRepository, vo::role_vo::RoleParam};
+use crate::{
+    dto::role_dto::{RoleDto, RoleTreeDto},
+    repository::{role_repository::RoleRepository, user_role_repository::UserRoleRepository},
+    vo::role_vo::RoleParam,
+};
 
 /**
 * @Author xYx
@@ -19,12 +23,30 @@ impl RoleService {
         })
     }
 
-    pub async fn get_all(&self) -> Result<Vec<RoleDto>> {
-        let v: Vec<RoleDto> = RoleRepository.fetch_all().await?.into_iter().map(RoleDto::from).collect();
-        Ok(v.to_tree())
+    pub async fn tree(&self) -> Result<Vec<RoleTreeDto>> {
+        let v = RoleRepository.fetch_all().await?;
+        Ok(vector::to_tree(&v))
     }
 
     pub async fn delete(&self, id: &str) -> Result<u64> {
         Ok(RoleRepository.delete(id).await?)
+    }
+
+    pub async fn get_roles_by_user_id(&self, user_id: &str) -> Result<Vec<RoleDto>> {
+        let v = RoleRepository.fetch_role_by_user(user_id).await?;
+        Ok(v.iter().map(|x| RoleDto::from(x.to_owned())).collect())
+    }
+
+    pub async fn get_role_sign_by_user_id(&self, user_id: &str) -> Result<Vec<String>> {
+        let v = RoleRepository.fetch_role_by_user(user_id).await?;
+        Ok(v.iter().map(|x| x.name.to_owned()).collect())
+    }
+
+    pub async fn insert_roles_by_user_id(&self, user_id: &str, role_ids: &Vec<String>) -> Result<u64> {
+        Ok(UserRoleRepository.insert_role_by_user_id(user_id, role_ids).await?)
+    }
+
+    pub async fn remove_roles_by_user_id(&self, user_id: &str, role_ids: &Vec<String>) -> Result<u64> {
+        Ok(UserRoleRepository.remove_role_by_user_id(user_id, role_ids).await?)
     }
 }

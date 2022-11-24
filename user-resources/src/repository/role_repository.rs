@@ -2,7 +2,11 @@ use sqlx::{query, query_as};
 use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
-use crate::{po::role::Role, vo::role_vo::RoleParam, dto::role_dto::RolePageDto};
+use crate::{
+    dto::role_dto::{RolePageDto, RoleTreeDto},
+    po::role::Role,
+    vo::role_vo::RoleParam,
+};
 
 /**
 * @Author xYx
@@ -12,6 +16,23 @@ use crate::{po::role::Role, vo::role_vo::RoleParam, dto::role_dto::RolePageDto};
 pub struct RoleRepository;
 
 impl RoleRepository {
+    pub async fn fetch_role_by_user(&self, user_id: &str) -> Result<Vec<Role>, sqlx::Error> {
+        query_as!(
+            Role,
+            r#"
+            SELECT
+                r.*
+            FROM
+                sys_role r
+            LEFT JOIN user_role ur ON r.id = ur.role_id
+            WHERE
+                ur.user_id = $1
+            "#,
+            user_id
+        )
+        .fetch_all(&*PG_POOL)
+        .await
+    }
     pub async fn insert(&self, record: &RoleParam) -> Result<Role, sqlx::Error> {
         query_as!(
             Role,
@@ -80,7 +101,9 @@ impl RoleRepository {
             .await
     }
 
-    pub async fn fetch_all(&self) -> Result<Vec<Role>, sqlx::Error> {
-        query_as("SELECT * FROM sys_role").fetch_all(&*PG_POOL).await
+    pub async fn fetch_all(&self) -> Result<Vec<RoleTreeDto>, sqlx::Error> {
+        query_as("SELECT * FROM sys_role where status = '1'")
+            .fetch_all(&*PG_POOL)
+            .await
     }
 }

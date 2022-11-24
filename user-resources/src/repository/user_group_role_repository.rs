@@ -1,7 +1,5 @@
 use x_core::application::PG_POOL;
 
-use crate::po::role::UserGroupRole;
-
 /**
 * @Author xYx
 * @Date 2022-11-17 10:55:28
@@ -10,20 +8,42 @@ use crate::po::role::UserGroupRole;
 pub struct UserGroupRoleRepository;
 
 impl UserGroupRoleRepository {
-    pub async fn insert(&self, record: &UserGroupRole) -> Result<u64, sqlx::Error> {
-        sqlx::query("INSERT INTO user_group_role (user_group_id, role_id) VALUES ($1, $2)")
-            .bind(&record.user_group_id)
-            .bind(&record.role_id)
-            .execute(&*PG_POOL)
-            .await
-            .map(|r| r.rows_affected())
+
+    pub async fn insert_role_by_usergroup_id(&self, group_id: &str, role_ids: &Vec<String>) -> Result<u64, sqlx::Error> {
+        let mut tx = PG_POOL.begin().await?;
+        let mut count = 0;
+        for role_id in role_ids {
+            count += sqlx::query!(
+                r#"
+                    insert into user_group_role (user_group_id, role_id) values ($1, $2)
+                "#,
+                group_id,
+                role_id
+            )
+            .execute(&mut tx)
+            .await?
+            .rows_affected();
+        }
+        tx.commit().await?;
+        Ok(count)
     }
 
-    pub async fn delete(&self, id: &str) -> Result<u64, sqlx::Error> {
-        sqlx::query("DELETE FROM user_group_role WHERE id = $1")
-            .bind(id)
-            .execute(&*PG_POOL)
-            .await
-            .map(|r| r.rows_affected())
+    pub async fn remove_role_by_usergroup_id(&self, group_id: &str, role_ids: &Vec<String>) -> Result<u64, sqlx::Error> {
+        let mut tx = PG_POOL.begin().await?;
+        let mut count = 0;
+        for role_id in role_ids {
+            count += sqlx::query!(
+                r#"
+                    delete from user_group_role where user_group_id = $1 and role_id = $2
+                "#,
+                group_id,
+                role_id
+            )
+            .execute(&mut tx)
+            .await?
+            .rows_affected();
+        }
+        tx.commit().await?;
+        Ok(count)
     }
 }

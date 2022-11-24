@@ -26,29 +26,29 @@ impl UserRepository {
         Ok(user)
     }
     pub async fn insert(&self, record: &RegisterUserParam) -> Result<String> {
-        let mut trans = PG_POOL.begin().await?;
+        let mut tx = PG_POOL.begin().await?;
         let id = query_scalar!(
             "INSERT INTO sys_user (password, origin) VALUES ($1, $2) returning id",
             record.password,
             record.origin,
         )
-        .fetch_one(&mut trans)
+        .fetch_one(&mut tx)
         .await?;
         query!(
             r#"insert into user_account(account, owner, category) values ($1, $2, '0')"#,
             record.account,
             &id
         )
-        .execute(&mut trans)
+        .execute(&mut tx)
         .await?;
         query!(
             "INSERT INTO user_info (owner, nickname) VALUES ($1, $2)",
             &id,
             record.nickname
         )
-        .execute(&mut trans)
+        .execute(&mut tx)
         .await?;
-        trans.commit().await?;
+        tx.commit().await?;
         Ok(id)
     }
 

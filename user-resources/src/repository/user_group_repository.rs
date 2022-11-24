@@ -4,7 +4,8 @@ use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
 use crate::{
-    dto::user_gourp_dto::UserGroupDto, vo::user_group_vo::UserGroupParam,
+    dto::{user_dto::UserProfileDto, user_gourp_dto::UserGroupDto},
+    vo::user_group_vo::UserGroupParam,
 };
 
 /**
@@ -14,6 +15,26 @@ use crate::{
 pub struct UserGroupRepository;
 
 impl UserGroupRepository {
+    pub async fn fetch_users_by_group_id(&self, group_id: &str, param: &PageParam) -> Result<Vec<UserProfileDto>> {
+        query_as!(
+            UserProfileDto,
+            r#"
+                select u.id, ui.nickname, count(*) over() as total
+                from user_user_group uug 
+                left join sys_user u on u.id = uug.user_id
+                left join user_info ui on ui.owner = u.id
+                where uug.user_group_id = $1
+                limit $2 offset $3
+            "#,
+            group_id,
+            param.limit(),
+            param.offset()
+        )
+        .fetch_all(&*PG_POOL)
+        .await
+        .map_err(Into::into)
+    }
+
     pub async fn insert(&self, param: &UserGroupParam) -> Result<UserGroupDto, sqlx::Error> {
         query_as("INSERT INTO user_group (owner, name, description, created_by) VALUES ($1, $2, $3, $4) returning *")
             .bind(&param.owner)

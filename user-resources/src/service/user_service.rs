@@ -28,8 +28,4 @@ impl UserService {
         }
     }
     
-    pub async fn get_user_by_group_id(&self, _group_id: &str) -> Result<Vec<User>> {
-        // TODO:
-        todo!()
-    }
 }
