@@ -18,8 +18,13 @@ pub struct RoleParam {
     pub description: Option<String>,
     pub parent_id: Option<String>,
     pub status: Option<bool>,
-    pub created_by: Option<String>,
-    pub updated_by: Option<String>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RoleAddUserParam {
+    pub role_id: String,
+    pub user_ids: Vec<String>,
 }
 
 impl RoleParam {
@@ -34,8 +39,8 @@ impl RoleParam {
             status: self.status.unwrap_or_default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),
-            created_by: self.created_by.to_owned().unwrap_or_default(),
-            updated_by: self.updated_by.to_owned().unwrap_or_default(),
+            created_by: Default::default(),
+            updated_by: Default::default(),
         }
     }
 }

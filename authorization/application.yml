@@ -29,3 +29,5 @@ auth:
   ignore: 
     - /authorize
     - /authorize/token
+user_resources_server:
+  url: http://localhost:5010

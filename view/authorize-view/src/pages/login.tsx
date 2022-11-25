@@ -13,12 +13,11 @@ export default function Login(_props: any) {
     values.client_secret = '2';
     login(values).then(res => {
       if (res.success) {
-        localStorage.setItem("token", res.data.accessToken);
-        localStorage.setItem("jwtToken", JSON.stringify(res.data));
+        localStorage.setItem("token", JSON.stringify(res.data));
         message.success("login success");
         navigate("/");
       } else {
-        message.warn(res.msg);
+        message.warning(res.msg);
       }
     });
   };

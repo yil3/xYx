@@ -28,7 +28,7 @@ pub fn route() -> Router {
 }
 
 pub async fn authorize(params: Query<AuthorizeParam>, user: CurrentUser) -> impl IntoResponse {
-    let url = AuthorizeService.authorize(&params, user.id()).await.unwrap();
+    let url = AuthorizeService.authorize(&params, &user.user_id).await.unwrap();
     Redirect::to(&url).into_response()
 }
 

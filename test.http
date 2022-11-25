@@ -1,4 +1,3 @@
-###
 POST http://localhost:5010/user/register
 content-type: application/json
 
@@ -8,7 +7,6 @@ content-type: application/json
 	"origin" : "",
   "nickname": "abc"
 }
-###
 POST http://localhost:5000/authorize/token
 content-type: application/json
 
@@ -20,9 +18,15 @@ content-type: application/json
   "client_secret": "test",
   "scope": "test"
 }
-###
 GET http://localhost:5010/user/page
 Authorization: Bearer 0c65b3cffe0d44debb6d24a2d10ed2de
 
-###
 GET http://localhost:5010/metrics
+
+POST http://localhost:5010/user/validate
+content-type: application/json
+
+{
+  "username": "admin",
+  "password": "123"
+}

@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::{fs::read_to_string, collections::HashMap};
+use std::fs::read_to_string;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct AppConfig {
@@ -8,7 +8,7 @@ pub struct AppConfig {
     pub redis: Option<RedisConfig>,
     pub log: LogConfig,
     pub auth: AuthConfig,
-    pub opts: Option<HashMap<String, String>>
+    pub user_resources_server: Option<UserResourceServer>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -57,6 +57,11 @@ pub struct AuthConfig {
     pub status: bool,
     pub token_expired: Option<u64>,
     pub ignore: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct UserResourceServer {
+    pub url: String,
 }
 
 impl AppConfig {

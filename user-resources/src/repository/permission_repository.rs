@@ -36,13 +36,13 @@ impl PermissionRepository {
         .collect();
         Ok(result)
     }
-    pub async fn insert(&self, record: &PermissionParam) -> Result<Permission, sqlx::Error> {
+    pub async fn insert(&self, record: &PermissionParam, user_id: &str) -> Result<Permission, sqlx::Error> {
         sqlx::query_as!(
             Permission,
             r#"
                 insert into sys_permission 
                 (owner, name, code, role_id, description, created_by, updated_by) 
-                values ($1, $2, $3, $4, $5, $6, $7)
+                values ($1, $2, $3, $4, $5, $6, $6)
                 returning *
             "#,
             record.owner,
@@ -50,14 +50,13 @@ impl PermissionRepository {
             record.code,
             record.role_id,
             record.description,
-            record.created_by,
-            record.updated_by
+            user_id,
         )
         .fetch_one(&*PG_POOL)
         .await
     }
 
-    pub async fn update(&self, record: &PermissionParam) -> Result<Permission, sqlx::Error> {
+    pub async fn update(&self, record: &PermissionParam, user_id: &str) -> Result<Permission, sqlx::Error> {
         sqlx::query_as!(
             Permission,
             r#"
@@ -76,7 +75,7 @@ impl PermissionRepository {
             record.code,
             record.role_id,
             record.description,
-            record.updated_by,
+            user_id,
             record.id
         )
         .fetch_one(&*PG_POOL)

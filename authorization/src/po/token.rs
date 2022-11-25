@@ -17,7 +17,7 @@ pub struct Token {
     pub refresh_token: String,
     pub token_type: String,
     pub expires_in: i32,
-    pub jwt_token: String,
+    // pub jwt_token: String,
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
 }
@@ -32,7 +32,7 @@ impl Default for Token {
             refresh_token: uuid(),
             token_type: "Bearer".to_string(),
             expires_in: Application::config().auth.token_expired.unwrap_or(3600 * 24) as i32,
-            jwt_token: Default::default(),
+            // jwt_token: Default::default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),
         }

@@ -19,10 +19,11 @@ pub struct RegisterUserParam {
 
 #[derive(Deserialize, Validate)]
 pub struct LoginUserParam {
-    #[validate(required, length(min = 1), email(message = "email is invalid"))]
-    pub email: Option<String>,
+    #[validate(required, length(min = 1))]
+    pub username: Option<String>,
     #[validate(required, length(min = 1))]
     pub password: Option<String>,
+    pub category: Option<String>,
 }
 
 #[derive(Deserialize)]

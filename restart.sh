@@ -15,13 +15,15 @@ case $num in
   1) if [ -n "$(lsof -i:5000 -t)" ]
       then kill -9 $(lsof -i:5000 -t)
     fi
-    nohup cargo run --bin authorization > /dev/null 2>&1 &
+    # nohup cargo run --bin authorization > /dev/null 2>&1 &
+    cargo run --bin authorization
     echo 'restartd authorization'
     ;;
   2) if [ -n "$(lsof -i:5010 -t)" ]
       then kill -9 $(lsof -i:5010 -t)
     fi
-    nohup cargo run --bin user-resources > /dev/null 2>&1 &
+    # nohup cargo run --bin user-resources > /dev/null 2>&1 &
+    cargo run --bin user-resources
     echo 'restartd user-resources'
     ;;
   3) if [ -n "$(lsof -i:3000 -t)" ]
@@ -36,7 +38,7 @@ case $num in
     fi
     cd ./view/user-resource-view
     nohup yarn dev > /dev/null 2>&1 &
-    echo 'restartd user-resource-view'
+    echo 'restartd user-resources-view'
     ;;
   *) echo 'please input number 1-4'
     exit 1

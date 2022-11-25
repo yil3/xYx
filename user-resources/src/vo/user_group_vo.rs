@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use time::OffsetDateTime;
 
-use crate::po::user_group::{UserGroup, UserUserGroup};
+use crate::po::user_group::UserGroup;
 
 /**
 * @Author xYx
@@ -16,26 +16,20 @@ pub struct UserGroupParam {
     pub name: Option<String>,
     pub description: Option<String>,
     pub status: Option<bool>,
-    pub created_by: Option<String>,
-    pub updated_by: Option<String>,
 }
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UserUserGroupParam {
-    pub id: Option<String>,
-    pub user_id: String,
+    pub user_ids: Vec<String>,
     pub user_group_id: String,
 }
 
-impl UserUserGroupParam {
-    pub fn into_po(&self) -> UserUserGroup {
-        UserUserGroup {
-            id: self.id.to_owned().unwrap_or_default(),
-            user_id: self.user_id.to_owned(),
-            user_group_id: self.user_group_id.to_owned(),
-        }
-    }
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RoleUserGroupParam {
+    pub role_ids: Vec<String>,
+    pub user_group_id: String,
 }
 
 impl UserGroupParam {
@@ -46,8 +40,8 @@ impl UserGroupParam {
             name: self.name.to_owned().unwrap_or_default(),
             description: self.description.to_owned(),
             status: self.status.unwrap_or_default(),
-            created_by: self.created_by.to_owned().unwrap_or_default(),
-            updated_by: self.updated_by.to_owned(),
+            created_by: Default::default(),
+            updated_by: Default::default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),
         }

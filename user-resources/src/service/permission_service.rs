@@ -1,6 +1,6 @@
 use crate::{
-    dto::permission_dto::PermissionDto, repository::permission_repository::PermissionRepository,
-    vo::permission_vo::PermissionParam,
+    dto::permission_dto::PermissionDto, repository::{permission_repository::PermissionRepository, permission_type_repository::PermissionTypeRepository},
+    vo::permission_vo::{PermissionParam, PermissionTypeParam}, po::permission::PermissionType,
 };
 use anyhow::Result;
 
@@ -12,12 +12,10 @@ pub struct PermissionService;
 
 impl PermissionService {
     pub async fn save(&self, param: &mut PermissionParam, userid: &str) -> Result<PermissionDto> {
-        param.created_by = Some(userid.into());
-        param.updated_by = Some(userid.into());
         Ok(if param.id.is_none() {
-            PermissionDto::from(PermissionRepository.insert(param).await?)
+            PermissionDto::from(PermissionRepository.insert(param, userid).await?)
         } else {
-            PermissionDto::from(PermissionRepository.update(param).await?)
+            PermissionDto::from(PermissionRepository.update(param, userid).await?)
         })
     }
 
@@ -36,5 +34,21 @@ impl PermissionService {
 
     pub async fn get_permission_sign_by_user(&self, user_id: &str) -> Result<Vec<Option<String>>> {
         Ok(PermissionRepository.fetch_permission_sign_by_user(user_id).await?)
+    }
+
+    pub async fn save_permission_type(&self, param: &PermissionTypeParam) -> Result<PermissionType> {
+        if param.id.is_none() {
+            Ok(PermissionTypeRepository.insert(param).await?)
+        } else {
+            Ok(PermissionTypeRepository.update(param).await?)
+        }
+    }
+
+    pub async fn delete_permission_type(&self, id: &str) -> Result<u64> {
+        Ok(PermissionTypeRepository.delete(id).await?)
+    }
+
+    pub async fn get_permission_type(&self) -> Result<Vec<PermissionType>> {
+        Ok(PermissionTypeRepository.fetch_all().await?)
     }
 }

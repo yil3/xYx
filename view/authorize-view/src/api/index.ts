@@ -141,7 +141,7 @@ class RequestHttp {
         // * 如果当前请求需要显示loading, 在api服务中通过指定的第三个参数: { loading: true } 来控制显示loading
         !config.loading || showFullScreenLoading();
         // const token: string = store.getState().global.token;
-        const token = localStorage.getItem("token");
+        const token = JSON.parse(localStorage.getItem("token") || "{}").accessToken;
         return { ...config, headers: { ...config.headers, "Authorization": "Bearer " + token } };
       },
       (error: AxiosError) => {

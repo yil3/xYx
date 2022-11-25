@@ -1,6 +1,6 @@
 use x_core::application::PG_POOL;
 
-use crate::po::permission::PermissionType;
+use crate::{po::permission::PermissionType, vo::permission_vo::PermissionTypeParam};
 
 /**
 * @Author xYx
@@ -10,7 +10,7 @@ use crate::po::permission::PermissionType;
 pub struct PermissionTypeRepository;
 
 impl PermissionTypeRepository {
-    pub async fn insert(&self, record: PermissionType) -> Result<PermissionType, sqlx::Error> {
+    pub async fn insert(&self, record: &PermissionTypeParam) -> Result<PermissionType, sqlx::Error> {
         sqlx::query_as!(
             PermissionType,
             r#"
@@ -26,7 +26,7 @@ impl PermissionTypeRepository {
         .await
     }
 
-    pub async fn update(&self, record: PermissionType) -> Result<PermissionType, sqlx::Error> {
+    pub async fn update(&self, record: &PermissionTypeParam) -> Result<PermissionType, sqlx::Error> {
         sqlx::query_as!(
             PermissionType,
             r#"
@@ -35,9 +35,9 @@ impl PermissionTypeRepository {
             WHERE id = $3
             returning *
             "#,
-            &record.name,
-            &record.description,
-            &record.id
+            record.name,
+            record.description,
+            record.id
         )
         .fetch_one(&*PG_POOL)
         .await

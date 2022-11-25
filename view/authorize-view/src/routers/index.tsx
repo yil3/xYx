@@ -1,6 +1,7 @@
 import { LayoutBasic } from "@/layouts";
 import Login from "@/pages/login";
 import SignUp from "@/pages/signup";
+import Authorize from "@/pages/authorize";
 import { Navigate, useRoutes } from "react-router-dom";
 import { RouteObject } from "./interface";
 
@@ -21,6 +22,7 @@ export const rootRouter: RouteObject[] = [
     children: [
       { path: "/login", element: <Login />, meta: { title: 'login', notRequiresAuth: true } },
       { path: "/signup", element: <SignUp />, meta: { title: 'signup', notRequiresAuth: true } },
+      { path: "/authorize", element: <Authorize />, meta: { title: 'authorize', notRequiresAuth: true } },
     ],
   },
   ...routerArray,

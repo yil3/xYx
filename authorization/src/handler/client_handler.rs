@@ -21,8 +21,8 @@ pub fn route() -> Router {
         .route("/delete/:id", delete(delete_by_id))
 }
 
-pub async fn save_client(mut record: Json<ClientParam>, userid: CurrentUser) -> impl IntoResponse {
-    record.owner = Some(userid.id().to_string());
+pub async fn save_client(mut record: Json<ClientParam>, user: CurrentUser) -> impl IntoResponse {
+    record.owner = Some(user.user_id.to_string());
     match ClientService.save(&record).await {
         Ok(record) => Json(R::success(record)),
         Err(e) => Json(R::error(&e.to_string())),

@@ -1,14 +1,13 @@
 use crate::{
-    vo::{authorize_vo::AuthorizeParam, token_vo::TokenParam},
     dto::token_dto::TokenDto,
-    repository::token_repository::TokenRepository,
+    vo::{authorize_vo::AuthorizeParam, token_vo::TokenParam},
 };
 use anyhow::anyhow;
 use redis::Commands;
-use sqlx::Row;
 use x_common::{
     errors::{XError, XResult},
-    utils::{self, sucurity::SucurityUtils},
+    model::response::R,
+    utils,
 };
 use x_core::application::Application;
 
@@ -55,10 +54,28 @@ impl AuthorizeService {
         if params.grant_type == "password" {
             let account = params.username.as_ref().unwrap();
             let password = params.password.as_ref().unwrap();
-            match self.validate_user(account, password).await {
-                Ok(userid) => return Ok(self.generate_token(&params.client_id, &userid, &params.scope).await?),
-                Err(_) => return Err(XError::InvalidLoginAttmpt),
-            }
+            let user_resourc_serve = Application::config()
+                .user_resources_server
+                .to_owned()
+                .expect("application.yml config user_resources_server url is not empty")
+                .url;
+            let user_id = reqwest::Client::new()
+                .post(format!("{}/user/validate", &user_resourc_serve))
+                .header("content-type", "application/json")
+                .body(serde_json::json!({ "username": account, "password": password }).to_string())
+                .send()
+                .await
+                .map_err(|e| XError::AnyhowError(anyhow!(e.to_string())))?
+                .json::<R<String>>()
+                .await
+                .map_err(|e| XError::AnyhowError(anyhow!(e.to_string())))?
+                .data
+                .expect("user not found");
+            return Ok(self.generate_token(&params.client_id, &user_id, &params.scope).await?);
+            // match self.validate_user(account, password).await {
+            //     Ok(userid) => return Ok(self.generate_token(&params.client_id, &userid, &params.scope).await?),
+            //     Err(_) => return Err(XError::InvalidLoginAttmpt),
+            // }
         }
         if params.grant_type == "client_credentials" {
             // TODO: 客户端模式
@@ -101,21 +118,21 @@ impl AuthorizeService {
         }
     }
 
-    async fn validate_user(&self, account: &str, password: &str) -> XResult<String> {
-        let row = TokenRepository
-            .fetch_user_by_account(account)
-            .await
-            .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
-        if let Ok(stored_password) = row.try_get::<String, &str>("password") {
-            if SucurityUtils::verify_password(&stored_password, password)? {
-                Ok(row.get::<String, &str>("id"))
-            } else {
-                Err(XError::InvalidLoginAttmpt)
-            }
-        } else {
-            Err(XError::InvalidLoginAttmpt)
-        }
-    }
+    // async fn validate_user(&self, account: &str, password: &str) -> XResult<String> {
+    //     let row = TokenRepository
+    //         .fetch_user_by_account(account)
+    //         .await
+    //         .map_err(|e| XError::AnyhowError(anyhow!(e)))?;
+    //     if let Ok(stored_password) = row.try_get::<String, &str>("password") {
+    //         if SucurityUtils::verify_password(&stored_password, password)? {
+    //             Ok(row.get::<String, &str>("id"))
+    //         } else {
+    //             Err(XError::InvalidLoginAttmpt)
+    //         }
+    //     } else {
+    //         Err(XError::InvalidLoginAttmpt)
+    //     }
+    // }
 
     fn validate_code(&self, code: &str) -> Option<String> {
         match Application::redis().get(code) {

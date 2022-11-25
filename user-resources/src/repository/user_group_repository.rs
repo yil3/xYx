@@ -35,17 +35,17 @@ impl UserGroupRepository {
         .map_err(Into::into)
     }
 
-    pub async fn insert(&self, param: &UserGroupParam) -> Result<UserGroupDto, sqlx::Error> {
+    pub async fn insert(&self, param: &UserGroupParam, user_id: &str) -> Result<UserGroupDto, sqlx::Error> {
         query_as("INSERT INTO user_group (owner, name, description, created_by) VALUES ($1, $2, $3, $4) returning *")
             .bind(&param.owner)
             .bind(&param.name)
             .bind(&param.description)
-            .bind(&param.created_by)
+            .bind(user_id)
             .fetch_one(&*PG_POOL)
             .await
     }
 
-    pub async fn update(&self, param: &UserGroupParam) -> Result<UserGroupDto, sqlx::Error> {
+    pub async fn update(&self, param: &UserGroupParam, user_id: &str) -> Result<UserGroupDto, sqlx::Error> {
         query_as(
             r#"update user_group set 
             name = coalesce($1, name), description = coalesce($2, description), 
@@ -56,7 +56,7 @@ impl UserGroupRepository {
         .bind(&param.name)
         .bind(&param.description)
         .bind(&param.status)
-        .bind(&param.updated_by)
+        .bind(user_id)
         .bind(&param.id)
         .fetch_one(&*PG_POOL)
         .await

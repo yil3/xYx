@@ -33,27 +33,26 @@ impl RoleRepository {
         .fetch_all(&*PG_POOL)
         .await
     }
-    pub async fn insert(&self, record: &RoleParam) -> Result<Role, sqlx::Error> {
+    pub async fn insert(&self, record: &RoleParam, user_id: &str) -> Result<Role, sqlx::Error> {
         query_as!(
             Role,
             "INSERT INTO sys_role 
                 (owner, name, code, description, parent_id, created_by, updated_by) 
                 VALUES 
-                ($1, $2, $3, $4, $5, $6, $7) 
+                ($1, $2, $3, $4, $5, $6, $6) 
                 RETURNING *",
             record.owner,
             record.name,
             record.code,
             record.description,
             record.parent_id,
-            record.created_by,
-            record.updated_by
+            user_id,
         )
         .fetch_one(&*PG_POOL)
         .await
     }
 
-    pub async fn update(&self, record: &RoleParam) -> Result<Role, sqlx::Error> {
+    pub async fn update(&self, record: &RoleParam, user_id: &str) -> Result<Role, sqlx::Error> {
         query_as!(
             Role,
             "UPDATE sys_role SET 
@@ -68,7 +67,7 @@ impl RoleRepository {
             record.code,
             record.description,
             record.parent_id,
-            record.updated_by,
+            user_id,
             record.id
         )
         .fetch_one(&*PG_POOL)

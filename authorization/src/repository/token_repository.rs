@@ -23,9 +23,9 @@ impl TokenRepository {
             Token,
             r#"
             insert into sys_token 
-            (owner, access_token, refresh_token, expires_in, scope, token_type, jwt_token, client_id)
+            (owner, access_token, refresh_token, expires_in, scope, token_type, client_id)
             values 
-            ($1, $2, $3, $4, $5, $6 ,$7, $8)
+            ($1, $2, $3, $4, $5, $6 ,$7)
             returning *
             "#,
             record.owner,
@@ -34,7 +34,6 @@ impl TokenRepository {
             record.expires_in,
             record.scope,
             record.token_type,
-            record.jwt_token,
             record.client_id
         )
         .fetch_one(&*PG_POOL)
@@ -63,10 +62,9 @@ impl TokenRepository {
             expires_in = coalesce($3, expires_in),
             scope = coalesce($4, scope),
             token_type = coalesce($5, token_type),
-            jwt_token = coalesce($6, jwt_token),
-            client_id = coalesce($7, client_id),
+            client_id = coalesce($6, client_id),
             updated_at = now()
-            where id = $8
+            where id = $7
             returning *
             "#,
             record.access_token,
@@ -74,7 +72,6 @@ impl TokenRepository {
             record.expires_in,
             record.scope,
             record.token_type,
-            record.jwt_token,
             record.client_id,
             record.id
         )
@@ -87,7 +84,7 @@ impl TokenRepository {
             TokenRecord,
             r#"
             select
-            access_token, token_type, expires_in, refresh_token, scope, jwt_token, count(*) over() total 
+            access_token, token_type, expires_in, refresh_token, scope, count(*) over() total 
             from sys_token
             limit $1 offset $2
             "#,

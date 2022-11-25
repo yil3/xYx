@@ -1,3 +1,4 @@
+use serde::Serialize;
 use time::OffsetDateTime;
 /**
 * @Author xYx
@@ -17,6 +18,8 @@ pub struct Permission {
     pub updated_by: String,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PermissionType {
     pub id: String,
     pub owner: String,

@@ -10,7 +10,7 @@ create table sys_token(
   token_type varchar not null,
   expires_in int not null,
   scope varchar,
-  jwt_token text not null,
+  -- jwt_token text not null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -24,7 +24,7 @@ comment on column sys_token.refresh_token is '刷新令牌';
 comment on column sys_token.token_type is '令牌类型';
 comment on column sys_token.expires_in is '令牌过期时间';
 comment on column sys_token.scope is '令牌权限范围';
-comment on column sys_token.jwt_token is 'JWT 令牌';
+-- comment on column sys_token.jwt_token is 'JWT 令牌';
 comment on column sys_token.created_at is '创建时间';
 comment on column sys_token.updated_at is '更新时间';
 

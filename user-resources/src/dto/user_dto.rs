@@ -7,10 +7,16 @@ pub struct UserDto {
     pub account: String,
     pub nickname: Option<String>,
     pub origin: Option<String>,
-    #[serde(skip)]
     pub total: Option<i64>,
 }
 
+impl Pageable for UserDto {
+    fn total(&self) -> i64 {
+        self.total.unwrap_or_default()
+    }
+}
+
+#[derive(Serialize)]
 pub struct UserProfileDto {
     pub id: String,
     pub nickname: Option<String>,

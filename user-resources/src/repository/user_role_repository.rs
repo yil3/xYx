@@ -9,6 +9,36 @@ use x_core::application::PG_POOL;
 pub struct UserRoleRepository;
 
 impl UserRoleRepository {
+    pub async fn remove_user_by_role_id(&self, role_id: &str, user_ids: &Vec<String>) -> Result<u64, sqlx::Error> {
+        let mut tx = PG_POOL.begin().await?;
+        let mut count = 0;
+        for user_id in user_ids {
+            let r = query("DELETE FROM user_role WHERE role_id = $1 AND user_id = $2")
+                .bind(role_id)
+                .bind(user_id)
+                .execute(&mut tx)
+                .await?;
+            count += r.rows_affected();
+        }
+        tx.commit().await?;
+        Ok(count)
+    }
+    pub async fn insert_user_by_role_id(&self, role_id: &str, user_ids: &Vec<String>) -> Result<u64, sqlx::Error> {
+        let mut tx = PG_POOL.begin().await?;
+        let mut count = 0;
+        for user_id in user_ids {
+            count += query!(
+                "INSERT INTO user_role (user_id, role_id) VALUES ($1, $2)",
+                user_id,
+                role_id
+            )
+            .execute(&mut tx)
+            .await?
+            .rows_affected();
+        }
+        tx.commit().await?;
+        Ok(count)
+    }
 
     pub async fn insert_role_by_user_id(&self, user_id: &str, role_ids: &Vec<String>) -> Result<u64, sqlx::Error> {
         let mut tx = PG_POOL.begin().await?;
@@ -47,5 +77,4 @@ impl UserRoleRepository {
         tx.commit().await?;
         Ok(count)
     }
-
 }

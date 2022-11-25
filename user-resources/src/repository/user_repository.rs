@@ -1,11 +1,12 @@
 use anyhow::Result;
 use sqlx::{postgres::PgQueryResult, query, query_as, query_scalar};
+use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
 use crate::{
-    vo::user_vo::{RegisterUserParam, UpdateUserParam},
     dto::user_dto::UserDto,
     po::user::User,
+    vo::user_vo::{RegisterUserParam, UpdateUserParam},
 };
 
 pub struct UserRepository;
@@ -69,7 +70,7 @@ impl UserRepository {
             .await?)
     }
 
-    pub async fn fetch_page(&self, limit: i64, offset: i64) -> Result<Vec<UserDto>> {
+    pub async fn fetch_page(&self, param: &PageParam) -> Result<Vec<UserDto>> {
         let list = query_as!(
             UserDto,
             r#"
@@ -80,8 +81,8 @@ impl UserRepository {
             left join sys_token st on st.owner = u.id
             limit $1 offset $2
             "#,
-            limit,
-            limit * (offset - 1)
+            param.limit(),
+            param.offset()
         )
         .fetch_all(&*PG_POOL)
         .await?;

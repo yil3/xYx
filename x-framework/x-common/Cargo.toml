@@ -16,7 +16,7 @@ serde_with = { version = "^2", features = ["time_0_3"] }
 validator = { version = "^0", features = ["derive"] }
 
 lazy_static = "1.4.0"
-jsonwebtoken = "8"
+# jsonwebtoken = "^8"
 
 uuid = { version = "^1", features = ["serde", "v4"] }
 rs-snowflake = { version = "^0" }

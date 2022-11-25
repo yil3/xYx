@@ -95,7 +95,12 @@ impl Application {
             format_description!("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]"),
         );
         tracing_subscriber::registry()
-            .with(fmt::layer().with_writer(all_log.and(error_log)).with_ansi(false))
+            .with(
+                fmt::layer()
+                    .with_writer(all_log.and(error_log))
+                    .with_ansi(false)
+                    .with_timer(local_time.to_owned()),
+            )
             .with(fmt::layer().with_timer(local_time))
             .with(EnvFilter::new(&self.config.log.level))
             .init();

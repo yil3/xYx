@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { fetchClientPage, deleteClient } from '@/api/modules/client'
 import { Button, Input, message, Modal, Row, Space, Table } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { ColumnsType } from "antd/lib/table";
-import { useForm } from "antd/lib/form/Form";
 import ClientForm from './ClientForm';
+import useForm from "antd/es/form/hooks/useForm";
+import { ColumnsType } from "antd/es/table";
 
 interface TableParams {
   page: number;

@@ -28,3 +28,4 @@ auth:
   ignore: 
     - /user/register
     - /user/signout
+    - /user/validate

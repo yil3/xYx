@@ -26,13 +26,6 @@ pub struct CurrentUser {
     pub user_id: String,
     pub roles: Vec<String>,
     pub permissions: Vec<String>,
-    pub jwt_token: String,
-}
-
-impl CurrentUser {
-    pub fn id(&self) -> &str {
-        &self.user_id
-    }
 }
 
 #[async_trait]

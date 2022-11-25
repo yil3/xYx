@@ -18,8 +18,15 @@ pub struct PermissionParam {
     pub description: Option<String>,
     pub role_id: Option<String>,
     pub status: Option<bool>,
-    pub created_by: Option<String>,
-    pub updated_by: Option<String>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PermissionTypeParam {
+    pub id: Option<String>,
+    pub owner: Option<String>,
+    pub name: Option<String>,
+    pub description: Option<String>,
 }
 
 impl PermissionParam {
@@ -32,8 +39,8 @@ impl PermissionParam {
             description: self.description.to_owned().unwrap_or_default(),
             role_id: self.role_id.to_owned().unwrap_or_default(),
             status: self.status.to_owned().unwrap_or_default(),
-            created_by: self.created_by.to_owned().unwrap_or_default(),
-            updated_by: self.updated_by.to_owned().unwrap_or_default(),
+            created_by: Default::default(),
+            updated_by: Default::default(),
             created_at: time::OffsetDateTime::now_utc(),
             updated_at: time::OffsetDateTime::now_utc(),
         }
@@ -50,8 +57,8 @@ impl Into<Permission> for Json<PermissionParam> {
             description: self.description.to_owned().unwrap_or_default(),
             role_id: self.role_id.to_owned().unwrap_or_default(),
             status: self.status.to_owned().unwrap_or_default(),
-            created_by: self.created_by.to_owned().unwrap_or_default(),
-            updated_by: self.updated_by.to_owned().unwrap_or_default(),
+            created_by: Default::default(),
+            updated_by: Default::default(),
             created_at: time::OffsetDateTime::now_utc(),
             updated_at: time::OffsetDateTime::now_utc(),
         }
