@@ -1,8 +1,9 @@
 import { LockOutlined, UserOutlined, WechatOutlined } from "@ant-design/icons";
 import { Card, Button, Checkbox, Form, Input, Space, message } from "antd";
-import { login } from "@/api/modules/login";
+import { token, authorize } from "@/api/modules/login";
 import { useNavigate } from "react-router-dom";
 import './index.less'
+import qs from 'qs'
 
 
 export default function Login(_props: any) {
@@ -11,11 +12,18 @@ export default function Login(_props: any) {
     values.grant_type = 'password';
     values.client_id = '1';
     values.client_secret = '2';
-    login(values).then(res => {
+    token(values).then(res => {
       if (res.success) {
         localStorage.setItem("token", JSON.stringify(res.data));
         message.success("login success");
-        navigate("/");
+        if (location.search && location.search.indexOf('redirect_uri') > -1) {
+          let params = qs.parse(location.search, { ignoreQueryPrefix: true });
+          authorize(params).then(r => {
+            navigate("/authorize" + location.search);
+          });
+        } else {
+          navigate("/");
+        }
       } else {
         message.warning(res.msg);
       }

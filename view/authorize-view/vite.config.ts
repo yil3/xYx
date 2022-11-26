@@ -30,15 +30,15 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 3000,
     proxy: {
-      "/auth": {
+      "/authen": {
         target: "http://127.0.0.1:5000",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/auth/, ""),
+        rewrite: (path) => path.replace(/^\/authen/, ""),
       },
-      "/users": {
+      "/user_resource": {
         target: "http://127.0.0.1:5010",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/users/, ""),
+        rewrite: (path) => path.replace(/^\/user_resource/, ""),
       },
     },
   },

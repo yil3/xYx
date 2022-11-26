@@ -36,7 +36,7 @@ case $num in
   4) if [ -n "$(lsof -i:3010 -t)" ]
       then kill -9 $(lsof -i:3010 -t)
     fi
-    cd ./view/user-resource-view
+    cd ./view/user-resources-view
     nohup yarn dev > /dev/null 2>&1 &
     echo 'restartd user-resources-view'
     ;;

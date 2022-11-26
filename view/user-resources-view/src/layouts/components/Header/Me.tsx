@@ -1,10 +1,14 @@
 import { Avatar, Dropdown, Space } from "antd";
 import { DownOutlined, UserOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
+/**
+* @Author xYx
+* @Date 2022-11-26 22:54:11
+*/
 
-export default function Me(_props: any) {
-  const navigate = useNavigate();
+interface MeProps { }
+
+export default function Me(_props: MeProps) {
   const items = [
     {
       key: "account",
@@ -14,8 +18,7 @@ export default function Me(_props: any) {
       key: "logout",
       label: <a onClick={() => {
         localStorage.removeItem("token");
-        localStorage.removeItem("jwt_token");
-        navigate("/login");
+        window.location.href = window.location.origin;
       }}>
         退出
       </a>,

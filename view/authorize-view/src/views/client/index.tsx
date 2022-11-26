@@ -11,7 +11,6 @@ interface TableParams {
   size: number;
   query?: string;
 }
-
 /**
 * @Author xYx
 * @Date 2022-11-13 20:47:06
@@ -82,7 +81,7 @@ export default function Client() {
   };
   const pageChange = (page: number, size: number) => setParams({ ...params, page, size });
 
-  useEffect(() => { getData(params) }, [params]);
+  useEffect(() => { getData(params); }, [params]);
   return (
     <>
       <Table rowKey={record => record.id} dataSource={data} columns={columns} pagination={{ onChange: pageChange, total }} title={title} />

@@ -1,6 +1,8 @@
 use async_trait::async_trait;
-use axum::extract::{FromRequest, RequestParts};
-use axum::{BoxError, Json};
+use axum::extract::rejection::FormRejection;
+use axum::extract::FromRequest;
+use axum::Form;
+use http::Request;
 use serde::de::DeserializeOwned;
 use validator::Validate;
 use x_common::errors::XError;
@@ -9,17 +11,17 @@ use x_common::errors::XError;
 pub struct ValidationForm<T>(pub T);
 
 #[async_trait]
-impl<T, B> FromRequest<B> for ValidationForm<T>
+impl<T, S, B> FromRequest<S, B> for ValidationForm<T>
 where
     T: DeserializeOwned + Validate,
-    B: http_body::Body + Send,
-    B::Data: Send,
-    B::Error: Into<BoxError>,
+    S: Send + Sync,
+    Form<T>: FromRequest<S, B, Rejection = FormRejection>,
+    B: Send + 'static,
 {
     type Rejection = XError;
 
-    async fn from_request(request: &mut RequestParts<B>) -> Result<Self, Self::Rejection> {
-        let Json(value) = Json::<T>::from_request(request).await?;
+    async fn from_request(request: Request<B>, state: &S) -> Result<Self, Self::Rejection> {
+        let Form(value) = Form::<T>::from_request(request, state).await?;
         value.validate()?;
         Ok(ValidationForm(value))
     }

@@ -1,11 +1,11 @@
 import LayoutView from "@/layouts";
 import Home from "@/views/home";
-import { RouteObject } from "../interface";
+import { RouteStruct } from "../interface";
 
-const route: RouteObject[] = [{
+const route: RouteStruct[] = [{
   element: <LayoutView />,
   children: [
-    { path: "/", element: <Home />, meta: { title: "Home", key:"" } },
+    { path: "/", element: <Home />, meta: { title: "Home", key:"home" } },
   ],
 }]
 

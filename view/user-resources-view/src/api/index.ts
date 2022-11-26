@@ -181,7 +181,12 @@ class RequestHttp {
         // * 登录过期，跳转到登录页
         if (response?.status == 401) {
           localStorage.removeItem("token");
-          window.location.href = "http://localhost:3000/authorize?redirect_uri=http://localhost:3000";
+          window.location.href = 'http://localhost:3000/authorize' +
+            '?redirect_uri=http://localhost:3010' +
+            '&response_type=code' +
+            '&client_id=00000000-0000-0000-0000-000000000001' +
+            '&client_secret=aa332211 ' +
+            '&scope=all&state=x';
         }
         // 服务器结果都没有返回(可能服务器错误可能客户端断网) 断网处理:可以跳转到断网页面
         if (!window.navigator.onLine) window.location.href = "/500";

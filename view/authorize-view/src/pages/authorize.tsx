@@ -1,18 +1,40 @@
 import qs from 'qs';
+import { authorize } from '@/api/modules/login';
+import { Button, message } from 'antd';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 /**
 * @Author xYx
 * @Date 2022-11-25 17:16:41
 */
 export default function Authorize() {
-  // let urlParams = qs.parse(location.search, { ignoreQueryPrefix: true });
-  let urlParams = qs.parse(location.search);
-  
-  const token = localStorage.getItem('token')
-  if (!token) {
-    window.location.href = "http://localhost:3000/login" + location.search;
+  const navigate = useNavigate();
+  let params = qs.parse(location.search, { ignoreQueryPrefix: true });
+  params.grant_type = 'authorization_code';
+  const authorization = () => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      navigate("/login" + location.search);
+    } else {
+      authorize(params).then(res => {
+        if (res.success) {
+          window.location.href = res.data;
+        } else {
+          message.warning('授权失败，请重新登录授权!');
+        }
+      });
+    }
   }
 
+  useEffect(() => {
+    if (!localStorage.getItem('token')) {
+      navigate("/login" + location.search);
+    }
+  })
+
   return (
-    <></>
+    <>
+      <Button onClick={authorization}>授权</Button>
+    </>
   )
 }

@@ -1,8 +1,8 @@
 import LayoutView from "@/layouts";
 import Token from "@/views/token";
-import { RouteObject } from "../interface";
+import { RouteStruct } from "../interface";
 
-const route: RouteObject[] = [{
+const route: RouteStruct[] = [{
   element: <LayoutView />,
   children: [
     { path: "/token", element: <Token />, meta: { title: "Token", key: "token" } },

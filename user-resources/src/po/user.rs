@@ -31,9 +31,9 @@ pub struct UserInfo {
     pub id: String,
     pub owner: String,
     pub nickname: String,
-    pub mobile: String,
-    pub email: String,
-    pub avatar: String,
+    pub mobile: Option<String>,
+    pub email: Option<String>,
+    pub avatar: Option<String>,
     pub updated_at: OffsetDateTime,
 }
 

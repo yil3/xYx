@@ -8,7 +8,7 @@ export default function Footer() {
         backgroundColor: "#fff",
       }}
     >
-      Authorizetion ©2022 Created by xYx
+      Authorization ©2022 Created by xYx
     </Layout.Footer>
   );
 };

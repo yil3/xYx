@@ -18,6 +18,7 @@ pub struct AuthorizeService;
 impl AuthorizeService {
     pub async fn authorize(&self, params: &AuthorizeParam, userid: &str) -> XResult<String> {
         let mut url = params.redirect_uri.clone();
+        println!("authorize params: {:?}", params);
         if params.client_id.is_empty() {
             url.push_str("?error=client_is_empty");
             return Ok(url);

@@ -141,8 +141,8 @@ class RequestHttp {
         // * 如果当前请求需要显示loading, 在api服务中通过指定的第三个参数: { loading: true } 来控制显示loading
         !config.loading || showFullScreenLoading();
         // const token: string = store.getState().global.token;
-        const token = JSON.parse(localStorage.getItem("token") || "{}").accessToken;
-        return { ...config, headers: { ...config.headers, "Authorization": "Bearer " + token } };
+        const token = JSON.parse(localStorage.getItem("token") || "{}");
+        return { ...config, headers: { ...config.headers, "Authorization": "Bearer " + token.accessToken } };
       },
       (error: AxiosError) => {
         return Promise.reject(error);
@@ -181,7 +181,7 @@ class RequestHttp {
         // * 登录过期，跳转到登录页
         if (response?.status == 401) {
           localStorage.removeItem("token");
-          window.location.href = "/login";
+          window.location.href = "/login" + window.location.search;
         }
         // 服务器结果都没有返回(可能服务器错误可能客户端断网) 断网处理:可以跳转到断网页面
         if (!window.navigator.onLine) window.location.href = "/500";

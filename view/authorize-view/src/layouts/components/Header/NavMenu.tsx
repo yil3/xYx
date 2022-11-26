@@ -6,13 +6,15 @@ import { useLocation, useNavigate } from "react-router-dom";
  * @Date 2022-10-27 15:35:39
  */
 
+interface NavMenuProps { }
+
 const items = [
   { label: "首页", key: "/" },
   { label: "客户端", key: "/client" },
   { label: "令牌", key: "/token" },
 ];
 
-export default function NavMenu(_props: any) {
+export default function NavMenu(_props: NavMenuProps) {
   const location = useLocation();
   const [current, setCurrent] = useState(location.pathname);
   const navigate = useNavigate();

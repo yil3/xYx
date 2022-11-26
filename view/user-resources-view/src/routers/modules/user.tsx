@@ -1,16 +1,15 @@
 /**
 * @Author xYx
-* @Date 2022-11-04 16:33:51
+* @Date 2022-11-26 17:32:16
 */
+
 import LayoutView from "@/layouts";
+import User from "@/views/user";
 import { RouteStruct } from "../interface";
-import Client from "@/views/client";
 
 const route: RouteStruct[] = [{
   element: <LayoutView />,
-  children: [
-    { path: "/client", element: <Client />, meta: { title: "Client", key:"client" } },
-  ],
+  children: [{ path: "/user", element: <User />, meta: { title: "用户管理", key: "user" } }]
 }]
 
 export default route;

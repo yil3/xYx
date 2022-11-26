@@ -24,7 +24,7 @@ create table user_info(
   owner varchar(64) not null unique references sys_user(id) on delete cascade,
   mobile varchar(32),
   email varchar,
-  nickname varchar,
+  nickname varchar not null,
   avatar varchar,
   updated_at timestamptz not null default now()
 );
@@ -67,3 +67,6 @@ insert into user_account (owner, account, category)
 values('00000000-0000-0000-0000-000000000000', 'admin', '0'),
 ('00000000-0000-0000-0000-000000000001', 'test', '0');
 
+insert into user_info (owner, nickname)
+values('00000000-0000-0000-0000-000000000000', 'admin'),
+('00000000-0000-0000-0000-000000000001', 'test');

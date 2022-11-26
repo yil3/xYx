@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { AxiosCanceler } from "@/api";
 import { searchRoute } from "@/utils/util";
 import { rootRouter } from "@/routers/index";
+import { parse } from 'qs'
+import { token } from '@/api/modules/authorize'
 
 const axiosCanceler = new AxiosCanceler();
 
@@ -11,15 +13,25 @@ const axiosCanceler = new AxiosCanceler();
 const AuthRouter = (props: { children: JSX.Element }) => {
   const { pathname } = useLocation();
   const route = searchRoute(pathname, rootRouter);
+  const params = parse(window.location.search, { ignoreQueryPrefix: true });
   // * 在跳转路由之前，清除所有的请求
   axiosCanceler.removeAllPending();
   // * 判断当前路由是否需要访问权限(不需要权限直接放行)
   if (route.meta?.notRequiresAuth) return props.children;
 
-  // * 判断是否有Token
-  // const token = store.getState().global.token;
-  const token = localStorage.getItem('token')
-  if (!token) window.location.href = 'http://localhost:3000/login';
+  if (params && params.code && params.state && params.state == 'x') {
+    token({
+      grant_type: 'authorization_code',
+      code: params.code,
+      client_id: "00000000-0000-0000-0000-000000000001",
+      client_secret: "aa332211"
+    }
+    ).then(res => {
+      localStorage.setItem('token', JSON.stringify(res.data))
+      // 删除url code参数
+      window.history.replaceState(null, "", "/");
+    })
+  }
 
   // * 当前账号有权限返回 Router，正常访问页面
   // TODO: 判断当前账号是否有权限访问当前路由

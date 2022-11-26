@@ -6,13 +6,18 @@ import { useLocation, useNavigate } from "react-router-dom";
  * @Date 2022-10-27 15:35:39
  */
 
+interface NavMenuProps {
+}
+
 const items = [
   { label: "首页", key: "/" },
-  { label: "客户端", key: "/client" },
-  { label: "令牌", key: "/token" },
+  { label: "用户", key: "/user" },
+  { label: "用户组", key: "/user-group" },
+  { label: "角色", key: "/role" },
+  { label: "权限", key: "/permission" },
 ];
 
-export default function NavMenu(_props: any) {
+export default function NavMenu(_props: NavMenuProps) {
   const location = useLocation();
   const [current, setCurrent] = useState(location.pathname);
   const navigate = useNavigate();
@@ -20,6 +25,10 @@ export default function NavMenu(_props: any) {
     navigate(e.key);
     setCurrent(e.key);
   };
-  return <Menu style={{ flex: 1 }} onClick={onClick} mode="horizontal" defaultSelectedKeys={[current]} items={items} />;
+  return (
+    <>
+      <Menu style={{ flex: 1 }} onClick={onClick} mode="horizontal" defaultSelectedKeys={[current]} items={items} />
+    </>
+  )
 };
 

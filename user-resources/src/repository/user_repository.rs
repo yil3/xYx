@@ -74,11 +74,11 @@ impl UserRepository {
         let list = query_as!(
             UserDto,
             r#"
-            select u.id , u.origin, ua.account, ui.nickname, count(*) over() as total 
+            select u.id , u.origin, ui.nickname, u.created_at, count(*) over() as total,
+            ui.avatar, ui.mobile, ui.email
             from sys_user u
-            left join user_account ua on u.id = ua.owner and ua.category = '0'
             left join user_info ui on ui.owner = u.id
-            left join sys_token st on st.owner = u.id
+            order by u.created_at desc
             limit $1 offset $2
             "#,
             param.limit(),

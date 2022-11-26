@@ -1,6 +1,7 @@
 use std::borrow::Cow;
 use std::{collections::HashMap, fmt::Debug};
 
+use axum::extract::rejection::FormRejection;
 use axum::response::Response;
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde::{Deserialize, Serialize};
@@ -37,6 +38,8 @@ pub enum XError {
     UnprocessableEntity { errors: XErrorMap },
     #[error(transparent)]
     ValidationError(#[from] ValidationErrors),
+    #[error(transparent)]
+    AxumFormRejection(#[from] FormRejection),
     #[error(transparent)]
     AxumJsonRejection(#[from] axum::extract::rejection::JsonRejection),
     #[error(transparent)]
@@ -106,6 +109,7 @@ impl IntoResponse for XError {
             Self::ObjectConflict(err) => (StatusCode::CONFLICT, err),
             Self::InvalidLoginAttmpt => (StatusCode::BAD_REQUEST, Self::InvalidLoginAttmpt.to_string()),
             Self::Unauthorized => (StatusCode::UNAUTHORIZED, Self::Unauthorized.to_string()),
+            Self::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
             _ => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 String::from("unexpected error occurred"),

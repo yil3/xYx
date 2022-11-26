@@ -25,3 +25,7 @@ comment on column sys_client.updated_at is '更新时间';
 
 create trigger sys_client_updated_at before update on sys_client for each row execute procedure trigger_set_updated_at();
 
+insert into sys_client (id, name, secret, redirect_uri, scope, owner)
+values 
+('00000000-0000-0000-0000-000000000001', '用户资源', 'aa332211', 'http://localhost:3010', 'all','00000000-0000-0000-0000-000000000000');
+

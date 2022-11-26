@@ -1,16 +1,17 @@
+import { NonIndexRouteObject } from "react-router-dom";
+
+/**
+* @Author xYx
+* @Date 2022-11-26 17:37:54
+*/
 export interface MetaProps {
-	keepAlive?: boolean;
-	notRequiresAuth?: boolean;
-	title: string;
-	key?: string;
+  keepAlive?: boolean;
+  notRequiresAuth?: boolean;
+  title: string;
+  key?: string;
 }
 
-export interface RouteObject {
-	caseSensitive?: boolean;
-	children?: RouteObject[];
-	element?: React.ReactNode;
-	index?: boolean;
-	path?: string;
-	meta?: MetaProps;
-	isLink?: string;
+export interface RouteStruct extends NonIndexRouteObject {
+  meta?: MetaProps;
+	children?: RouteStruct[];
 }

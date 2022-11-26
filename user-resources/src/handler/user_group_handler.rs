@@ -28,7 +28,7 @@ pub fn route() -> Router {
         .route("/role/remove", delete(remove_roles_from_user_group))
 }
 
-pub async fn save_user_group(mut param: Json<UserGroupParam>, current_user: CurrentUser) -> impl IntoResponse {
+pub async fn save_user_group(current_user: CurrentUser, mut param: Json<UserGroupParam>) -> impl IntoResponse {
     match UserGroupService.save(&mut param, &current_user.user_id).await {
         Ok(user_group) => Json(R::success(user_group)),
         Err(e) => Json(R::error(&e.to_string())),

@@ -1,4 +1,4 @@
-import { RouteObject } from "@/routers/interface";
+import { RouteStruct } from "@/routers/interface";
 
 /**
  * @description 递归查询对应的路由
@@ -6,8 +6,8 @@ import { RouteObject } from "@/routers/interface";
  * @param {Array} routes 路由列表
  * @returns array
  */
-export const searchRoute = (path: string, routes: RouteObject[] = []): RouteObject => {
-	let result: RouteObject = {};
+export const searchRoute = (path: string, routes: RouteStruct[] = []): RouteStruct => {
+	let result: RouteStruct = {};
 	for (let item of routes) {
 		if (item.path === path) return item;
 		if (item.children) {

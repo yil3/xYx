@@ -25,4 +25,5 @@ delete from sys_token where created_at + make_interval(secs => expires_in) < cur
 select * from user_group;
 select * from sys_user;
 
+select * from sys_client;
 

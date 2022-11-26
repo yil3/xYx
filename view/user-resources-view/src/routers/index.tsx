@@ -1,11 +1,11 @@
 import { LayoutBasic } from "@/layouts";
 import { Navigate, useRoutes } from "react-router-dom";
-import { RouteObject } from "./interface";
+import { RouteStruct } from "./interface";
 
 // * 导入所有router
 const metaRouters = import.meta.glob("./modules/*.tsx", { eager: true });
 
-export const routerArray: RouteObject[] = [];
+export const routerArray: RouteStruct[] = [];
 Object.keys(metaRouters).forEach(item => {
   let metaRouter = metaRouters[item] as any;
   if (metaRouter.default) {
@@ -13,7 +13,7 @@ Object.keys(metaRouters).forEach(item => {
   }
 });
 
-export const rootRouter: RouteObject[] = [
+export const rootRouter: RouteStruct[] = [
   {
     element: <LayoutBasic />,
     children: [
@@ -27,7 +27,6 @@ export const rootRouter: RouteObject[] = [
 ];
 
 const Router = () => {
-  // @ts-ignore
   return useRoutes(rootRouter);
 };
 export default Router;

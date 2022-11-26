@@ -1,12 +1,12 @@
 use crate::{
-    vo::{authorize_vo::AuthorizeParam, token_vo::TokenParam},
     service::authorize_service::AuthorizeService,
+    vo::{authorize_vo::AuthorizeParam, token_vo::TokenParam},
 };
 use axum::{
     body::Body,
     extract::{Path, Query},
     http::Request,
-    response::{IntoResponse, Redirect},
+    response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
@@ -29,7 +29,7 @@ pub fn route() -> Router {
 
 pub async fn authorize(params: Query<AuthorizeParam>, user: CurrentUser) -> impl IntoResponse {
     let url = AuthorizeService.authorize(&params, &user.user_id).await.unwrap();
-    Redirect::to(&url).into_response()
+    Json(R::success(url))
 }
 
 pub async fn token(params: Json<TokenParam>) -> impl IntoResponse {

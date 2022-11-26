@@ -28,7 +28,7 @@ pub fn route() -> Router {
         .route("/type/list", get(get_permission_type))
 }
 
-pub async fn save_permission(mut body: Json<PermissionParam>, user: CurrentUser) -> impl IntoResponse {
+pub async fn save_permission(user: CurrentUser, mut body: Json<PermissionParam>) -> impl IntoResponse {
     match PermissionService.save(&mut body, &user.user_id).await {
         Ok(record) => Json(R::success(record)),
         Err(e) => Json(R::error(&e.to_string())),

@@ -88,7 +88,7 @@ impl Application {
             .map(|p| p.file_name().unwrap().to_str().unwrap())
             .unwrap_or_default()
             .to_owned();
-        let all_log = rolling::daily("logs", String::from(&exe) + "_debug");
+        let debug_log = rolling::daily("logs", String::from(&exe) + "_debug");
         let error_log = rolling::daily("logs", String::from(&exe) + "_error").with_max_level(tracing::Level::ERROR);
         let local_time = OffsetTime::new(
             UtcOffset::from_hms(8, 0, 0).unwrap(),
@@ -97,7 +97,7 @@ impl Application {
         tracing_subscriber::registry()
             .with(
                 fmt::layer()
-                    .with_writer(all_log.and(error_log))
+                    .with_writer(debug_log.and(error_log))
                     .with_ansi(false)
                     .with_timer(local_time.to_owned()),
             )

@@ -6,13 +6,13 @@ import http from '@/api'
 */
 
 export const saveClient = (data: any) => {
-  return http.post('/auth/client/save_client', data);
+  return http.post('/authen/client/save_client', data);
 };
 
 export const fetchClientPage = (params: any) => {
-  return http.get('/auth/client/page', params);
+  return http.get('/authen/client/page', params);
 }
 
 export const deleteClient = (id: any) => {
-  return http.delete(`/auth/client/delete/${id}`);
+  return http.delete(`/authen/client/delete/${id}`);
 }

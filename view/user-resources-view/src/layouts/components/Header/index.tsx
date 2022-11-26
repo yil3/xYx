@@ -9,7 +9,7 @@ export default function Header() {
     >
       <div className="logo" style={{ width: "180px" }} />
       <NavMenu />
-      <Me />
+      <Me/>
     </Layout.Header>
   );
 };
