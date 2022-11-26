@@ -47,6 +47,7 @@ impl AuthorizeService {
     pub async fn token(&self, params: &TokenParam) -> XResult<TokenDto> {
         if params.grant_type == "authorization_code" {
             let code = params.code.as_ref().unwrap();
+            // TODO: 销毁code
             match self.validate_code(code) {
                 Some(userid) => return Ok(self.generate_token(&params.client_id, &userid, &params.scope).await?),
                 None => return Err(XError::AnyhowError(anyhow!("invalid code"))),

@@ -1,7 +1,7 @@
 import { fetchUserPage } from "@/api/modules/user";
 import { ColumnsType } from "antd/es/table";
 import { useEffect, useState } from "react";
-import { Row, Space, Table, Input } from "antd";
+import { Row, Space, Table, Input, message } from "antd";
 /**
 * @Author xYx
 * @Date 2022-11-26 17:08:39
@@ -33,19 +33,27 @@ export default function User() {
     }
   ];
 
+  const search = (value: string) => {
+    setParams({ ...params, query: value });
+  }
+
   const title = () => {
     return (
       <Row>
         <Space>
-          <Input placeholder="请输入昵称搜索" onBlur={e => setParams({ ...params, query: e.currentTarget.value })} />
+          <Input placeholder="请输入昵称搜索" onBlur={e => search(e.currentTarget.value)} />
         </Space>
       </Row>
     )
   }
   const getUserPage = async (params: any) => {
     const res = await fetchUserPage(params);
-    setTableData(res.data?.list || []);
-    setTotal(res.data.total);
+    if (res.success) {
+      setTableData(res.data.list);
+      setTotal(res.data.total);
+    } else {
+      message.error(res.msg);
+    }
   }
   const pageChange = (page: number, size: number) => setParams({ ...params, page, size });
 

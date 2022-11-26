@@ -167,8 +167,7 @@ class RequestHttp {
           return Promise.reject(data);
         }
         // * 成功请求（在页面上除非特殊情况，否则不用处理失败逻辑）
-        // return Promise.resolve(data);
-        return data;
+        return Promise.resolve(data);
       },
       async (error: AxiosError) => {
         const { response } = error;
@@ -190,8 +189,12 @@ class RequestHttp {
         }
         // 服务器结果都没有返回(可能服务器错误可能客户端断网) 断网处理:可以跳转到断网页面
         if (!window.navigator.onLine) window.location.href = "/500";
-        // return Promise.reject(error);
-        return error;
+        if (error.name === "CanceledError") {
+          // * 如果是取消请求, 不做任何处理
+          return new Promise(() => { });
+        }
+        return Promise.reject(error);
+        // return error;
       }
     );
   }
