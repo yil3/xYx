@@ -14,4 +14,5 @@ export interface MetaProps {
 export interface RouteStruct extends NonIndexRouteObject {
   meta?: MetaProps;
 	children?: RouteStruct[];
+  element?: any;
 }

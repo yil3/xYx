@@ -4,19 +4,21 @@ import SignUp from "@/pages/signup";
 import Authorize from "@/pages/authorize";
 import { Navigate, useRoutes } from "react-router-dom";
 import { RouteStruct } from "./interface";
+import lazyLoad from "./utils/lazyLoad";
 
 // * 导入所有router
 const metaRouters = import.meta.glob("./modules/*.tsx", { eager: true });
 
-export const routerArray: RouteStruct[] = [];
+export const router: RouteStruct[] = [];
 Object.keys(metaRouters).forEach(item => {
   let metaRouter = metaRouters[item] as any;
   if (metaRouter.default) {
-    routerArray.push(...metaRouter.default);
+    lazyLoad(metaRouter.default);
+    router.push(...metaRouter.default);
   }
 });
 
-export const rootRouter: RouteStruct[] = [
+export const routes: RouteStruct[] = [
   {
     element: <LayoutBasic />,
     children: [
@@ -25,15 +27,11 @@ export const rootRouter: RouteStruct[] = [
       { path: "/authorize", element: <Authorize />, meta: { title: 'authorize', notRequiresAuth: true } },
     ],
   },
-  ...routerArray,
+  ...router,
   {
     path: "*",
     element: <Navigate to="/404" />
   }
 ];
 
-const Router = () => {
-  // @ts-ignore
-  return useRoutes(rootRouter);
-};
-export default Router;
+export default () => useRoutes(routes);

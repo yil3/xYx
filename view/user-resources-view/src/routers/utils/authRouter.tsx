@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { AxiosCanceler } from "@/api";
 import { searchRoute } from "@/utils/util";
-import { rootRouter } from "@/routers/index";
+import { routes } from "@/routers/index";
 import { parse } from 'qs'
 import { token } from '@/api/modules/authorize'
 
@@ -12,7 +12,7 @@ const axiosCanceler = new AxiosCanceler();
  * */
 const AuthRouter = (props: { children: JSX.Element }) => {
   const { pathname } = useLocation();
-  const route = searchRoute(pathname, rootRouter);
+  const route = searchRoute(pathname, routes);
   const params = parse(window.location.search, { ignoreQueryPrefix: true });
   // * 在跳转路由之前，清除所有的请求
   axiosCanceler.removeAllPending();

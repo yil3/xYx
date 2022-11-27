@@ -182,6 +182,7 @@ class RequestHttp {
           localStorage.removeItem("token");
           window.location.href = 'http://localhost:3000/authorize' +
             '?redirect_uri=http://localhost:3010' +
+            location.pathname +
             '&response_type=code' +
             '&client_id=00000000-0000-0000-0000-000000000001' +
             '&client_secret=aa332211 ' +
