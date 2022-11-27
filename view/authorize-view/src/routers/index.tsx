@@ -1,7 +1,7 @@
 import { LayoutBasic } from "@/layouts";
-import Login from "@/pages/login";
-import SignUp from "@/pages/signup";
-import Authorize from "@/pages/authorize";
+import Login from "@/pages/Login";
+import SignUp from "@/pages/Signup";
+import Authorize from "@/pages/Authorize";
 import { Navigate, useRoutes } from "react-router-dom";
 import { RouteStruct } from "./interface";
 import lazyLoad from "./utils/lazyLoad";

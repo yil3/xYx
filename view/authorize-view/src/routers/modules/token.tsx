@@ -1,5 +1,5 @@
 import LayoutView from "@/layouts";
-import Token from "@/views/token";
+import Token from "@/views/Token";
 import { RouteStruct } from "../interface";
 
 const route: RouteStruct[] = [{

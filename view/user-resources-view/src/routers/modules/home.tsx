@@ -8,7 +8,7 @@ import { RouteStruct } from "../interface";
 const route: RouteStruct[] = [{
   element: lazy(() => import("@/layouts")),
   children: [
-    { path: "/", element: lazy(() => import("@/views/home")), meta: { title: "Home", key:"home" } },
+    { path: "/", element: lazy(() => import("@/views/Home")), meta: { title: "Home", key:"home" } },
   ],
 }]
 

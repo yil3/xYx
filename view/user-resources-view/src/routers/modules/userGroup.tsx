@@ -1,14 +1,9 @@
-/**
-* @Author xYx
-* @Date 2022-11-26 17:32:16
-*/
-
 import { lazy } from "react";
 import { RouteStruct } from "../interface";
 
 const route: RouteStruct[] = [{
   element: lazy(() => import("@/layouts")),
-  children: [{ path: "/user", element: lazy(() => import("@/views/User")), meta: { title: "用户管理", key: "user" } }]
+  children: [{ path: "/user/group", element: lazy(() => import("@/views/UserGroup")) }]
 }]
 
 export default route;

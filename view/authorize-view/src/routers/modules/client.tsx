@@ -4,7 +4,7 @@
 */
 import LayoutView from "@/layouts";
 import { RouteStruct } from "../interface";
-import Client from "@/views/client";
+import Client from "@/views/Client";
 
 const route: RouteStruct[] = [{
   element: <LayoutView />,

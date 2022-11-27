@@ -1,5 +1,5 @@
 import LayoutView from "@/layouts";
-import Home from "@/views/home";
+import Home from "@/views/Home";
 import { RouteStruct } from "../interface";
 
 const route: RouteStruct[] = [{
