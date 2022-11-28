@@ -1,15 +1,19 @@
 #! /bin/bash
 
-echo "process list"
-echo "----------------"
-echo "1.authorization"
-echo "2.user-resource"
-echo "3.authorization-view"
-echo "4.user-resource-view"
-echo "----------------"
+if [ "$1" ]; then
+  num=$1
+else
+  echo "process list"
+  echo "----------------"
+  echo "1.authorization"
+  echo "2.user-resource"
+  echo "3.authorization-view"
+  echo "4.user-resource-view"
+  echo "----------------"
 
-echo -n "please input number: "
-read num
+  read -p "please input number: " num
+fi
+
 
 case $num in 
   1) if [ -n "$(lsof -i:5000 -t)" ]
@@ -28,6 +32,8 @@ case $num in
     ;;
   3) if [ -n "$(lsof -i:3000 -t)" ]
       then kill -9 $(lsof -i:3000 -t)
+    else
+      ps -ef |grep node |grep authorize|awk '{print $2}'|xargs kill -9
     fi
     cd ./view/authorize-view
     nohup yarn dev > /dev/null 2>&1 &
@@ -35,6 +41,8 @@ case $num in
     ;;
   4) if [ -n "$(lsof -i:3010 -t)" ]
       then kill -9 $(lsof -i:3010 -t)
+    else
+      ps -ef |grep node |grep user-resources|awk '{print $2}'|xargs kill -9
     fi
     cd ./view/user-resources-view
     nohup yarn dev > /dev/null 2>&1 &

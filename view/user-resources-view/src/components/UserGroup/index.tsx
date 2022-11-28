@@ -8,6 +8,7 @@ import { ColumnsType } from "antd/es/table";
 import { fetchUsergroupPage } from "@/api/modules/userGroup";
 import { useEffect, useState } from "react";
 
+
 export default function UserGroup() {
   const [params, setParams] = useState({ page: 1, size: 10 });
   const [tableData, setTableData] = useState({ total: 0, list: [] });

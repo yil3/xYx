@@ -180,13 +180,13 @@ class RequestHttp {
         // * 登录过期，跳转到登录页
         if (response?.status == 401) {
           localStorage.removeItem("token");
-          window.location.href = 'http://localhost:3000/authorize' +
-            '?redirect_uri=http://localhost:3010' +
-            location.pathname +
+          window.location.href = process.env.AUTHEN_URL || 'http://localhost:3000/authorize'+
+            '?redirect_uri=' + location.origin + location.pathname +
             '&response_type=code' +
-            '&client_id=00000000-0000-0000-0000-000000000001' +
-            '&client_secret=aa332211 ' +
-            '&scope=all&state=x';
+            '&client_id=' + process.env.CLIENT_ID +
+            '&client_secret=' + process.env.CLIENT_SECRET || '' +
+            '&scope=' + process.env.SCOPE || 'all' +
+            '&state=' + process.env.STATE || 'x';
         }
         // 服务器结果都没有返回(可能服务器错误可能客户端断网) 断网处理:可以跳转到断网页面
         if (!window.navigator.onLine) window.location.href = "/500";
