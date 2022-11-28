@@ -1,5 +1,5 @@
-import Router from "@/routers";
-import AuthRouter from "./routers/utils/authRouter";
+import Router from "@/router";
+import AuthRouter from "@/router/AuthRouter";
 
 export default function App() {
   return (

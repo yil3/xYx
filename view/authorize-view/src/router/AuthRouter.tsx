@@ -1,7 +1,7 @@
 import { useLocation, Navigate } from "react-router-dom";
 import { AxiosCanceler } from "@/api";
-import { searchRoute } from "@/utils/util";
-import { routes } from "@/routers/index";
+import { searchRoute } from "@/utils/RouteUtils";
+import { routes } from "@/router/index";
 
 const axiosCanceler = new AxiosCanceler();
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteStruct } from "@/routers/interface";
+import { RouteStruct } from "@/router/interface";
 
 // 错误页面模块
 const errorRouter: Array<RouteStruct> = [

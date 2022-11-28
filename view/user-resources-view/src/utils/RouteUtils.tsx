@@ -1,12 +1,29 @@
+import { RouteStruct } from "@/router/interface";
 import React, { Suspense } from "react";
 import { Spin } from "antd";
-import { RouteStruct } from "../interface";
+/**
+* @Author xYx
+* @Date 2022-11-28 10:05:36
+*/
 
 /**
- * @description 路由懒加载
- * @param {Element} Comp 需要访问的组件
- * @returns element
+ * @description 递归查询对应的路由
+ * @param {String} path 当前访问地址
+ * @param {Array} routes 路由列表
+ * @returns array
  */
+export const searchRoute = (path: string, routes: RouteStruct[] = []): RouteStruct => {
+	let result: RouteStruct = {};
+	for (let item of routes) {
+		if (item.path === path) return item;
+		if (item.children) {
+			const res = searchRoute(path, item.children);
+			if (Object.keys(res).length) result = res;
+		}
+	}
+	return result;
+};
+
 const intoLazy = (Comp: React.LazyExoticComponent<any>): React.ReactNode => {
 	return (
 		<Suspense
@@ -17,7 +34,7 @@ const intoLazy = (Comp: React.LazyExoticComponent<any>): React.ReactNode => {
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",
-						height: "100%"
+						height: "100vh"
 					}}
 				/>
 			}

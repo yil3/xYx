@@ -1,11 +1,11 @@
 import LayoutView from "@/layouts";
-import Home from "@/views/Home";
+import { lazy } from "react";
 import { RouteStruct } from "../interface";
 
 const route: RouteStruct[] = [{
   element: <LayoutView />,
   children: [
-    { path: "/", element: <Home />, meta: { title: "Home", key:"" } },
+    { path: "/token", element: lazy(() => import("@/components/Token")), meta: { title: "Token", key: "token" } },
   ],
 }]
 

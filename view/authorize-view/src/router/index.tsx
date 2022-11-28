@@ -4,7 +4,7 @@ import SignUp from "@/pages/Signup";
 import Authorize from "@/pages/Authorize";
 import { Navigate, useRoutes } from "react-router-dom";
 import { RouteStruct } from "./interface";
-import lazyLoad from "./utils/lazyLoad";
+import lazyLoad from "@/utils/RouteUtils";
 
 // * 导入所有router
 const metaRouters = import.meta.glob("./modules/*.tsx", { eager: true });

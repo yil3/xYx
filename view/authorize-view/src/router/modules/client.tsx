@@ -3,13 +3,13 @@
 * @Date 2022-11-04 16:33:51
 */
 import LayoutView from "@/layouts";
+import { lazy } from "react";
 import { RouteStruct } from "../interface";
-import Client from "@/views/Client";
 
 const route: RouteStruct[] = [{
   element: <LayoutView />,
   children: [
-    { path: "/client", element: <Client />, meta: { title: "Client", key:"client" } },
+    { path: "/client", element: lazy(() => import("@/components/Client")), meta: { title: "Client", key:"client" } },
   ],
 }]
 

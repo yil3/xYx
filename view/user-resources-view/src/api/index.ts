@@ -5,7 +5,7 @@ import { showFullScreenLoading, tryHideFullScreenLoading } from "@/config/servic
 import { message } from "antd";
 // import { store } from "@/redux";
 
-import { isFunction } from "@/utils/is/index";
+import { isFunction } from "@/utils/isUtils";
 import qs from "qs";
 import { ResultData } from "./interface";
 
