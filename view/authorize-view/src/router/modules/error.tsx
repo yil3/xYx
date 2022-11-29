@@ -1,5 +1,6 @@
 import React from "react";
 import { RouteStruct } from "@/router/interface";
+import lazyLoad from "@/utils/RouteUtils";
 
 // 错误页面模块
 const errorRouter: Array<RouteStruct> = [
@@ -14,4 +15,4 @@ const errorRouter: Array<RouteStruct> = [
 	},
 ];
 
-export default errorRouter;
+export default lazyLoad(errorRouter);

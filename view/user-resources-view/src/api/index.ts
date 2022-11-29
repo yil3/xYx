@@ -179,14 +179,15 @@ class RequestHttp {
         if (response) checkStatus(response.status);
         // * 登录过期，跳转到登录页
         if (response?.status == 401) {
+          console.log("登录过期");
           localStorage.removeItem("token");
-          window.location.href = process.env.AUTHEN_URL || 'http://localhost:3000/authorize'+
-            '?redirect_uri=' + location.origin + location.pathname +
+          window.location.href = (process.env.AUTHEN_URL || 'http://localhost:3000/authorize') +
+            ('?redirect_uri=' + location.origin + location.pathname) +
             '&response_type=code' +
             '&client_id=' + process.env.CLIENT_ID +
-            '&client_secret=' + process.env.CLIENT_SECRET || '' +
-            '&scope=' + process.env.SCOPE || 'all' +
-            '&state=' + process.env.STATE || 'x';
+            ('&client_secret=' + process.env.CLIENT_SECRET || '') +
+            ('&scope=' + process.env.SCOPE || 'all') +
+            ('&state=' + process.env.STATE || 'x');
         }
         // 服务器结果都没有返回(可能服务器错误可能客户端断网) 断网处理:可以跳转到断网页面
         if (!window.navigator.onLine) window.location.href = "/500";

@@ -26,7 +26,6 @@ const AuthRouter = (props: { children: JSX.Element }) => {
       localStorage.setItem('token', JSON.stringify(res.data))
       // 删除url 全部参数
       window.history.replaceState(null, "", "/");
-      return props.children;
     })
   }
 

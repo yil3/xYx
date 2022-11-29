@@ -13,44 +13,44 @@ import { Spin } from "antd";
  * @returns array
  */
 export const searchRoute = (path: string, routes: RouteStruct[] = []): RouteStruct => {
-	let result: RouteStruct = {};
-	for (let item of routes) {
-		if (item.path === path) return item;
-		if (item.children) {
-			const res = searchRoute(path, item.children);
-			if (Object.keys(res).length) result = res;
-		}
-	}
-	return result;
+  let result: RouteStruct = {};
+  for (let item of routes) {
+    if (item.path === path) return item;
+    if (item.children) {
+      const res = searchRoute(path, item.children);
+      if (Object.keys(res).length) result = res;
+    }
+  }
+  return result;
 };
 
-const intoLazy = (Comp: React.LazyExoticComponent<any>): React.ReactNode => {
-	return (
-		<Suspense
-			fallback={
-				<Spin
-					size="large"
-					style={{
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						height: "100vh"
-					}}
-				/>
-			}
-		>
-			<Comp />
-		</Suspense>
-	);
+export const intoLazy = (Comp: React.LazyExoticComponent<any>): React.ReactNode => {
+  return (
+    <Suspense
+      fallback={
+        <Spin
+          size="large"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh"
+          }}
+        />
+      }
+    >
+      <Comp />
+    </Suspense>
+  );
 };
 
 const lazyLoad = (arr: RouteStruct[]) => {
-  return arr.map((item) => {
-    if (!(item.element.type instanceof Function)) {
+  return arr.map(item => {
+    if (item.element && !(item.element.type instanceof Function)) {
       item.element = intoLazy(item.element);
     }
-    if (item.children && item.children.length) {
-      item.children = lazyLoad(item.children);
+    if (item.children) {
+      lazyLoad(item.children);
     }
     return item;
   });

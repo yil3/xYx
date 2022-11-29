@@ -46,11 +46,11 @@ const intoLazy = (Comp: React.LazyExoticComponent<any>): React.ReactNode => {
 
 const lazyLoad = (arr: RouteStruct[]) => {
   return arr.map((item) => {
-    if (!(item.element.type instanceof Function)) {
+    if (item.element && !(item.element.type instanceof Function)) {
       item.element = intoLazy(item.element);
     }
     if (item.children && item.children.length) {
-      item.children = lazyLoad(item.children);
+      lazyLoad(item.children);
     }
     return item;
   });
