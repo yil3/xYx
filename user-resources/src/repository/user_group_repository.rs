@@ -37,7 +37,7 @@ impl UserGroupRepository {
 
     pub async fn insert(&self, param: &UserGroupParam, user_id: &str) -> Result<UserGroupDto, sqlx::Error> {
         query_as("INSERT INTO user_group (owner, name, description, created_by) VALUES ($1, $2, $3, $4) returning *")
-            .bind(&param.owner)
+            .bind(user_id)
             .bind(&param.name)
             .bind(&param.description)
             .bind(user_id)

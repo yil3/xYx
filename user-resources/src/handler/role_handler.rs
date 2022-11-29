@@ -31,49 +31,49 @@ pub fn route() -> Router {
 pub async fn save_role(current_user: CurrentUser, mut record: Json<RoleParam>) -> impl IntoResponse {
     match RoleService.save(&mut record, &current_user.user_id).await {
         Ok(role) => Json(R::success(role)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn tree_role() -> impl IntoResponse {
     match RoleService.tree().await {
         Ok(role) => Json(R::success(role)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn delete_role(id: Query<String>) -> impl IntoResponse {
     match RoleService.delete(&id).await {
         Ok(role) => Json(R::success(role)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn get_roles_by_user_id(user_id: Query<String>) -> impl IntoResponse {
     match RoleService.get_roles_by_user_id(&user_id).await {
         Ok(roles) => Json(R::success(roles)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn get_role_sign_by_user_id(user_id: Query<String>) -> impl IntoResponse {
     match RoleService.get_role_sign_by_user_id(&user_id).await {
         Ok(roles) => Json(R::success(roles)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn insert_user_to_role(param: Json<RoleAddUserParam>) -> impl IntoResponse {
     match RoleService.insert_users_to_role(&param.role_id, &param.user_ids).await {
         Ok(roles) => Json(R::success(roles)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn remove_user_from_role(param: Json<RoleAddUserParam>) -> impl IntoResponse {
     match RoleService.remove_users_from_role(&param.role_id, &param.user_ids).await {
         Ok(roles) => Json(R::success(roles)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 

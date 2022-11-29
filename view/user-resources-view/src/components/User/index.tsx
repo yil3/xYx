@@ -52,7 +52,7 @@ export default function User() {
       setTableData(res.data.list);
       setTotal(res.data.total);
     } else {
-      message.error(res.msg);
+      message.error(res.message);
     }
   }
   const pageChange = (page: number, size: number) => setParams({ ...params, page, size });

@@ -14,7 +14,7 @@ const AuthRouter = (props: { children: JSX.Element }) => {
   // * 在跳转路由之前，清除所有的请求
   axiosCanceler.removeAllPending();
   // * 判断当前路由是否需要访问权限(不需要权限直接放行)
-  if (route.meta?.notRequiresAuth) return props.children;
+  if (route.meta?.notAuth) return props.children;
 
   // * 判断是否有Token
   // const token = store.getState().global.token;

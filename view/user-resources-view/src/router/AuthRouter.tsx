@@ -32,7 +32,7 @@ const AuthRouter = (props: { children: JSX.Element }) => {
   // * 判断当前路由是否需要访问权限(不需要权限直接放行)
   const { pathname } = useLocation();
   const route = searchRoute(pathname, routes);
-  if (route.meta?.notRequiresAuth) return props.children;
+  if (route.meta?.notAuth) return props.children;
 
   // * 当前账号有权限返回 Router，正常访问页面
   // TODO: 判断当前账号是否有权限访问当前路由

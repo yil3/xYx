@@ -31,48 +31,48 @@ pub fn route() -> Router {
 pub async fn save_permission(user: CurrentUser, mut body: Json<PermissionParam>) -> impl IntoResponse {
     match PermissionService.save(&mut body, &user.user_id).await {
         Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn delete_permission(id: Query<String>) -> impl IntoResponse {
     match PermissionService.delete_by_id(&id).await {
         Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn get_permission_by_role(role_id: Query<String>) -> impl IntoResponse {
     match PermissionService.get_by_role(&role_id).await {
         Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn get_permission_sign_by_user(user_id: Query<String>) -> impl IntoResponse {
     match PermissionService.get_permission_sign_by_user(&user_id).await {
         Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn get_permission_type() -> impl IntoResponse {
     match PermissionService.get_permission_type().await {
         Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn save_permission_type(body: Json<PermissionTypeParam>) -> impl IntoResponse {
     match PermissionService.save_permission_type(&body).await {
         Ok(data) => Json(R::success(data)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn delete_permission_type(id: Query<String>) -> impl IntoResponse {
     match PermissionService.delete_permission_type(&id).await {
         Ok(data) => Json(R::success(data)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }

@@ -10,7 +10,7 @@ export const saveUserGroup = (data: Object) => {
 }
 
 export const deleteUserGroup = (id: String) => {
-  return http.delete('/user_resource/user_group/delete', id);
+  return http.delete(`/user_resource/user_group/delete?id=${id}`);
 }
 
 export const fetchUsergroupPage = (params: any) => {

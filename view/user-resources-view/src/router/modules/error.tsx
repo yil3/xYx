@@ -10,7 +10,7 @@ const errorRouter: Array<RouteStruct> = [
     meta: {
       title: "404页面",
       key: "404",
-      notRequiresAuth: true
+      notAuth: true
     }
   },
 ];

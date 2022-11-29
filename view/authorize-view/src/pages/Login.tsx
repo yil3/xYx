@@ -21,7 +21,7 @@ export default function Login(_props: any) {
           navigate("/");
         }
       } else {
-        message.warning(res.msg);
+        message.warning(res.message);
       }
     });
   };

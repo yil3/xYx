@@ -13,7 +13,7 @@ export default function SignUp(_props: any) {
       message.success("register success");
       navigate("/login");
     } else {
-      message.warn(res.msg);
+      message.warning(res.message);
     }
   };
 

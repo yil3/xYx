@@ -161,8 +161,8 @@ class RequestHttp {
         axiosCanceler.removePending(config);
         tryHideFullScreenLoading();
         if (data.success === false) {
-          if (data.msg) {
-            message.error(data.msg);
+          if (data.message) {
+            message.error(data.message);
           }
           return Promise.reject(data);
         }

@@ -6,7 +6,7 @@ import { NonIndexRouteObject } from "react-router-dom";
 */
 export interface MetaProps {
   keepAlive?: boolean;
-  notRequiresAuth?: boolean;
+  notAuth?: boolean;
   title: string;
   key?: string;
 }

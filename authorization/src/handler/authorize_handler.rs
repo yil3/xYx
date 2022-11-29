@@ -35,14 +35,14 @@ pub async fn authorize(params: Query<AuthorizeParam>, user: CurrentUser) -> impl
 pub async fn token(params: Json<TokenParam>) -> impl IntoResponse {
     match AuthorizeService.token(&params).await {
         Ok(token) => Json(R::success(token)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn refresh_token(refresh_token: Path<String>) -> impl IntoResponse {
     match AuthorizeService.refresh_token(&refresh_token).await {
         Ok(token) => Json(R::success(token)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 

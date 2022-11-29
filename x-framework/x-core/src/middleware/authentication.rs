@@ -76,7 +76,7 @@ fn build_json_respones(status: StatusCode, message: &str) -> Response<hyper::Bod
         .status(status)
         .header("content-type", "application/json")
         .body(hyper::Body::from(
-            serde_json::to_string(&R::<&str>::error(message)).unwrap_or_default(),
+            serde_json::to_string(&R::error(message)).unwrap_or_default(),
         ))
         .unwrap_or_default()
 }
@@ -107,7 +107,7 @@ where
                     .status(StatusCode::UNAUTHORIZED)
                     .header("content-type", "application/json")
                     .body(UnsyncBoxBody::new(
-                        hyper::Body::from(serde_json::to_string(&R::<&str>::error("Unauthorized")).unwrap_or_default())
+                        hyper::Body::from(serde_json::to_string(&R::error("Unauthorized")).unwrap_or_default())
                             .map_err(|e| Error::new(e)),
                     ))
                     .unwrap()),

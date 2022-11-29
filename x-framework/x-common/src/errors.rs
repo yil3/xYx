@@ -89,7 +89,7 @@ impl XError {
         //     "error": validation_errors,
         // }));
 
-        let body = Json(R::<&str>::error(
+        let body = Json(R::error(
             &serde_json::to_string(&validation_errors).unwrap_or("validation error".to_string()),
         ));
 
@@ -118,7 +118,7 @@ impl IntoResponse for XError {
 
         // I'm not a fan of the error specification, so for the sake of consistency,
         // serialize singular errors as a map of vectors similar to the 422 validation responses
-        let body = Json(R::<&str>::error(&error_message));
+        let body = Json(R::error(&error_message));
 
         (status, body).into_response()
     }

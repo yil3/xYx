@@ -1,6 +1,7 @@
 import { RouteStruct } from "@/router/interface";
 import React, { Suspense } from "react";
 import { Spin } from "antd";
+import { isFunction } from "./isUtils";
 /**
 * @Author xYx
 * @Date 2022-11-28 10:05:36
@@ -46,7 +47,7 @@ export const intoLazy = (Comp: React.LazyExoticComponent<any>): React.ReactNode 
 
 const lazyLoad = (arr: RouteStruct[]) => {
   return arr.map(item => {
-    if (item.element && !(item.element.type instanceof Function)) {
+    if (item.element && !isFunction(item.element.type)) {
       item.element = intoLazy(item.element);
     }
     if (item.children) {
@@ -55,5 +56,6 @@ const lazyLoad = (arr: RouteStruct[]) => {
     return item;
   });
 };
+
 
 export default lazyLoad;

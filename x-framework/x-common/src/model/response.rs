@@ -2,9 +2,28 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct R<T> {
-    pub msg: Option<String>,
+    pub message: Option<String>,
     pub success: bool,
     pub data: Option<T>,
+}
+
+impl R<()> {
+    pub fn message(msg: &str) -> Self {
+        Self {
+            message: Some(msg.into()),
+            success: true,
+            data: None,
+        }
+    }
+
+    pub fn error(msg: &str) -> Self {
+        Self {
+            message: Some(msg.into()),
+            success: false,
+            data: None,
+        }
+    }
+
 }
 
 impl<T> R<T>
@@ -13,42 +32,35 @@ where
 {
     pub fn success(data: T) -> Self {
         Self {
-            msg: Default::default(),
+            message: Default::default(),
             success: true,
             data: Some(data),
         }
     }
 
-    pub fn ok(msg: &str) -> Self {
+    pub fn fail(msg: &str) -> Self {
         Self {
-            msg: Some(String::from(msg)),
-            success: true,
+            message: Some(msg.into()),
+            success: false,
             data: None,
         }
     }
 
-    pub fn ok_msg(data: T, msg: &str) -> Self {
+    pub fn success_msg(data: T, msg: &str) -> Self {
         Self {
-            msg: Some(String::from(msg)),
+            message: Some(msg.into()),
             success: true,
             data: Some(data),
         }
     }
 
-    pub fn fail() -> Self {
+    pub fn fail_msg(data: T, msg: &str) -> Self {
         Self {
-            msg: Default::default(),
+            message: Some(msg.into()),
             success: false,
-            data: None,
+            data: Some(data),
         }
     }
 
-    pub fn error(msg: &str) -> Self {
-        Self {
-            msg: Some(String::from(msg)),
-            success: false,
-            data: None,
-        }
-    }
 }
 

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use axum::{
     extract::Query,
     response::IntoResponse,
@@ -31,28 +33,32 @@ pub fn route() -> Router {
 pub async fn save_user_group(current_user: CurrentUser, mut param: Json<UserGroupParam>) -> impl IntoResponse {
     match UserGroupService.save(&mut param, &current_user.user_id).await {
         Ok(user_group) => Json(R::success(user_group)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
-pub async fn delete_user_group(id: Query<String>) -> impl IntoResponse {
-    match UserGroupService.delete(&id).await {
-        Ok(_) => Json(R::success(())),
-        Err(e) => Json(R::error(&e.to_string())),
+pub async fn delete_user_group(params: Query<HashMap<String, String>>) -> impl IntoResponse {
+    if let Some(id) = params.get("id") {
+        match UserGroupService.delete(id).await {
+            Ok(_) => Json(R::message(id)),
+            Err(e) => Json(R::error(&e.to_string())),
+        }
+    } else {
+        Json(R::fail("id is required"))
     }
 }
 
 pub async fn get_user_group_page(param: Query<PageParam>) -> impl IntoResponse {
     match UserGroupService.get_user_group_page(&param).await {
         Ok(user_groups) => Json(R::success(user_groups)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn get_user_page_by_group_id(param: Query<PageParam>) -> impl IntoResponse {
     match UserGroupService.get_user_page_by_group_id(&param).await {
         Ok(page) => Json(R::success(page)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
@@ -62,7 +68,7 @@ pub async fn add_users_to_user_group(param: Json<UserUserGroupParam>) -> impl In
         .await
     {
         Ok(_) => Json(R::success(())),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
@@ -72,7 +78,7 @@ pub async fn remove_users_from_user_group(param: Json<UserUserGroupParam>) -> im
         .await
     {
         Ok(_) => Json(R::success(())),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
@@ -82,7 +88,7 @@ pub async fn add_roles_to_user_group(param: Json<RoleUserGroupParam>) -> impl In
         .await
     {
         Ok(count) => Json(R::success(count)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
@@ -92,6 +98,6 @@ pub async fn remove_roles_from_user_group(param: Json<RoleUserGroupParam>) -> im
         .await
     {
         Ok(count) => Json(R::success(count)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }

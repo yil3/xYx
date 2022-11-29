@@ -25,20 +25,20 @@ pub async fn save_client(user: CurrentUser, mut record: Json<ClientParam>) -> im
     record.owner = Some(user.user_id.to_string());
     match ClientService.save(&record).await {
         Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn page(param: Query<PageParam>) -> impl IntoResponse {
     match ClientService.get_page(&param).await {
         Ok(records) => Json(R::success(records)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
 
 pub async fn delete_by_id(id: Path<String>) -> impl IntoResponse {
     match ClientService.delete(&id).await {
         Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::error(&e.to_string())),
+        Err(e) => Json(R::fail(&e.to_string())),
     }
 }
