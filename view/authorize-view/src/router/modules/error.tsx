@@ -1,9 +1,8 @@
 import React from "react";
 import { RouteStruct } from "@/router/interface";
-import lazyLoad from "@/utils/RouteUtils";
 
 // 错误页面模块
-const errorRouter: Array<RouteStruct> = [
+const route: Array<RouteStruct> = [
 	{
 		path: "/404",
 		element: React.lazy(() => import("@/components/Error/404")),
@@ -15,4 +14,4 @@ const errorRouter: Array<RouteStruct> = [
 	},
 ];
 
-export default lazyLoad(errorRouter);
+export default route;

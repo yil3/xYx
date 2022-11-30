@@ -1,11 +1,10 @@
-import { RouteStruct } from "@/router/interface";
-import React, { Suspense } from "react";
-import { Spin } from "antd";
-import { isFunction } from "./isUtils";
 /**
 * @Author xYx
 * @Date 2022-11-28 10:05:36
 */
+import { RouteStruct } from "@/router/interface";
+import React, { Suspense } from "react";
+import { Spin } from "antd";
 
 /**
  * @description 递归查询对应的路由
@@ -25,7 +24,7 @@ export const searchRoute = (path: string, routes: RouteStruct[] = []): RouteStru
   return result;
 };
 
-export const intoLazy = (Comp: React.LazyExoticComponent<any>): React.ReactNode => {
+export const intoLazyComp = (Comp: React.LazyExoticComponent<any>): React.ReactNode => {
   return (
     <Suspense
       fallback={
@@ -39,8 +38,8 @@ export const intoLazy = (Comp: React.LazyExoticComponent<any>): React.ReactNode 
 
 const lazyLoad = (arr: RouteStruct[]) => {
   return arr.map(item => {
-    if (item.element && !isFunction(item.element.type)) {
-      item.element = intoLazy(item.element);
+    if (item.element && item.element.$$typeof == Symbol.for('react.lazy')) {
+      item.element = intoLazyComp(item.element);
     }
     if (item.children) {
       lazyLoad(item.children);

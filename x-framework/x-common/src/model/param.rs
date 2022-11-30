@@ -6,10 +6,19 @@ use serde::Deserialize;
 */
 
 #[derive(Deserialize)]
-pub struct Id(pub String);
+#[serde(rename_all = "camelCase")]
+pub struct Param {
+    pub id: Option<String>,
+    pub user_id: Option<String>,
+    pub query: Option<String>,
+}
 
-impl Id {
-    pub fn get(&self) -> &String {
-        &self.0
+impl Param {
+    pub fn query_to<T>(&self) -> anyhow::Result<T>
+    where
+        T: serde::de::DeserializeOwned,
+    {
+        Ok(serde_json::from_str(&self.query.as_ref().expect("query is required"))?)
     }
 }
+

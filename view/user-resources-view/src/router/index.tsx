@@ -1,4 +1,5 @@
 import { LayoutBasic } from "@/layouts";
+import lazyLoad from "@/utils/RouteUtils";
 import { Navigate, useRoutes } from "react-router-dom";
 import { RouteStruct } from "./interface";
 
@@ -9,11 +10,11 @@ export const routes: RouteStruct[] = [];
 Object.keys(metaRouters).forEach((item) => {
   let metaRouter = metaRouters[item] as any;
   if (metaRouter.default) {
-    routes.push(...metaRouter.default);
+    routes.push.apply(routes ,metaRouter.default);
   }
 });
 
-routes.concat([
+routes.push.apply(routes, [
   {
     element: <LayoutBasic />,
     children: [],
@@ -24,4 +25,4 @@ routes.concat([
   },
 ]);
 
-export default () => useRoutes(routes);
+export default () => useRoutes(lazyLoad(routes));

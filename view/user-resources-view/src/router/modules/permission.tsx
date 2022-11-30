@@ -2,8 +2,6 @@
 * @Author xYx
 * @Date 2022-11-28 09:42:09
 */
-
-import lazyLoad from "@/utils/RouteUtils";
 import { lazy } from "react";
 import { RouteStruct } from "../interface";
 
@@ -14,4 +12,4 @@ const routes: RouteStruct[] = [{
   ]
 }]
 
-export default lazyLoad(routes);
+export default routes;

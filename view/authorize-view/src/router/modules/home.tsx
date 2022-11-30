@@ -1,4 +1,3 @@
-import lazyLoad from "@/utils/RouteUtils";
 import { lazy } from "react";
 import { RouteStruct } from "../interface";
 
@@ -9,4 +8,4 @@ const route: RouteStruct[] = [{
   ],
 }]
 
-export default lazyLoad(route);
+export default route;

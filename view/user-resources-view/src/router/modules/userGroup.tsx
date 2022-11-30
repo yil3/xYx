@@ -1,4 +1,3 @@
-import lazyLoad from "@/utils/RouteUtils";
 import { lazy } from "react";
 import { RouteStruct } from "../interface";
 
@@ -11,4 +10,4 @@ const route: RouteStruct[] = [{
   children: [{ path: "/user/group", element: lazy(() => import("@/components/UserGroup")) }]
 }]
 
-export default lazyLoad(route);
+export default route;

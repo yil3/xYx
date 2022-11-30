@@ -1,12 +1,10 @@
-use std::collections::HashMap;
-
 use axum::{
     extract::Query,
     response::IntoResponse,
     routing::{delete, get, post},
     Json, Router,
 };
-use x_common::model::{page::PageParam, response::R};
+use x_common::model::{page::PageParam, param::Param, response::R};
 use x_core::middleware::authentication::CurrentUser;
 
 use crate::{
@@ -37,10 +35,10 @@ pub async fn save_user_group(current_user: CurrentUser, mut param: Json<UserGrou
     }
 }
 
-pub async fn delete_user_group(params: Query<HashMap<String, String>>) -> impl IntoResponse {
-    if let Some(id) = params.get("id") {
-        match UserGroupService.delete(id).await {
-            Ok(_) => Json(R::message(id)),
+pub async fn delete_user_group(params: Query<Param>) -> impl IntoResponse {
+    if let Some(id) = &params.id {
+        match UserGroupService.delete(&id).await {
+            Ok(_) => Json(R::message(&id)),
             Err(e) => Json(R::error(&e.to_string())),
         }
     } else {

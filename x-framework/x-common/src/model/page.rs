@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 #[derive(Default, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -52,15 +52,11 @@ impl<'a> PageParam {
     pub fn limit(&self) -> i64 {
         self.size
     }
-    pub fn query_to<T>(&'a self) -> anyhow::Result<T>
+    pub fn query_to<T>(&self) -> anyhow::Result<T>
     where
-        T: Deserialize<'a>,
+        T: DeserializeOwned,
     {
-        if let Some(query) = &self.query {
-            Ok(serde_json::from_str(query)?)
-        } else {
-            Err(anyhow::anyhow!("deserialize query failed"))
-        }
+        Ok(serde_json::from_str(&self.query.as_ref().expect("query is required"))?)
     }
 }
 

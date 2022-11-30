@@ -35,14 +35,25 @@ pub async fn page(param: Query<PageParam>) -> impl IntoResponse {
 }
 
 pub async fn validate_user(param: Json<LoginUserParam>) -> impl IntoResponse {
-    match UserService
-        .validate_user(
-            param.username.as_ref().expect("username is not empty"),
-            param.password.as_ref().expect("password is not empty"),
-        )
-        .await
-    {
+    let username = if let Some(username) = &param.username {
+        username
+    } else {
+        return Json(R::fail("username is required"));
+    };
+    let password = if let Some(password) = &param.password {
+        password
+    } else {
+        return Json(R::fail("password is required"));
+    };
+    match UserService.validate_user(username, password).await {
         Ok(user_id) => Json(R::success(user_id)),
         Err(e) => Json(R::fail(&e.to_string())),
     }
 }
+
+pub async fn add_roles_to_user() {}
+
+pub async fn remove_roles_from_user() {}
+
+pub async fn get_user_info() {}
+

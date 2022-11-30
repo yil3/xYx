@@ -6,7 +6,7 @@ use axum::{
     routing::{delete, get, post},
     Json, Router,
 };
-use x_common::model::response::R;
+use x_common::model::{response::R, param::Param};
 use x_core::middleware::authentication::CurrentUser;
 
 use crate::{
@@ -44,8 +44,8 @@ pub async fn tree_role() -> impl IntoResponse {
     }
 }
 
-pub async fn delete_role(params: Query<HashMap<String, String>>) -> impl IntoResponse {
-    if let Some(id) = params.get("id") {
+pub async fn delete_role(params: Query<Param>) -> impl IntoResponse {
+    if let Some(id) = &params.id {
         match RoleService.delete(&id).await {
             Ok(role) => Json(R::success(role)),
             Err(e) => Json(R::fail(&e.to_string())),
@@ -55,17 +55,25 @@ pub async fn delete_role(params: Query<HashMap<String, String>>) -> impl IntoRes
     }
 }
 
-pub async fn get_roles_by_user_id(user_id: Query<String>) -> impl IntoResponse {
-    match RoleService.get_roles_by_user_id(&user_id).await {
-        Ok(roles) => Json(R::success(roles)),
-        Err(e) => Json(R::fail(&e.to_string())),
+pub async fn get_roles_by_user_id(params: Query<Param>) -> impl IntoResponse {
+    if let Some(user_id) = &params.user_id {
+        match RoleService.get_roles_by_user_id(&user_id).await {
+            Ok(roles) => Json(R::success(roles)),
+            Err(e) => Json(R::fail(&e.to_string())),
+        }
+    } else {
+        Json(R::fail("user_id is required"))
     }
 }
 
-pub async fn get_role_sign_by_user_id(user_id: Query<String>) -> impl IntoResponse {
-    match RoleService.get_role_sign_by_user_id(&user_id).await {
-        Ok(roles) => Json(R::success(roles)),
-        Err(e) => Json(R::fail(&e.to_string())),
+pub async fn get_role_sign_by_user_id(params: Query<HashMap<String, String>>) -> impl IntoResponse {
+    if let Some(user_id) = params.get("userId") {
+        match RoleService.get_role_sign_by_user_id(&user_id).await {
+            Ok(roles) => Json(R::success(roles)),
+            Err(e) => Json(R::fail(&e.to_string())),
+        }
+    } else {
+        Json(R::fail("userId is required"))
     }
 }
 
