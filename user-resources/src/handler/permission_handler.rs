@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use axum::{
     extract::Query,
     response::IntoResponse,
@@ -35,24 +37,36 @@ pub async fn save_permission(user: CurrentUser, mut body: Json<PermissionParam>)
     }
 }
 
-pub async fn delete_permission(id: Query<String>) -> impl IntoResponse {
-    match PermissionService.delete_by_id(&id).await {
-        Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::fail(&e.to_string())),
+pub async fn delete_permission(params: Query<HashMap<String, String>>) -> impl IntoResponse {
+    if let Some(id) = params.get("id") {
+        match PermissionService.delete_by_id(&id).await {
+            Ok(record) => Json(R::success(record)),
+            Err(e) => Json(R::fail(&e.to_string())),
+        }
+    } else {
+        Json(R::fail("id is required"))
     }
 }
 
-pub async fn get_permission_by_role(role_id: Query<String>) -> impl IntoResponse {
-    match PermissionService.get_by_role(&role_id).await {
-        Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::fail(&e.to_string())),
+pub async fn get_permission_by_role(params: Query<HashMap<String, String>>) -> impl IntoResponse {
+    if let Some(role_id) = params.get("roleId") {
+        match PermissionService.get_by_role(&role_id).await {
+            Ok(record) => Json(R::success(record)),
+            Err(e) => Json(R::fail(&e.to_string())),
+        }
+    } else {
+        Json(R::fail("roleId is required"))
     }
 }
 
-pub async fn get_permission_sign_by_user(user_id: Query<String>) -> impl IntoResponse {
-    match PermissionService.get_permission_sign_by_user(&user_id).await {
-        Ok(record) => Json(R::success(record)),
-        Err(e) => Json(R::fail(&e.to_string())),
+pub async fn get_permission_sign_by_user(params: Query<HashMap<String, String>>) -> impl IntoResponse {
+    if let Some(user_id) = params.get("userId") {
+        match PermissionService.get_permission_sign_by_user(&user_id).await {
+            Ok(record) => Json(R::success(record)),
+            Err(e) => Json(R::fail(&e.to_string())),
+        }
+    } else {
+        Json(R::fail("userId is required"))
     }
 }
 
@@ -70,9 +84,13 @@ pub async fn save_permission_type(body: Json<PermissionTypeParam>) -> impl IntoR
     }
 }
 
-pub async fn delete_permission_type(id: Query<String>) -> impl IntoResponse {
-    match PermissionService.delete_permission_type(&id).await {
-        Ok(data) => Json(R::success(data)),
-        Err(e) => Json(R::fail(&e.to_string())),
+pub async fn delete_permission_type(params: Query<HashMap<String, String>>) -> impl IntoResponse {
+    if let Some(id) = params.get("id") {
+        match PermissionService.delete_permission_type(&id).await {
+            Ok(data) => Json(R::success(data)),
+            Err(e) => Json(R::fail(&e.to_string())),
+        }
+    } else {
+        Json(R::fail("id is required"))
     }
 }

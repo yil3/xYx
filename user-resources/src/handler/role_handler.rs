@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use axum::{
     extract::Query,
     response::IntoResponse,
@@ -42,10 +44,14 @@ pub async fn tree_role() -> impl IntoResponse {
     }
 }
 
-pub async fn delete_role(id: Query<String>) -> impl IntoResponse {
-    match RoleService.delete(&id).await {
-        Ok(role) => Json(R::success(role)),
-        Err(e) => Json(R::fail(&e.to_string())),
+pub async fn delete_role(params: Query<HashMap<String, String>>) -> impl IntoResponse {
+    if let Some(id) = params.get("id") {
+        match RoleService.delete(&id).await {
+            Ok(role) => Json(R::success(role)),
+            Err(e) => Json(R::fail(&e.to_string())),
+        }
+    } else {
+        Json(R::fail("id is required"))
     }
 }
 
@@ -71,9 +77,11 @@ pub async fn insert_user_to_role(param: Json<RoleAddUserParam>) -> impl IntoResp
 }
 
 pub async fn remove_user_from_role(param: Json<RoleAddUserParam>) -> impl IntoResponse {
-    match RoleService.remove_users_from_role(&param.role_id, &param.user_ids).await {
+    match RoleService
+        .remove_users_from_role(&param.role_id, &param.user_ids)
+        .await
+    {
         Ok(roles) => Json(R::success(roles)),
         Err(e) => Json(R::fail(&e.to_string())),
     }
 }
-
