@@ -41,14 +41,13 @@ impl PermissionRepository {
             Permission,
             r#"
                 insert into sys_permission 
-                (owner, name, code, role_id, description, created_by, updated_by) 
-                values ($1, $2, $3, $4, $5, $6, $6)
+                (owner, name, code, description, created_by, updated_by) 
+                values ($1, $2, $3, $4, $5, $5)
                 returning *
             "#,
             record.owner,
             record.name,
             record.code,
-            record.role_id,
             record.description,
             user_id,
         )
@@ -64,19 +63,16 @@ impl PermissionRepository {
               owner = coalesce($1, owner),
               name = coalesce($2, name),
               code = coalesce($3, code),
-              role_id = coalesce($4, role_id),
-              description = coalesce($5, description),
-              updated_by = coalesce($6, updated_by)
-              where id = $7
+              description = coalesce($4, description),
+              updated_by = $5
+              where id = $5
               returning *
           "#,
             record.owner,
             record.name,
             record.code,
-            record.role_id,
             record.description,
             user_id,
-            record.id
         )
         .fetch_one(&*PG_POOL)
         .await
@@ -98,7 +94,9 @@ impl PermissionRepository {
         sqlx::query_as!(
             Permission,
             r#"
-                select * from sys_permission where role_id = $1
+                select p.* from sys_permission p 
+                left join role_permission rp on rp.permission_id = p.id 
+                where rp.role_id = $1
             "#,
             role_id
         )

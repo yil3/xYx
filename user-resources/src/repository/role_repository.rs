@@ -81,7 +81,7 @@ impl RoleRepository {
             .map(|r| r.rows_affected())
     }
 
-    pub async fn fetch_page(&self, param: PageParam) -> Result<Vec<RolePageDto>, sqlx::Error> {
+    pub async fn fetch_page(&self, param: &PageParam) -> Result<Vec<RolePageDto>, sqlx::Error> {
         let mut sql = "SELECT *, count(*) over() total FROM sys_role WHERE 1 = 1".to_string();
         if let Some(query) = &param.query {
             if !query.is_empty() {

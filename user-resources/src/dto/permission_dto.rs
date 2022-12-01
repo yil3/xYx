@@ -19,7 +19,6 @@ pub struct PermissionDto {
     pub owner: String,
     pub name: String,
     pub code: String,
-    pub role_id: String,
     pub description: String,
     pub status: bool,
     #[serde_as(as = "DateTimeFormat")]
@@ -40,7 +39,6 @@ impl From<Permission> for PermissionDto {
             owner: record.owner,
             name: record.name,
             code: record.code,
-            role_id: record.role_id,
             description: record.description,
             status: record.status,
             created_at: record.created_at,

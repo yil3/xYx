@@ -6,7 +6,7 @@ use axum::{
     routing::{delete, get, post},
     Json, Router,
 };
-use x_common::model::{response::R, param::Param};
+use x_common::model::{param::Param, response::R, page::PageParam};
 use x_core::middleware::authentication::CurrentUser;
 
 use crate::{
@@ -23,16 +23,24 @@ pub fn route() -> Router {
     Router::new()
         .route("/save", post(save_role))
         .route("/tree", get(tree_role))
+        .route("/page", get(page_role))
         .route("/delete", delete(delete_role))
         .route("/list", get(get_roles_by_user_id))
         .route("/signs", get(get_role_sign_by_user_id))
-        .route("/add/user", post(insert_user_to_role))
+        .route("/add/user", post(bind_user_to_role))
         .route("/remove/user", delete(remove_user_from_role))
 }
 
 pub async fn save_role(current_user: CurrentUser, mut record: Json<RoleParam>) -> impl IntoResponse {
     match RoleService.save(&mut record, &current_user.user_id).await {
         Ok(role) => Json(R::success(role)),
+        Err(e) => Json(R::fail(&e.to_string())),
+    }
+}
+
+pub async fn page_role(param: Query<PageParam>) -> impl IntoResponse {
+    match RoleService.get_page(&param).await {
+        Ok(page) => Json(R::success(page)),
         Err(e) => Json(R::fail(&e.to_string())),
     }
 }
@@ -77,7 +85,7 @@ pub async fn get_role_sign_by_user_id(params: Query<HashMap<String, String>>) ->
     }
 }
 
-pub async fn insert_user_to_role(param: Json<RoleAddUserParam>) -> impl IntoResponse {
+pub async fn bind_user_to_role(param: Json<RoleAddUserParam>) -> impl IntoResponse {
     match RoleService.insert_users_to_role(&param.role_id, &param.user_ids).await {
         Ok(roles) => Json(R::success(roles)),
         Err(e) => Json(R::fail(&e.to_string())),
@@ -92,4 +100,8 @@ pub async fn remove_user_from_role(param: Json<RoleAddUserParam>) -> impl IntoRe
         Ok(roles) => Json(R::success(roles)),
         Err(e) => Json(R::fail(&e.to_string())),
     }
+}
+
+pub async fn get_roles_not_exists_user(_params: Query<Param>) -> impl IntoResponse {
+    todo!()
 }

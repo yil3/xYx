@@ -9,7 +9,6 @@ pub struct Permission {
     pub owner: String,
     pub name: String,
     pub code: String,
-    pub role_id: String,
     pub description: String,
     pub status: bool,
     pub created_at: OffsetDateTime,

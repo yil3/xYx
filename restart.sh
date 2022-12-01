@@ -30,19 +30,15 @@ case $num in
     cargo run --bin user-resources
     echo 'restartd user-resources'
     ;;
-  3) if [ -n "$(lsof -i:3000 -t)" ]
-      then kill -9 $(lsof -i:3000 -t)
-    else
-      ps -ef |grep node |grep authorize|awk '{print $2}'|xargs kill -9
+  3) if [ -n "$(ps -ef |grep node |grep authorize)" ]
+      then ps -ef |grep node |grep authorize|awk '{print $2}'|xargs kill -9
     fi
     cd ./view/authorize-view
     nohup yarn dev > /dev/null 2>&1 &
     echo 'restartd authorize-view'
     ;;
-  4) if [ -n "$(lsof -i:3010 -t)" ]
-      then kill -9 $(lsof -i:3010 -t)
-    else
-      ps -ef |grep node |grep user-resources|awk '{print $2}'|xargs kill -9
+  4) if [ -n "$(ps -ef |grep node |grep user-resources)" ]
+      then ps -ef |grep node |grep user-resources|awk '{print $2}'|xargs kill -9
     fi
     cd ./view/user-resources-view
     nohup yarn dev > /dev/null 2>&1 &

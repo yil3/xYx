@@ -1,8 +1,8 @@
 use anyhow::Result;
-use x_common::utils::vector;
+use x_common::{utils::vector, model::page::PageParam};
 
 use crate::{
-    dto::role_dto::{RoleDto, RoleTreeDto},
+    dto::role_dto::{RoleDto, RoleTreeDto, RolePageDto},
     repository::{role_repository::RoleRepository, user_role_repository::UserRoleRepository},
     vo::role_vo::RoleParam,
 };
@@ -21,6 +21,10 @@ impl RoleService {
         } else {
             RoleDto::from(RoleRepository.update(param, user_id).await?)
         })
+    }
+
+    pub async fn get_page(&self, param: &PageParam) -> Result<Vec<RolePageDto>> {
+        Ok(RoleRepository.fetch_page(param).await?)
     }
 
     pub async fn tree(&self) -> Result<Vec<RoleTreeDto>> {

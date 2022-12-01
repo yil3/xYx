@@ -108,7 +108,7 @@ pub struct RolePageDto {
     pub owner: String,
     pub name: String,
     pub code: String,
-    pub description: String,
+    pub description: Option<String>,
     pub parent_id: String,
     pub status: bool,
     #[serde_as(as = "DateTimeFormat")]

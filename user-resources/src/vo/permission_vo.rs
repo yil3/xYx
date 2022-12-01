@@ -16,7 +16,6 @@ pub struct PermissionParam {
     pub name: Option<String>,
     pub code: Option<String>,
     pub description: Option<String>,
-    pub role_id: Option<String>,
     pub status: Option<bool>,
 }
 
@@ -37,7 +36,6 @@ impl PermissionParam {
             name: self.name.to_owned().unwrap_or_default(),
             code: self.code.to_owned().unwrap_or_default(),
             description: self.description.to_owned().unwrap_or_default(),
-            role_id: self.role_id.to_owned().unwrap_or_default(),
             status: self.status.to_owned().unwrap_or_default(),
             created_by: Default::default(),
             updated_by: Default::default(),
@@ -55,7 +53,6 @@ impl Into<Permission> for Json<PermissionParam> {
             name: self.name.to_owned().unwrap_or_default(),
             code: self.code.to_owned().unwrap_or_default(),
             description: self.description.to_owned().unwrap_or_default(),
-            role_id: self.role_id.to_owned().unwrap_or_default(),
             status: self.status.to_owned().unwrap_or_default(),
             created_by: Default::default(),
             updated_by: Default::default(),
