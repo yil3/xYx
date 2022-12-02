@@ -15,6 +15,24 @@ pub trait Pageable {
     fn total(&self) -> i64;
 }
 
+impl<T> Page<T> {
+    pub fn build_with_total(total: i64, page: i64, size: i64, list: Vec<T>) -> Self {
+        let pages = if total % size == 0 {
+            total / size
+        } else {
+            total / size + 1
+        };
+        Self {
+            page,
+            size,
+            list,
+            pages,
+            total,
+            has_next: page < pages,
+        }
+    }
+}
+
 impl<T> Page<T>
 where
     T: Serialize,

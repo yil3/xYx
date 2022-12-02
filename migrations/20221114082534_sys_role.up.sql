@@ -50,5 +50,6 @@ insert into sys_role
 (owner, name, code, parent_id, created_by, updated_by)
 values
 ('system', '超级管理员', 'super_admin', '0', 'system', 'system'),
-('system', '管理员', 'admin', 'system', '0', 'system'),
-('system', '普通用户', 'user', 'system', '0', 'system');
+('system', '管理员', 'admin', '0', 'system', 'system'),
+('system', '普通用户', 'user', '0', 'system', 'system');
+

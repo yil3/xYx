@@ -15,3 +15,7 @@ export const saveRole = (data: any) => {
 export const deleteRole = (id: String) => {
   return http.delete('user_resource/role/delete', { id });
 }
+
+export const getRoleTree = (params: any) => {
+  return http.get('user_resource/role/tree', params);
+};

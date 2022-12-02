@@ -35,13 +35,13 @@ impl<T: Treeable<T> + Clone> Tree<T> for TreeUtil<T> {
 
 pub fn to_tree_with_parent<T: Treeable<T> + Clone>(data: &Vec<T>, parent_id: &str) -> Vec<T> {
     let f = |pid: &str| -> Vec<T> {
-        let v = &mut data
+        let mut v = data
             .iter()
             .filter(|x| x.get_parent_id() == pid)
             .cloned()
             .collect::<Vec<T>>();
         for e in v.iter_mut() {
-            e.set_children(to_tree(data));
+            e.set_children(to_tree_with_parent(data, e.get_id()));
         }
         v.to_vec()
     };

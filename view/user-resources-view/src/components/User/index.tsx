@@ -60,6 +60,6 @@ export default function User() {
   useEffect(() => { getUserPage(params) }, [params]);
 
   return (
-    <Table rowKey={record => record.id} dataSource={tableData} columns={columns} pagination={{ onChange: pageChange, total }} title={title} />
+    <Table rowKey="id" dataSource={tableData} columns={columns} pagination={{ onChange: pageChange, total }} title={title} />
   );
 }

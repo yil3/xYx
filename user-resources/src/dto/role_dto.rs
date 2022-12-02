@@ -50,7 +50,8 @@ impl From<Role> for RoleDto {
 }
 
 #[serde_as]
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Clone, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct RoleTreeDto {
     pub id: String,
     pub owner: String,
@@ -65,7 +66,7 @@ pub struct RoleTreeDto {
     pub updated_at: OffsetDateTime,
     pub created_by: String,
     pub updated_by: String,
-    pub children: Vec<RoleTreeDto>,
+    pub children: Option<Vec<RoleTreeDto>>,
 }
 
 impl FromRow<'_, PgRow> for RoleTreeDto {
@@ -82,7 +83,7 @@ impl FromRow<'_, PgRow> for RoleTreeDto {
             updated_at: row.try_get("updated_at")?,
             created_by: row.try_get("created_by")?,
             updated_by: row.try_get("updated_by")?,
-            children: vec![],
+            children: None,
         })
     }
 }
@@ -97,7 +98,7 @@ impl Treeable<RoleTreeDto> for RoleTreeDto {
     }
 
     fn set_children(&mut self, children: Vec<RoleTreeDto>) {
-        self.children = children;
+        self.children = if children.is_empty() { None } else { Some(children) };
     }
 }
 

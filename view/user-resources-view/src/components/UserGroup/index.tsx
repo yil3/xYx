@@ -25,16 +25,9 @@ export default function UserGroup() {
     return (
       <Row>
         <Space>
-          <Input />
+          <Input placeholder="输入名称搜索" />
         </Space>
-        <Button
-          style={{ marginLeft: "auto" }}
-          icon={<PlusOutlined />}
-          type="primary"
-          onClick={showModal}
-        >
-          新增
-        </Button>
+        <Button style={{ marginLeft: "auto" }} icon={<PlusOutlined />} type="primary" onClick={showModal}>新增</Button>
       </Row>
     );
   };
@@ -45,23 +38,15 @@ export default function UserGroup() {
   };
   const columns: ColumnsType<any> = [
     { title: "用户组名称", dataIndex: "name" },
-    {
-      title: "用户组描述",
-      dataIndex: "description",
-      render: (text: string) => text || "-",
-    },
     { title: "创建时间", dataIndex: "createdAt" },
+    { title: "用户组描述", dataIndex: "description", render: (text: string) => text || "-", },
     {
       title: "操作",
-      dataIndex: "id",
+      width: "10%",
       render: (_text: string, record: any) => (
         <Space>
-          <Button type="link" onClick={() => showModal(record)}>
-            编辑
-          </Button>
-          <Button type="link" onClick={() => deleteRecord(record.id)}>
-            删除
-          </Button>
+          <Button type="link" onClick={() => showModal(record)} > 编辑 </Button>
+          <Button type="link" onClick={() => deleteRecord(record.id)}> 删除 </Button>
         </Space>
       ),
     },
@@ -80,9 +65,7 @@ export default function UserGroup() {
       },
     });
   };
-  const changePage = (page: number, size: number) => {
-    setParams({ ...params, page, size });
-  };
+  const changePage = (page: number, size: number) => setParams({ ...params, page, size });
 
   const saved = () => {
     setVisible(false);
@@ -94,9 +77,8 @@ export default function UserGroup() {
     setVisible(false);
   };
 
-  useEffect(() => {
-    getTableData();
-  }, [params]);
+  useEffect(() => { getTableData() }, [params]);
+
   return (
     <>
       <Table
