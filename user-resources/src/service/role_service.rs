@@ -15,7 +15,7 @@ use crate::{
 pub struct RoleService;
 
 impl RoleService {
-    pub async fn save(&self, param: &mut RoleParam, user_id: &str) -> Result<RoleDto> {
+    pub async fn save(&self, param: &RoleParam, user_id: &str) -> Result<RoleDto> {
         Ok(if param.id.is_none() {
             RoleDto::from(RoleRepository.insert(param, user_id).await?)
         } else {

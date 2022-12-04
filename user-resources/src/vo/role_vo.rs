@@ -17,6 +17,7 @@ pub struct RoleParam {
     pub code: Option<String>,
     pub description: Option<String>,
     pub parent_id: Option<String>,
+    pub gourop_id: Option<String>,
     pub status: Option<bool>,
 }
 
@@ -36,6 +37,7 @@ impl RoleParam {
             code: self.code.to_owned().unwrap_or_default(),
             description: self.description.to_owned(),
             parent_id: self.parent_id.to_owned().unwrap_or_default(),
+            group_id: self.gourop_id.to_owned().unwrap_or_default(),
             status: self.status.unwrap_or_default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),

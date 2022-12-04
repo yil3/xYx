@@ -37,15 +37,16 @@ impl RoleRepository {
         query_as!(
             Role,
             "INSERT INTO sys_role 
-                (owner, name, code, description, parent_id, created_by, updated_by) 
+                (owner, name, code, description, parent_id, group_id, created_by, updated_by) 
                 VALUES 
-                ($1, $2, $3, $4, $5, $6, $6) 
+                ($1, $2, $3, $4, $5, $6, $7, $7) 
                 RETURNING *",
             record.owner,
             record.name,
             record.code,
             record.description,
             record.parent_id,
+            record.gourop_id,
             user_id,
         )
         .fetch_one(&*PG_POOL)

@@ -4,6 +4,7 @@ create table sys_permission (
     owner varchar(64) not null,
     name varchar(64) not null,
     code varchar(64) not null,
+    group_id varchar(64) not null references role_permission_group(id) on update cascade on delete cascade,
     description varchar(255) not null,
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now(),
@@ -35,6 +36,7 @@ comment on column sys_permission.id is '主键';
 comment on column sys_permission.owner is '所属系统';
 comment on column sys_permission.name is '权限名称';
 comment on column sys_permission.code is '权限编码';
+comment on column sys_permission.group_id is '组';
 comment on column sys_permission.description is '权限描述';
 comment on column sys_permission.created_at is '创建时间';
 comment on column sys_permission.updated_at is '更新时间';

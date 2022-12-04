@@ -11,6 +11,7 @@ pub struct Permission {
     pub code: String,
     pub description: String,
     pub status: bool,
+    pub group_id: String,
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
     pub created_by: String,

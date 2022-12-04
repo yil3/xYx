@@ -13,6 +13,7 @@ pub struct Role {
     pub code: String,
     pub description: Option<String>,
     pub parent_id: String,
+    pub group_id: String,
     pub status: bool,
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
