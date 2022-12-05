@@ -13,6 +13,7 @@ const items = [
   { label: "首页", key: "/" },
   { label: "用户", key: "/user" },
   { label: "用户组", key: "/user/group" },
+  { label: "角色组", key: "/role/group" },
   { label: "角色", key: "/role" },
   { label: "权限", key: "/permission" },
 ];

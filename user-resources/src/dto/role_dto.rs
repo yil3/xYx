@@ -22,7 +22,6 @@ pub struct RoleDto {
     pub name: String,
     pub code: String,
     pub description: String,
-    pub parent_id: String,
     pub status: bool,
     #[serde_as(as = "DateTimeFormat")]
     pub created_at: OffsetDateTime,
@@ -39,7 +38,6 @@ impl From<Role> for RoleDto {
             name: role.name,
             code: role.code,
             description: role.description.unwrap_or_default(),
-            parent_id: role.parent_id,
             status: role.status,
             created_at: role.created_at,
             updated_at: role.updated_at,
@@ -76,8 +74,8 @@ impl FromRow<'_, PgRow> for RoleTreeDto {
             owner: row.try_get("owner")?,
             name: row.try_get("name")?,
             code: row.try_get("code")?,
-            description: row.try_get("description")?,
             parent_id: row.try_get("parent_id")?,
+            description: row.try_get("description")?,
             status: row.try_get("status")?,
             created_at: row.try_get("created_at")?,
             updated_at: row.try_get("updated_at")?,
@@ -110,7 +108,6 @@ pub struct RolePageDto {
     pub name: String,
     pub code: String,
     pub description: Option<String>,
-    pub parent_id: String,
     pub group_id: String,
     pub status: bool,
     #[serde_as(as = "DateTimeFormat")]

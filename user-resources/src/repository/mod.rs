@@ -3,7 +3,7 @@ pub mod user_user_group_repository;
 pub mod user_role_repository;
 pub mod user_group_role_repository;
 pub mod user_group_repository;
-pub mod role_permission_group_repository;
+pub mod role_group_repository;
 pub mod role_repository;
 pub mod permission_repository;
 pub mod permission_type_repository;

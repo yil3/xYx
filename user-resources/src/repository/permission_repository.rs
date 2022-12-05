@@ -41,7 +41,7 @@ impl PermissionRepository {
             Permission,
             r#"
                 insert into sys_permission 
-                (owner, name, code, description, group_id, created_by, updated_by) 
+                (owner, name, code, description, role_group_id, created_by, updated_by) 
                 values ($1, $2, $3, $4, $5, $6, $6)
                 returning *
             "#,
@@ -49,7 +49,7 @@ impl PermissionRepository {
             record.name,
             record.code,
             record.description,
-            record.group_id,
+            record.role_group_id,
             user_id,
         )
         .fetch_one(&*PG_POOL)

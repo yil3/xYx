@@ -10,7 +10,7 @@ use x_common::{model::page::Pageable, utils::date::DateTimeFormat};
 #[serde_as]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct RolePermissionGroupPageDto {
+pub struct RoleGroupPageDto {
     pub id: String,
     pub owner: String,
     pub name: String,
@@ -27,7 +27,7 @@ pub struct RolePermissionGroupPageDto {
     pub total: Option<i64>,
 }
 
-impl Pageable for RolePermissionGroupPageDto {
+impl Pageable for RoleGroupPageDto {
     fn total(&self) -> i64 {
         self.total.unwrap_or_default()
     }

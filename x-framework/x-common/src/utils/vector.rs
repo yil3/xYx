@@ -77,3 +77,15 @@ where
         to_tree_with_parent(self, parent_id)
     }
 }
+
+
+pub fn to_in(v: Vec<String>) -> String {
+    let mut ret = String::new();
+    for s in v {
+        if ret.len() > 0 {
+            ret.push_str(",");
+        }
+        ret.push_str(&format!("'{}'", s));
+    }
+    ret
+}

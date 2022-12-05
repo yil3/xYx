@@ -23,6 +23,10 @@ impl RoleService {
         })
     }
 
+    pub async fn is_exists(&self, id: &str) -> Result<bool> {
+        Ok(RoleRepository.is_exists(id).await?)
+    }
+
     pub async fn get_page(&self, param: &PageParam) -> Result<Vec<RolePageDto>> {
         Ok(RoleRepository.fetch_page(param).await?)
     }

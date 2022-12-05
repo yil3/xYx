@@ -13,11 +13,11 @@ use crate::po::role::Role;
 pub struct RoleParam {
     pub id: Option<String>,
     pub owner: Option<String>,
-    pub name: Option<String>,
-    pub code: Option<String>,
+    pub name: String,
+    pub code: String,
+    pub parent_id: String,
     pub description: Option<String>,
-    pub parent_id: Option<String>,
-    pub gourop_id: Option<String>,
+    pub role_gourop_id: String,
     pub status: Option<bool>,
 }
 
@@ -33,11 +33,11 @@ impl RoleParam {
         Role {
             id: self.id.to_owned().unwrap_or_default(),
             owner: self.owner.to_owned().unwrap_or("system".into()),
-            name: self.name.to_owned().unwrap_or_default(),
-            code: self.code.to_owned().unwrap_or_default(),
+            name: self.name.to_owned(),
+            code: self.code.to_owned(),
+            parent_id: self.parent_id.to_owned(),
             description: self.description.to_owned(),
-            parent_id: self.parent_id.to_owned().unwrap_or_default(),
-            group_id: self.gourop_id.to_owned().unwrap_or_default(),
+            role_group_id: self.role_gourop_id.to_owned(),
             status: self.status.unwrap_or_default(),
             created_at: OffsetDateTime::now_utc(),
             updated_at: OffsetDateTime::now_utc(),

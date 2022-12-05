@@ -13,10 +13,10 @@ use crate::po::permission::Permission;
 pub struct PermissionParam {
     pub id: Option<String>,
     pub owner: Option<String>,
-    pub name: Option<String>,
-    pub code: Option<String>,
+    pub name: String,
+    pub code: String,
     pub description: Option<String>,
-    pub group_id: Option<String>,
+    pub role_group_id: String,
     pub status: Option<bool>,
 }
 
@@ -25,7 +25,7 @@ pub struct PermissionParam {
 pub struct PermissionTypeParam {
     pub id: Option<String>,
     pub owner: Option<String>,
-    pub name: Option<String>,
+    pub name: String,
     pub description: Option<String>,
 }
 
@@ -34,10 +34,10 @@ impl PermissionParam {
         Permission {
             id: self.id.to_owned().unwrap_or_default(),
             owner: self.owner.to_owned().unwrap_or_default(),
-            name: self.name.to_owned().unwrap_or_default(),
-            code: self.code.to_owned().unwrap_or_default(),
+            name: self.name.to_owned(),
+            code: self.code.to_owned(),
             description: self.description.to_owned().unwrap_or_default(),
-            group_id: self.group_id.to_owned().unwrap_or_default(),
+            role_group_id: self.role_group_id.to_owned(),
             status: self.status.to_owned().unwrap_or_default(),
             created_by: Default::default(),
             updated_by: Default::default(),
@@ -52,11 +52,11 @@ impl Into<Permission> for Json<PermissionParam> {
         Permission {
             id: self.id.to_owned().unwrap_or_default(),
             owner: self.owner.to_owned().unwrap_or_default(),
-            name: self.name.to_owned().unwrap_or_default(),
-            code: self.code.to_owned().unwrap_or_default(),
+            name: self.name.to_owned(),
+            code: self.code.to_owned(),
             description: self.description.to_owned().unwrap_or_default(),
             status: self.status.to_owned().unwrap_or_default(),
-            group_id: self.group_id.to_owned().unwrap_or_default(),
+            role_group_id: self.role_group_id.to_owned(),
             created_by: Default::default(),
             updated_by: Default::default(),
             created_at: time::OffsetDateTime::now_utc(),

@@ -1,4 +1,4 @@
-use sqlx::{query, query_as};
+use sqlx::{query, query_as, query_scalar};
 use x_common::model::page::PageParam;
 use x_core::application::PG_POOL;
 
@@ -33,11 +33,12 @@ impl RoleRepository {
         .fetch_all(&*PG_POOL)
         .await
     }
+
     pub async fn insert(&self, record: &RoleParam, user_id: &str) -> Result<Role, sqlx::Error> {
         query_as!(
             Role,
             "INSERT INTO sys_role 
-                (owner, name, code, description, parent_id, group_id, created_by, updated_by) 
+                (owner, name, code, description, parent_id, role_group_id, created_by, updated_by) 
                 VALUES 
                 ($1, $2, $3, $4, $5, $6, $7, $7) 
                 RETURNING *",
@@ -46,11 +47,26 @@ impl RoleRepository {
             record.code,
             record.description,
             record.parent_id,
-            record.gourop_id,
+            record.role_gourop_id,
             user_id,
         )
         .fetch_one(&*PG_POOL)
         .await
+    }
+
+    pub async fn is_exists(&self, role_group_id: &str) -> Result<bool, sqlx::Error> {
+        query_scalar!(
+            "SELECT 
+                count(*) 
+            FROM 
+                sys_role 
+            WHERE 
+                role_group_id = $1",
+            role_group_id
+        )
+        .fetch_one(&*PG_POOL)
+        .await
+        .map(|x| x.unwrap_or(0) > 0)
     }
 
     pub async fn update(&self, record: &RoleParam, user_id: &str) -> Result<Role, sqlx::Error> {

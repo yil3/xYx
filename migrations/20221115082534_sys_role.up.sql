@@ -6,7 +6,7 @@ create table sys_role (
     name varchar(64) not null,
     code varchar(64) not null,
     parent_id varchar(64) not null,
-    group_id varchar(64) not null,
+    role_group_id varchar(64) not null,
     description varchar(255),
     created_at timestamp with time zone not null default now(),
     updated_at timestamp with time zone not null default now(),
@@ -33,8 +33,8 @@ comment on column sys_role.id is '主键';
 comment on column sys_role.owner is '所属租户';
 comment on column sys_role.name is '角色名称';
 comment on column sys_role.code is '角色编码';
-comment on column sys_role.parent_id is '父级角色ID';
-comment on column sys_role.group_id is '组';
+comment on column sys_role.parent_id is '父角色ID';
+comment on column sys_role.role_group_id is '组';
 comment on column sys_role.description is '角色描述';
 comment on column sys_role.created_at is '创建时间';
 comment on column sys_role.updated_at is '更新时间';
@@ -49,9 +49,9 @@ comment on table user_role is '用户角色关联表';
 create trigger sys_role_updated_at before update on sys_role for each row execute procedure trigger_set_updated_at();
 
 insert into sys_role 
-(owner, name, code, parent_id, created_by, updated_by, group_id)
+(id, owner, name, code, created_by, updated_by, role_group_id, parent_id)
 values
-('system', '超级管理员', 'super_admin', '0', 'system', 'system', 'system'),
-('system', '管理员', 'admin', '0', 'system', 'system', '00000000-0000-0000-0000-000000000000'),
-('system', '普通用户', 'user', '0', 'system', 'system', '00000000-0000-0000-0000-000000000000');
+('00000000-0000-0000-0000-000000000000', 'system', '超级管理员', 'super_admin', 'system', 'system', 'system', 'system'),
+('00000000-0000-0000-0000-000000000001', 'system', '管理员', 'sys_admin', 'system', 'system', '00000000-0000-0000-0000-000000000000', '0'),
+('00000000-0000-0000-0000-000000000002', 'system', '普通用户', 'sys_user', 'system', 'system', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000001');
 
